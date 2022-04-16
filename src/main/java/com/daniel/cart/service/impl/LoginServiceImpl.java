@@ -46,11 +46,7 @@ public class LoginServiceImpl implements LoginService {
         }
 
         if(null == employee) {
-            throw new LoginException(28009, "无法找到用户");
-        }
-
-        if(!employee.getIsEnable()) {
-            throw new LoginException(28002, "用户已被禁用");
+            throw new LoginException(28009, "无法找到用户或用户已被禁用");
         }
 
         if(employee.getPassword().equals(password)) {

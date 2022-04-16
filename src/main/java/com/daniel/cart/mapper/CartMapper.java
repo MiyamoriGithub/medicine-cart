@@ -1,7 +1,6 @@
 package com.daniel.cart.mapper;
 
 import com.daniel.cart.domain.Cart;
-import com.daniel.cart.domain.CartStateEnum;
 import com.daniel.cart.domain.vo.CartVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -17,7 +16,7 @@ public interface CartMapper {
 
     public Cart getById(Long id);
 
-    public Long getCountByState(CartVo limit);
+    public Long getCountByLimit(CartVo limit);
 
     public Long addCart(Cart cart);
 

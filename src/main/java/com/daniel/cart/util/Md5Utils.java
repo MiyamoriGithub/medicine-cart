@@ -4,9 +4,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Md5Utils {
-    /*
-     * md5算法进行密码加密
-     * */
+    /**
+     * Md5加密算法
+     * @param str 被加密的字符串
+     * @return md5字符串
+     */
     public static String code(String str){
         try{
             //1.获取MessageDigest对象  生成一个MD5加密计算摘要
@@ -25,7 +27,7 @@ public class Md5Utils {
              * */
             byte[] byteDigest = md.digest() ;
             int i ;
-            StringBuffer buf = new StringBuffer("") ;
+            StringBuffer buf = new StringBuffer() ;
             //遍历byteDigest
             //加密逻辑，可以debug自行了解一下加密逻辑
             for(int offset = 0 ; offset<byteDigest.length ; offset++){
@@ -42,5 +44,15 @@ public class Md5Utils {
             e.printStackTrace();
             return null ;
         }
+    }
+
+    /**
+     * 加盐的Md5算法
+     * @param str 被加密的字符串
+     * @param salt 盐
+     * @return 加密后的字符串
+     */
+    public static String code(String str, String salt) {
+        return code(str + salt);
     }
 }

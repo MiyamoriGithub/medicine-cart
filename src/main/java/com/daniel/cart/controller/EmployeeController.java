@@ -4,11 +4,9 @@ import com.daniel.cart.domain.Employee;
 import com.daniel.cart.domain.result.Result;
 import com.daniel.cart.domain.vo.EmployeeVo;
 import com.daniel.cart.service.EmployeeService;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,13 +40,15 @@ public class EmployeeController {
         return Result.ok().data("count", count);
     }
 
+    @RequiresRoles("manager")
     @GetMapping("findById")
     public Result findById(Long id) {
         Employee employee = service.findById(id);
         return Result.ok().data("employee", employee);
     }
 
-    @RequestMapping("")
+    // Todo 判断手机号、密码等的格式
+    @PostMapping("modify")
     public Result modifyEmployee(Employee employee) {
         boolean res =  service.modifyEmployee(employee);
         if(res) {

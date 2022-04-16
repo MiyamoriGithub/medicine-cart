@@ -1,10 +1,15 @@
-package com.daniel.cart.domain;
+package com.daniel.cart.domain.enums;
 
+
+import lombok.ToString;
+
+@ToString
 public enum CartStateEnum {
     free("空闲"),
-    inventory("维护"),
-    emergency("急救"),
+    inventory("维护中"),
+    emergency("急救中"),
     unknown("未知");
+    
 
     private String name;
 

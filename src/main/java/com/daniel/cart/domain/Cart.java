@@ -1,5 +1,6 @@
 package com.daniel.cart.domain;
 
+import com.daniel.cart.domain.enums.CartStateEnum;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,7 @@ public class Cart {
     private String departmentName;
     private Date addTime;           // add_time timestamp not null
     private CartStateEnum state;           // status_type enum('free','inventory','emergency','unknown')
-    private Boolean isEnable;       // is_enable boolean default 1
+//    private Boolean isEnable;       // is_enable boolean default 1
 
     public Cart() {
         departmentName = "暂无";
@@ -28,7 +29,6 @@ public class Cart {
                 ", departmentName='" + departmentName + '\'' +
                 ", addTime=" + addTime +
                 ", state=" + state +
-                ", isEnable=" + isEnable +
                 '}';
     }
 

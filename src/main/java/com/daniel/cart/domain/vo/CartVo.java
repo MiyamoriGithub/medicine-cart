@@ -1,6 +1,6 @@
 package com.daniel.cart.domain.vo;
 
-import com.daniel.cart.domain.CartStateEnum;
+import com.daniel.cart.domain.enums.CartStateEnum;
 
 public class CartVo extends PageVo {
     private Long id;

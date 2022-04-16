@@ -41,7 +41,7 @@ public interface EmployeeMapper {
      * 查询数据库中条目总数
      * @return 条目总数
      */
-    Long getCount(EmployeeVo info);
+    Long getCountByLimit(EmployeeVo info);
 
     Long addEmployee(Employee employee);
 

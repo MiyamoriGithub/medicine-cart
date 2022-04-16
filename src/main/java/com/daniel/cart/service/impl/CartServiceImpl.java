@@ -1,7 +1,7 @@
 package com.daniel.cart.service.impl;
 
 import com.daniel.cart.domain.Cart;
-import com.daniel.cart.domain.CartStateEnum;
+import com.daniel.cart.domain.enums.CartStateEnum;
 import com.daniel.cart.domain.vo.CartVo;
 import com.daniel.cart.mapper.CartMapper;
 import com.daniel.cart.service.CartService;
@@ -57,7 +57,7 @@ public class CartServiceImpl implements CartService {
     public Long getCountByState(String state) {
         CartVo limit = new CartVo();
         limit.setState(CartStateEnum.valueOf(state));
-        return mapper.getCountByState(limit);
+        return mapper.getCountByLimit(limit);
     }
 
     @Override

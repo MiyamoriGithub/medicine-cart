@@ -43,7 +43,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Long getCount(EmployeeVo info) {
-        return mapper.getCount(info);
+        return mapper.getCountByLimit(info);
     }
 
     @Override

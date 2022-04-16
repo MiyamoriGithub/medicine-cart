@@ -10,23 +10,25 @@
         <result column="employee_add_time" property="addTime"/>
         <result column="department_id" property="departmentId"/>
         <result column="department_name" property="departmentName"/>
-        <result column="enable_flag" property="isEnable"/>
+<!--        <result column="enable_flag" property="isEnable"/>-->
         <result column="password_md5" property="password"/>
+        <result column="role" property="role"/>
     </resultMap>
 
     <select id="findAll" resultMap="employeeMap">
-        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.enable_flag
+        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.role
         from employees_inf ei
         left join department_inf di on ei.department_id = di.department_id
+        where ei.enable_flag = 1;
     </select>
 
     <select id="findAllByLimit" resultMap="employeeMap" parameterType="EmployeeVo">
-        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.enable_flag
+        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.role
         from employees_inf ei
         left join department_inf di on ei.department_id = di.department_id
-        where 1 = 1
+        where ei.enable_flag=1
         <if test="nameCondition!=null">
-            and employee_name like #{nameCondition}
+            and ei.employee_name like #{nameCondition}
         </if>
         <if test="start!=null and pageSize!=null">
             limit #{start},#{pageSize}
@@ -35,21 +37,22 @@
     </select>
 
     <select id="findById" resultMap="employeeMap" parameterType="java.lang.Long">
-        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.enable_flag, ei.password_md5
+        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.role, ei.password_md5
         from employees_inf ei
         left join department_inf di on ei.department_id = di.department_id
-        where employee_id = #{id}
+        where ei.employee_id = #{id} and ei.enable_flag=1;
     </select>
 
     <select id="findByPhone" resultMap="employeeMap" parameterType="java.lang.String">
-        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.enable_flag, ei.password_md5
+        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.role, ei.password_md5
         from employees_inf ei
         left join department_inf di on ei.department_id = di.department_id
-        where employee_phone = #{phone}
+        where ei.employee_phone = #{phone} and ei.enable_flag=1;
     </select>
 
-    <select id="getCount" resultType="java.lang.Long" parameterType="EmployeeVo">
-        select count(employee_id) from employees_inf where 1 = 1
+    <select id="getCountByLimit" resultType="java.lang.Long" parameterType="EmployeeVo">
+        select count(employee_id) from employees_inf
+        where enable_flag=1;
         <if test="nameCondition!=null">
             and employee_name like #{nameCondition}
         </if>
@@ -61,16 +64,16 @@
         <if test="phone!=null">, employee_phone</if>
         <if test="addTime!=null">, employee_add_time</if>
         <if test="departmentId!=null">, department_id</if>
-        <if test="isEnable!=null">, enable_flag</if>
         <if test="password!=null">, password_md5</if>
+        <if test="role!=null">, role</if>
         )
         values(
         <if test="name!=null">#{name}</if>
         <if test="phone!=null">, #{phone}</if>
         <if test="addTime!=null">, #{addTime}</if>
         <if test="departmentId!=null">, #{departmentId}</if>
-        <if test="isEnable!=null">, #{isEnable}</if>
         <if test="password!=null">, #{password}</if>
+        <if test="role!=null">, #{role}</if>
 
     </insert>
     
@@ -81,14 +84,20 @@
             <if test="phone!=null">employee_phone=#{phone}</if>
             <if test="addTime!=null">employee_addTime=#{addTime}</if>
             <if test="departmentId!=null">department_id=#{departmentId}</if>
-            <if test="isEnable!=null">enable_flag=#{isEnable}</if>
             <if test="password!=null">password_md5=#{password}</if>
+            <if test="role!=null">role=#{role}</if>
         </set>
-        where employee_id=#{id}
+        where employee_id=#{id} and enable_flag=1;
     </update>
 
-    <delete id="removeEmployee" parameterType="java.lang.Long">
-        delete from employees_inf where employee_id = #{id}
-    </delete>
+<!--    <delete id="removeEmployee" parameterType="java.lang.Long">-->
+<!--        delete from employees_inf where employee_id = #{id}-->
+<!--    </delete>-->
+
+    <update id="removeEmployee" parameterType="java.lang.Long">
+        update employees_inf
+        set enable_flag=0
+        where employee_id=#{id}
+    </update>
 
 </mapper>

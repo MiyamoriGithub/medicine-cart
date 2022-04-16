@@ -59,7 +59,7 @@ public class EmployeeMapperTest {
     @Test
     public void getCount() {
         EmployeeVo limit = new EmployeeVo();
-        System.out.println(mapper.getCount(limit));
+        System.out.println(mapper.getCountByLimit(limit));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class EmployeeMapperTest {
 //            mapper.modifyEmployee(employee);
 //        }
 
-        for (int i = 1; i <= mapper.getCount(new EmployeeVo()); i++) {
+        for (int i = 1; i <= mapper.getCountByLimit(new EmployeeVo()); i++) {
             Employee employee = new Employee();
             employee.setId((long) i);
             employee.setPassword(Md5Utils.code("123456"));

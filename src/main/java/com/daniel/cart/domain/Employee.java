@@ -1,5 +1,6 @@
 package com.daniel.cart.domain;
 
+import com.daniel.cart.domain.enums.RoleEnum;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,8 +23,9 @@ public class Employee {
     private Date addTime;               // 员工信息添加时间 employee_add_time
     private Long departmentId;          // 员工部门id department_id
     private String departmentName;
-    private Boolean isEnable;
+//    private Boolean isEnable;
     private String password;
+    private RoleEnum role;
 
     @Override
     public String toString() {
@@ -33,7 +35,7 @@ public class Employee {
                 ", phone='" + phone + '\'' +
                 ", addTime=" + addTime +
                 ", departmentName='" + departmentName + '\'' +
-                ", isEnable=" + isEnable +
+                ", role=" + role +
                 '}';
     }
 }
