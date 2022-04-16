@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: daniel
+    password: Tencent520..
+    url: jdbc:mysql://110.40.194.151:3306/drug_cart_db?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8&allowMultiQueries=true&useAffectedRows=true
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.daniel.cart.domain
+
+server:
+  port: 8989
+  servlet:
+    context-path: /
+

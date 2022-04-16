@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daniel.cart.mapper.EmployeeMapper">
+    <resultMap id="employeeMap" type="com.daniel.cart.domain.Employee">
+        <id column="employee_id" property="id"/>
+        <result column="employee_name" property="name"/>
+        <result column="employee_phone" property="phone"/>
+        <result column="employee_add_time" property="addTime"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="department_name" property="departmentName"/>
+        <result column="enable_flag" property="isEnable"/>
+        <result column="password_md5" property="password"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="employeeMap">
+        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.enable_flag
+        from employees_inf ei
+        left join department_inf di on ei.department_id = di.department_id
+    </select>
+
+    <select id="findAllByLimit" resultMap="employeeMap" parameterType="EmployeeVo">
+        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.enable_flag
+        from employees_inf ei
+        left join department_inf di on ei.department_id = di.department_id
+        where 1 = 1
+        <if test="nameCondition!=null">
+            and employee_name like #{nameCondition}
+        </if>
+        <if test="start!=null and pageSize!=null">
+            limit #{start},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="findById" resultMap="employeeMap" parameterType="java.lang.Long">
+        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.enable_flag, ei.password_md5
+        from employees_inf ei
+        left join department_inf di on ei.department_id = di.department_id
+        where employee_id = #{id}
+    </select>
+
+    <select id="findByPhone" resultMap="employeeMap" parameterType="java.lang.String">
+        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.enable_flag, ei.password_md5
+        from employees_inf ei
+        left join department_inf di on ei.department_id = di.department_id
+        where employee_phone = #{phone}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Long" parameterType="EmployeeVo">
+        select count(employee_id) from employees_inf where 1 = 1
+        <if test="nameCondition!=null">
+            and employee_name like #{nameCondition}
+        </if>
+    </select>
+    
+    <insert id="addEmployee" parameterType="employee">
+        insert into employees_inf(
+        <if test="name!=null">employee_name</if>
+        <if test="phone!=null">, employee_phone</if>
+        <if test="addTime!=null">, employee_add_time</if>
+        <if test="departmentId!=null">, department_id</if>
+        <if test="isEnable!=null">, enable_flag</if>
+        <if test="password!=null">, password_md5</if>
+        )
+        values(
+        <if test="name!=null">#{name}</if>
+        <if test="phone!=null">, #{phone}</if>
+        <if test="addTime!=null">, #{addTime}</if>
+        <if test="departmentId!=null">, #{departmentId}</if>
+        <if test="isEnable!=null">, #{isEnable}</if>
+        <if test="password!=null">, #{password}</if>
+
+    </insert>
+    
+    <update id="modifyEmployee" parameterType="employee">
+        update employees_inf
+        <set>
+            <if test="name!=null">employee_name=#{name}</if>
+            <if test="phone!=null">employee_phone=#{phone}</if>
+            <if test="addTime!=null">employee_addTime=#{addTime}</if>
+            <if test="departmentId!=null">department_id=#{departmentId}</if>
+            <if test="isEnable!=null">enable_flag=#{isEnable}</if>
+            <if test="password!=null">password_md5=#{password}</if>
+        </set>
+        where employee_id=#{id}
+    </update>
+
+    <delete id="removeEmployee" parameterType="java.lang.Long">
+        delete from employees_inf where employee_id = #{id}
+    </delete>
+
+</mapper>

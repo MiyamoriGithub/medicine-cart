@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daniel.cart.mapper.DrugMapper">
+    <resultMap id="drugMap" type="com.daniel.cart.domain.Drug">
+        <id column="drug_id" property="id"></id>
+        <result column="drug_barcode" property="barcode"></result>
+        <result column="drug_name" property="name"></result>
+        <result column="drug_product_date" property="productDate"></result>
+        <result column="drug_shelf_life" property="shelfLife"></result>
+    </resultMap>
+
+    <select id="findAll" resultMap="drugMap">
+        select * from drug_cart_db.drug_inf
+    </select>
+
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daniel.cart.mapper.DepartmentMapper">
+    <resultMap id="departmentMap" type="com.daniel.cart.domain.Department">
+        <id column="department_id" property="departmentId"></id>
+        <result column="department_name" property="name"></result>
+        <result column="is_enable" property="isValid"></result>
+    </resultMap>
+
+    <select id="findAll" resultMap="departmentMap">
+        select * from department_inf
+    </select>
+    
+    <select id="findAllByLimit" resultMap="departmentMap" parameterType="departmentVo">
+        select department_id, department_name, is_enable
+        from department_inf where 1 = 1
+        <if test="departmentId!=null">
+            and department_id = #{departmentId}
+        </if>
+        <if test="departmentName!=null">
+            and department_name like #{departmentName}
+        </if>
+        <if test="start!=null and pageSize!=null">
+            limit #{start},#{pageSize}
+        </if>
+    </select>
+    
+    <select id="findById" resultMap="departmentMap" parameterType="java.lang.Long">
+        select department_id, department_name, is_enable
+        from department_inf where 1 = 1
+        <if test="departmentId!=null">
+            and department_id = #{id}
+        </if>
+    </select>
+
+</mapper>
