@@ -51,8 +51,9 @@
     </select>
 
     <select id="getCountByLimit" resultType="java.lang.Long" parameterType="EmployeeVo">
-        select count(employee_id) from employees_inf
-        where enable_flag=1;
+        select count(employee_id) as `count`
+        from employees_inf
+        where enable_flag=1
         <if test="nameCondition!=null">
             and employee_name like #{nameCondition}
         </if>

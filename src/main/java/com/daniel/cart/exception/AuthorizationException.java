@@ -1,5 +1,10 @@
 package com.daniel.cart.exception;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class AuthorizationException extends RuntimeException{
     private static final long serialVersionUID = 2L;
 

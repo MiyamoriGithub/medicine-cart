@@ -1,13 +1,11 @@
 package com.daniel.cart.domain.enums;
 
-import lombok.Getter;
 import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @ToString
-@Getter
 public enum RoleEnum {
     admin("admin"),
     manager("manager"),
@@ -21,6 +19,7 @@ public enum RoleEnum {
 
     public List<String> getRoleName() {
         List<String> list = new ArrayList<>();
+        // 注意没有使用break语句，较大的权限会添加较小的权限
         switch(roleName) {
             case "admin" :
                 list.add(admin.roleName);

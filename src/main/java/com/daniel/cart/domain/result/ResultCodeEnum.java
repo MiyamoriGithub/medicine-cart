@@ -22,9 +22,9 @@ public enum ResultCodeEnum {
     FILE_DELETE_ERROR(false, 21005, "文件刪除错误"),
     EXCEL_DATA_IMPORT_ERROR(false, 21006, "Excel数据导入错误"),
 
-    FETCH_VIDEO_UPLOADAUTH_ERROR(false, 22004, "获取上传地址和凭证失败"),
-    REFRESH_VIDEO_UPLOADAUTH_ERROR(false, 22005, "刷新上传地址和凭证失败"),
-    FETCH_PLAYAUTH_ERROR(false, 22006, "获取播放凭证失败"),
+//    FETCH_VIDEO_UPLOADAUTH_ERROR(false, 22004, "获取上传地址和凭证失败"),
+//    REFRESH_VIDEO_UPLOADAUTH_ERROR(false, 22005, "刷新上传地址和凭证失败"),
+//    FETCH_PLAYAUTH_ERROR(false, 22006, "获取播放凭证失败"),
 
     URL_ENCODE_ERROR(false, 23001, "URL编码失败"),
     ILLEGAL_CALLBACK_REQUEST_ERROR(false, 23002, "非法回调请求"),
@@ -32,27 +32,28 @@ public enum ResultCodeEnum {
     FETCH_USERINFO_ERROR(false, 23004, "获取用户信息失败"),
     LOGIN_ERROR(false, 23005, "登录失败"),
 
-    COMMENT_EMPTY(false, 24006, "评论内容必须填写"),
+//    COMMENT_EMPTY(false, 24006, "评论内容必须填写"),
 
-    PAY_RUN(false, 25000, "支付中"),
-    PAY_UNIFIEDORDER_ERROR(false, 25001, "统一下单错误"),
-    PAY_ORDERQUERY_ERROR(false, 25002, "查询支付结果错误"),
+//    PAY_RUN(false, 25000, "支付中"),
+//    PAY_UNIFIEDORDER_ERROR(false, 25001, "统一下单错误"),
+//    PAY_ORDERQUERY_ERROR(false, 25002, "查询支付结果错误"),
 
-    ORDER_EXIST_ERROR(false, 25003, "课程已购买"),
+//    ORDER_EXIST_ERROR(false, 25003, "课程已购买"),
 
     GATEWAY_ERROR(false, 26000, "服务不能访问"),
 
-    CODE_ERROR(false, 28000, "验证码错误"),
+//    CODE_ERROR(false, 28000, "验证码错误"),
 
-    LOGIN_PHONE_ERROR(false, 28009, "手机号码不正确"),
+    LOGIN_PHONE_ERROR(false, 28009, "手机号码不正确或已被禁用"),
     LOGIN_MOBILE_ERROR(false, 28001, "账号不正确"),
-    LOGIN_PASSWORD_ERROR(false, 28008, "密码不正确"),
+    LOGIN_PASSWORD_ERROR(false, 28008, "用户名或密码不正确"),
     LOGIN_DISABLED_ERROR(false, 28002, "该用户已被禁用"),
-    REGISTER_MOBLE_ERROR(false, 28003, "手机号已被注册"),
+    REGISTER_MOBILE_ERROR(false, 28003, "手机号已被注册"),
     LOGIN_AUTH(false, 28004, "需要登录"),
     LOGIN_ACL(false, 28005, "没有权限"),
-    SMS_SEND_ERROR(false, 28006, "短信发送失败"),
-    SMS_SEND_ERROR_BUSINESS_LIMIT_CONTROL(false, 28007, "短信发送过于频繁");
+    LOGIN_EXPIR_ERROR(false, 28006, "登录已过期或未登录");
+//    SMS_SEND_ERROR(false, 28006, "短信发送失败"),
+//    SMS_SEND_ERROR_BUSINESS_LIMIT_CONTROL(false, 28007, "短信发送过于频繁");
 
 
     private Boolean success;        // 当前对服务器的请求是否成功完成响应

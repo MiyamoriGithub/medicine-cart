@@ -3,12 +3,13 @@ package com.daniel.cart.domain.result;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Data
+@Getter
 @Component
 @ApiModel(value = "全局统一返回结果")
 public class Result {
@@ -29,42 +30,51 @@ public class Result {
 
     public static Result ok() {
         Result result = new Result();
-        result.setSuccess(ResultCodeEnum.SUCCESS.getSuccess());
-        result.setCode(ResultCodeEnum.SUCCESS.getCode());
-        result.setMessage(ResultCodeEnum.SUCCESS.getMessage());
+        result.success(ResultCodeEnum.SUCCESS.getSuccess());
+        result.code(ResultCodeEnum.SUCCESS.getCode());
+        result.message(ResultCodeEnum.SUCCESS.getMessage());
         return result;
     }
 
 
     public static Result error(){
         Result result = new Result();
-        result.setSuccess(ResultCodeEnum.UNKNOWN_REASON.getSuccess());
-        result.setCode(ResultCodeEnum.UNKNOWN_REASON.getCode());
-        result.setMessage(ResultCodeEnum.UNKNOWN_REASON.getMessage());
+        result.success(ResultCodeEnum.UNKNOWN_REASON.getSuccess());
+        result.code(ResultCodeEnum.UNKNOWN_REASON.getCode());
+        result.message(ResultCodeEnum.UNKNOWN_REASON.getMessage());
         return result;
     }
 
+    public static Result error(ResultCodeEnum codeEnum) {
+        Result result = new Result();
+        result.success(codeEnum.getSuccess());
+        result.code(codeEnum.getCode());
+        result.message(codeEnum.getMessage());
+        return result;
+    }
 
     public static Result setResult(ResultCodeEnum resultCodeEnum){
         Result result = new Result();
-        result.setSuccess(resultCodeEnum.getSuccess());
-        result.setCode(resultCodeEnum.getCode());
-        result.setMessage(resultCodeEnum.getMessage());
+        result.success(resultCodeEnum.getSuccess());
+        result.code(resultCodeEnum.getCode());
+        result.message(resultCodeEnum.getMessage());
         return result;
     }
 
+
+
     public Result success(Boolean success){
-        this.setSuccess(success);
+        this.success = success;
         return this;
     }
 
     public Result message(String message) {
-        this.setMessage(message);
+        this.message = message;
         return this;
     }
 
     public Result code(Integer code) {
-        this.setCode(code);
+        this.code = code;
         return this;
     }
 
@@ -74,8 +84,17 @@ public class Result {
     }
 
     public Result data(Map<String, Object> map) {
-        this.setData(map);
+        this.data = map;
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "Result{" +
+                "success=" + success +
+                ", code=" + code +
+                ", message='" + message + '\'' +
+                ", data=" + data +
+                '}';
+    }
 }

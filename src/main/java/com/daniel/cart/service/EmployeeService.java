@@ -23,6 +23,8 @@ public interface EmployeeService {
      */
     public Employee  findById(Long id);
 
+    public Employee findByPhone(String phone);
+
     /**
      * 查询雇员信息条目总数
      * @return 条目总数

@@ -1,6 +1,7 @@
 package com.daniel.cart.config;
 
 import com.daniel.cart.mapper.EmployeeMapper;
+import com.daniel.cart.service.EmployeeService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -22,7 +23,7 @@ import static org.junit.Assert.*;
 public class GlobalRealmTest {
 
     @Autowired
-    EmployeeMapper mapper;
+    EmployeeService service;
 
     @Test
     public void doGetAuthorizationInfo() {
@@ -32,7 +33,7 @@ public class GlobalRealmTest {
     public void doGetAuthenticationInfo() {
         DefaultSecurityManager manager = new DefaultSecurityManager();
         GlobalRealm realm = new GlobalRealm();
-        realm.setMapper(mapper);
+        realm.setService(service);
         SecurityUtils.setSecurityManager(manager);
         HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
         matcher.setHashAlgorithmName("md5");

@@ -42,6 +42,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Employee findByPhone(String phone) {
+        return mapper.findByPhone(phone);
+    }
+
+    @Override
     public Long getCount(EmployeeVo info) {
         return mapper.getCountByLimit(info);
     }
