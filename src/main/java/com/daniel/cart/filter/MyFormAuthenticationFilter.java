@@ -19,6 +19,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletResponse resp = (HttpServletResponse) response;
+        // 注意区分http的状态码和业务的状态码
         resp.setStatus(200);
         resp.setContentType("application/json; charset=utf-8");
         PrintWriter out = resp.getWriter();

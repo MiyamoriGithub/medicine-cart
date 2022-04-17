@@ -29,13 +29,17 @@ public class ShiroConfig {
     public ShiroFilterFactoryBean filterFactoryBean(@Qualifier("manager") DefaultWebSecurityManager manager) {
         ShiroFilterFactoryBean filterFactoryBean = new ShiroFilterFactoryBean();
         filterFactoryBean.setSecurityManager(manager);
+
+        // 将自定义过滤器注册到Shiro中使用
         Map<String, Filter> filterMap = new HashMap<>();
         filterMap.put("authc", new MyFormAuthenticationFilter());
         filterFactoryBean.setFilters(filterMap);
-        Map<String, String> map = new LinkedHashMap<>();
-        map.put("/employee/*", "authc");
-        map.put("/cart/*", "anon");
-        filterFactoryBean.setFilterChainDefinitionMap(map);
+
+        // 将组件权限的 map 注册到 Shiro 中管理，其他 filterChain 用到的时候再去查
+        Map<String, String> authMap = new LinkedHashMap<>();
+        authMap.put("/employee/*", "authc");
+        authMap.put("/cart/*", "anon");
+        filterFactoryBean.setFilterChainDefinitionMap(authMap);
         return filterFactoryBean;
     }
 
