@@ -1,9 +1,11 @@
-package com.daniel.cart.filter;
+package com.daniel.cart.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.daniel.cart.domain.result.Result;
 import com.daniel.cart.domain.result.ResultCodeEnum;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -16,6 +18,8 @@ import java.io.PrintWriter;
  * 重写FormAuthenticationFilter，阻止Shiro重定向到默认的index.jsp，而是按照规定的格式返回json
  */
 public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
+    Logger logger = LoggerFactory.getLogger(MyFormAuthenticationFilter.class);
+
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletResponse resp = (HttpServletResponse) response;
@@ -24,6 +28,7 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter {
         resp.setContentType("application/json; charset=utf-8");
         PrintWriter out = resp.getWriter();
         JSONObject jsonObject = new JSONObject();
+        logger.error("在MyFormAuthenticationFilter处被拦截");
         Result error = Result.error(ResultCodeEnum.LOGIN_ACL);
         jsonObject.put("success", error.getSuccess());
         jsonObject.put("code", error.getCode());

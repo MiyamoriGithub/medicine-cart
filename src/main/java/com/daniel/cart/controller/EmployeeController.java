@@ -48,7 +48,7 @@ public class EmployeeController {
     }
 
     @ApiOperation("通过id查询员工信息")
-    @RequiresRoles("manager")
+//    @RequiresRoles("manager")
     @GetMapping("findById")
     public Result findById(Long id) {
         Employee employee = service.findById(id);

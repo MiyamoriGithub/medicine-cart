@@ -46,10 +46,17 @@ public class MyGlobalExceptionHandler {
         return Result.error(ResultCodeEnum.LOGIN_ACL);
     }
 
+    @ExceptionHandler(value = DrugOperateException.class)
+    @ResponseBody
+    public Result drugOperateExceptionHandler(HttpServletRequest request, DrugOperateException e) {
+        logger.error("发生药品操作异常，原因是：" + e.getMessage());
+        return Result.error().code(e.getCode()).message(e.getMessage());
+    }
+
     @ExceptionHandler(value =Exception.class)
     @ResponseBody
     public Result exceptionHandler(HttpServletRequest request, Exception e){
         logger.error("发生未知异常" + e.getClass() + "，原因是:",e.getMessage());
-        return Result.error();
+        return Result.error().message("发生未知异常");
     }
 }

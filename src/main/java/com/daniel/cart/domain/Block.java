@@ -9,8 +9,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class Block {
     private Long id;
-//    private Integer block;
     private Long drugId;
+    private Long drugInfId;
+    private Long gridId;
     private String drugName;
 }
 

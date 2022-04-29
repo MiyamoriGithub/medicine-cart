@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daniel.cart.mapper.GridMapper">
+    <resultMap id="gridMap" type="com.daniel.cart.domain.Grid">
+        <id column="grid_id" property="id"/>
+        <result column="cart_id" property="cartId"/>
+        <result column="cart_layer" property="layer"/>
+        <result column="cart_row" property="row"/>
+        <result column="cart_column" property="column"/>
+        <result column="drug_inf_id" property="drugInfId"/>
+    </resultMap>
+    
+    <select id="findAll" resultMap="gridMap">
+        select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id
+        from drug_cart_db.grid_inf
+    </select>
+    
+    <select id="findAllByLimit" resultMap="gridMap" parameterType="gridVo">
+        select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id
+        from drug_cart_db.grid_inf
+        where 1 = 1
+        <if test="drugInfId!=null">
+            and drug_inf_id = #{drugInfId}
+        </if>
+        <if test="cartId!=null">
+            and cart_id = #{cartId}
+            <if test="layer!=null">
+                and cart_layer = #{layer}
+            </if>
+        </if>
+        <if test="start!=null and pageSize!=null">
+            limit #{start},#{pageSize}
+        </if>
+    </select>
+    
+    <select id="findById" resultMap="gridMap" parameterType="java.lang.Long">
+        select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id
+        from drug_cart_db.grid_inf
+        where grid_id = #{id}
+    </select>
+    
+    <select id="getCountByLimit" resultType="java.lang.Long" parameterType="gridVo">
+        select count(grid_id)
+        from drug_cart_db.grid_inf
+        where 1 = 1
+        <if test="drugInfId!=null">
+            and drug_inf_id = #{drugInfId}
+        </if>
+        <if test="cartId!=null">
+            and cart_id = #{cartId}
+            <if test="layer!=null">
+                and cart_layer = #{layer}
+            </if>
+        </if>
+    </select>
+
+    <insert id="addGrid" parameterType="grid">
+        insert into drug_cart_db.grid_inf (
+            cart_id, cart_layer, cart_row, cart_column
+            <if test="capacity!=null">, capacity</if>
+            <if test="drugInfId!=null">, drug_inf_id</if>
+        )
+        values (
+            #{cartId}, #{layer}, #{row}, #{column}
+            <if test="capacity!=null">, #{capacity}</if>
+            <if test="drugInfId!=null">, #{drugInfId}</if>
+                )
+    </insert>
+    
+    <delete id="removeById" parameterType="java.lang.Long">
+        delete from drug_cart_db.grid_inf
+        where grid_id = #{id}
+    </delete>
+
+    <update id="modifyGrid" parameterType="grid">
+        update drug_cart_db.grid_inf
+        <set>
+            <if test="drugInfId!=null">drug_inf_id = #{drugInfId}</if>
+        </set>
+        where grid_id = #{id}
+    </update>
+</mapper>

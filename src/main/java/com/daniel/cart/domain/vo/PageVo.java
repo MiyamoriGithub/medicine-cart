@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class PageVo {
-    private Integer start;      // 当前页码
+    private Integer start = 1;      // 当前页码
     private Integer pageSize;   // 每页信息条数
 }

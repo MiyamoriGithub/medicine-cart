@@ -84,7 +84,6 @@
         update carts_inf
         <set>
             <if test="departmentId!=null">department_id = #{departmentId},</if>
-            <if test="addTime!=null">add_time = #{addTime},</if>
             <if test="state!=null">status_type = #{state},</if>
         </set>
         where cart_id = #{id} and isEnable=1;

@@ -1,7 +1,9 @@
 package com.daniel.cart.domain.vo;
 
 import com.daniel.cart.domain.enums.CartStateEnum;
+import lombok.Getter;
 
+@Getter
 public class CartVo extends PageVo {
     private Long id;
     private Long departmentId;

@@ -5,6 +5,8 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+// Todo 添加部门内部对应的权限，通过限制方法来完成吧，查询的时候获取到用户的token然后再将部门信息作为参数传入进行查询
+
 @ToString
 public enum RoleEnum {
     admin("admin"),

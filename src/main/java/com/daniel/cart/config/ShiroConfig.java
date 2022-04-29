@@ -1,8 +1,6 @@
 package com.daniel.cart.config;
 
-import com.daniel.cart.filter.MyFormAuthenticationFilter;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.apache.shiro.spring.config.ShiroConfiguration;
@@ -11,9 +9,11 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -33,12 +33,15 @@ public class ShiroConfig {
         // 将自定义过滤器注册到Shiro中使用
         Map<String, Filter> filterMap = new HashMap<>();
         filterMap.put("authc", new MyFormAuthenticationFilter());
+//        filterMap.put("custom", new ShiroUserFilter());
         filterFactoryBean.setFilters(filterMap);
 
         // 将组件权限的 map 注册到 Shiro 中管理，其他 filterChain 用到的时候再去查
         Map<String, String> authMap = new LinkedHashMap<>();
-        authMap.put("/employee/*", "authc");
-        authMap.put("/cart/*", "anon");
+//        authMap.put("/login", "anon");
+//        authMap.put("/employee/*", "anon");
+//        authMap.put("/cart/*", "anon");
+        authMap.put("/**", "anon");
         filterFactoryBean.setFilterChainDefinitionMap(authMap);
         return filterFactoryBean;
     }
@@ -54,7 +57,7 @@ public class ShiroConfig {
     @Bean
     public GlobalRealm realm() {
         GlobalRealm realm = new GlobalRealm();
-        // 设置realm使用md5的
+        // 设置realm使用md5
         HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
         matcher.setHashAlgorithmName("md5");
         realm.setCredentialsMatcher(matcher);
@@ -69,5 +72,16 @@ public class ShiroConfig {
         //如果后续考虑多tomcat部署应用，可以使用shiro-redis开源插件来做session 的控制，或者nginx 的负载均衡
         shiroSession.setSessionDAO(new EnterpriseCacheSessionDAO());
         return shiroSession;
+    }
+
+    @Bean
+    public FilterRegistrationBean replaceTokenFilter(){
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setDispatcherTypes(DispatcherType.REQUEST);
+        registration.setFilter( new CorsFilter());
+        registration.addUrlPatterns("/*");
+        registration.setName("CorsFilter");
+        registration.setOrder(1);
+        return registration;
     }
 }

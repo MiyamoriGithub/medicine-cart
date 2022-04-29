@@ -1,22 +1,16 @@
 package com.daniel.cart.controller;
 
-import com.daniel.cart.domain.Employee;
 import com.daniel.cart.domain.result.Result;
 import com.daniel.cart.domain.result.ResultCodeEnum;
-import com.daniel.cart.domain.vo.LoginVo;
-import com.daniel.cart.service.LoginService;
-import com.daniel.cart.util.Md5Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.spring.config.ShiroConfiguration;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -36,7 +30,7 @@ public class LoginController {
     @ApiOperation("登录")
     @PostMapping("login")
     @ApiResponses(value = {@ApiResponse(code=20000, message = "成功")})
-    public Result login(@RequestParam("phone") String phone, @RequestParam("password") String password) {
+    public Result login(@RequestParam("username") String username, @RequestParam("password") String password) {
 //        LoginVo user = new LoginVo();
 //        user.setPhone(phone);
 //        user.setPassword(password);
@@ -48,10 +42,10 @@ public class LoginController {
 //        }
 
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(phone, password);
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         token.setRememberMe(true);
         subject.login(token);
-        subject.getSession().setAttribute("phone", phone);
+        subject.getSession().setAttribute("phone", username);
         subject.getSession().setAttribute("password", password);
         if(subject.isAuthenticated()) {
             logger.info("认证成功");

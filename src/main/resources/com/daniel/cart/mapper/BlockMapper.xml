@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daniel.cart.mapper.BlockMapper">
+    <resultMap id="blockMap" type="com.daniel.cart.domain.Block">
+        <id column="block_id" property="id"/>
+        <result column="grid_id" property="gridId"/>
+        <result column="drug_id" property="drugId"/>
+        <result column="drug_inf_id" property="drugInfId"/>
+        <result column="drug_name" property="drugName"/>
+    </resultMap>
+    
+    <select id="findAll" resultMap="blockMap">
+        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name
+        from drug_cart_db.block_inf bi
+        left join drug_cart_db.drug_date_inf ddi
+            on bi.drug_id = ddi.drug_id
+        left join drug_inf di
+            on ddi.drug_inf_id = di.drug_inf_id
+    </select>
+    
+    <select id="findAllByLimit" resultMap="blockMap" parameterType="blockVo">
+        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name
+        from drug_cart_db.block_inf bi
+        left join drug_cart_db.drug_date_inf ddi
+        on bi.drug_id = ddi.drug_id
+        left join drug_inf di
+        on ddi.drug_inf_id = di.drug_inf_id
+        where 1 = 1
+        <if test="drugId!=null">
+            and bi.drug_id = #{drugId}
+        </if>
+        <if test="gridId!=null">
+            and bi.grid_id = #{gridId}
+        </if>
+        <if test="start!=null and pageSize!=null">
+            limit #{start},#{pageSize}
+        </if>
+    </select>
+    
+    <select id="findById" resultMap="blockMap" parameterType="java.lang.Long">
+        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name
+        from drug_cart_db.block_inf bi
+                 left join drug_cart_db.drug_date_inf ddi
+                           on bi.drug_id = ddi.drug_id
+                 left join drug_inf di
+                           on ddi.drug_inf_id = di.drug_inf_id
+        where block_id = #{id}
+    </select>
+
+    <select id="getCountByLimit" resultType="java.lang.Long" parameterType="blockVo">
+        select count(bi.block_id)
+        from drug_cart_db.block_inf bi
+        left join drug_cart_db.drug_date_inf ddi
+        on bi.drug_id = ddi.drug_id
+        left join drug_inf di
+        on ddi.drug_inf_id = di.drug_inf_id
+        where 1 = 1
+        <if test="drugId!=null">
+            and bi.drug_id = #{drugId}
+        </if>
+        <if test="gridId!=null">
+            and bi.grid_id = #{gridId}
+        </if>
+    </select>
+
+    <insert id="addBlock" parameterType="block">
+        insert into drug_cart_db.block_inf (
+            <if test="drugId!=null">drug_id, </if>
+            grid_id
+        )
+        values(
+            <if test="drugId!=null">#{drugId}</if>
+            #{gridId}
+        )
+    </insert>
+    
+    <delete id="removeById" parameterType="java.lang.Long">
+        delete from drug_cart_db.block_inf
+        where block_id = #{id}
+    </delete>
+    
+    <update id="modifyBlock" parameterType="block">
+        update drug_cart_db.block_inf
+        <set>
+            <if test="drugId!=null">drug_id=#{drugId}</if>
+        </set>
+        where block_id = #{id}
+    </update>
+</mapper>
