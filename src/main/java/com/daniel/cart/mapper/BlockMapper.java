@@ -20,6 +20,8 @@ public interface BlockMapper {
 
     public Long getCountByLimit(BlockVo limit);
 
+    public Long getCountByGridAndNotEmpty(BlockVo limit);
+
     public Long addBlock(Block block);
 
     public Long removeById(Long id);

@@ -5,6 +5,7 @@
 <mapper namespace="com.daniel.cart.mapper.DrugMapper">
     <resultMap id="drugMap" type="com.daniel.cart.domain.Drug">
         <id column="drug_id" property="id"/>
+        <result column="drug_inf_id" property="infId"/>
         <result column="drug_barcode" property="barcode"/>
         <result column="drug_name" property="name"/>
         <result column="drug_product_date" property="productDate"/>
@@ -14,31 +15,42 @@
     </resultMap>
 
     <select id="findAll" resultMap="drugMap">
-        select drug_id, drug_barcode, drug_name, drug_product_date, drug_shelf_life, drug_stock, drug_package
-        from drug_cart_db.drug_inf
+        select ddi.drug_id, di.drug_inf_id, di.drug_barcode, di.drug_name, ddi.drug_product_date, di.drug_shelf_life, ddi.drug_stock, di.drug_package
+        from drug_cart_db.drug_date_inf ddi
+        inner join drug_cart_db.drug_inf di
+        on di.drug_inf_id = ddi.drug_inf_id
     </select>
     
     <select id="findAllByLimit" resultMap="drugMap" parameterType="drugVo">
-        select drug_id, drug_barcode, drug_name, drug_product_date, drug_shelf_life, drug_stock, drug_package
-        from drug_cart_db.drug_inf
+        select ddi.drug_id, di.drug_inf_id, di.drug_barcode, di.drug_name, ddi.drug_product_date, di.drug_shelf_life, ddi.drug_stock, di.drug_package
+        from drug_cart_db.drug_date_inf ddi
+        inner join drug_cart_db.drug_inf di
+        on di.drug_inf_id = ddi.drug_inf_id
         where 1 = 1
         <if test="nameCondition!=null">
-            and drug_name like #{nameCondition}
+            and di.drug_name like #{nameCondition}
         </if>
         <if test="barcode!=null">
-            and drug_barcode = #{barcode}
+            and di.drug_barcode = #{barcode}
+        </if>
+        <if test="start!=null and pageSize!=null">
+            limit #{start},#{pageSize}
         </if>
     </select>
     
     <select id="findById" resultMap="drugMap" parameterType="java.lang.Long">
-        select drug_id, drug_barcode, drug_name, drug_product_date, drug_shelf_life, drug_stock, drug_package
-        from drug_cart_db.drug_inf
-        where drug_id = #{id}
+        select ddi.drug_id, di.drug_inf_id, di.drug_barcode, di.drug_name, ddi.drug_product_date, di.drug_shelf_life, ddi.drug_stock, di.drug_package
+        from drug_cart_db.drug_date_inf ddi
+                 inner join drug_cart_db.drug_inf di
+                            on di.drug_inf_id = ddi.drug_inf_id
+        where ddi.drug_id = #{id}
     </select>
     
     <select id="getCountByLimit" resultType="java.lang.Long" parameterType="drugVo">
-        select count(drug_id)
-        from drug_cart_db.drug_inf
+        select count(ddi.drug_id)
+        from drug_cart_db.drug_date_inf ddi
+        inner join drug_cart_db.drug_inf di
+        on di.drug_inf_id = ddi.drug_inf_id
         where 1 = 1
         <if test="nameCondition!=null">
             and drug_name like #{nameCondition}
@@ -49,39 +61,30 @@
     </select>
 
     <insert id="addDrug" parameterType="drug">
-        insert into drug_cart_db.drug_inf(
-            <if test="barcode!=null">drug_barcode</if>
-            <if test="name!=null">drug_name</if>
-            <if test="productDate!=null">drug_product_date</if>
-            <if test="shelfLife!=null">drug_shelf_life</if>
-            <if test="stock!=null">drug_stock</if>
-            <if test="pack!=null">drug_package</if>
+        insert into drug_cart_db.drug_date_inf(
+            drug_inf_id,
+            drug_product_date
+            <if test="stock!=null">, drug_stock</if>
         )
         values(
-            <if test="barcode!=null">#{barcode}</if>
-            <if test="name!=null">#{name}</if>
-            <if test="productDate!=null">#{productDate}</if>
-            <if test="shelfLife!=null">#{shelfLife}</if>
-            <if test="stock!=null">#{stock}</if>
-            <if test="pack!=null">#{pack}</if>
+            #{infId},
+            #{productDate}
+            <if test="stock!=null">, #{stock}</if>
         )
     </insert>
     
     <update id="modifyDrug" parameterType="drug">
-        update drug_cart_db.drug_inf
+        update drug_cart_db.drug_date_inf
         <set>
-            <if test="barcode!=null">drug_barcode=#{barcode}</if>
-            <if test="name!=null">drug_name=#{name}</if>
+            <if test="infId!=null">drug_inf_id=#{infId}</if>
             <if test="productDate!=null">drug_product_date=#{productDate}</if>
-            <if test="shelfLife!=null">drug_shelf_life=#{shelfLife}</if>
             <if test="stock!=null">drug_stock=#{stock}</if>
-            <if test="pack!=null">drug_package=#{pack}</if>
         </set>
         where drug_id = #{id}
     </update>
 
     <delete id="removeById" parameterType="java.lang.Long">
-        delete from drug_cart_db.drug_inf
+        delete from drug_cart_db.drug_date_inf
         where drug_id = #{id}
     </delete>
 </mapper>

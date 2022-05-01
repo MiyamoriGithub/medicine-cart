@@ -5,6 +5,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Cart 实体类的 Service 层接口
+ *
+ * @author Daniel Zheng
+ **/
 
 @Service
 public interface CartService {

@@ -10,7 +10,7 @@ public class DrugOperateException extends RuntimeException{
     private static final long serialVersionUID = 3L;
 
     private String message;
-    private Integer code;
+    private Integer code = 24000;
 
     public DrugOperateException() {}
 

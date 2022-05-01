@@ -13,7 +13,8 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class Drug {
-    private Integer id;         // 药品的数据库id drug_id
+    private Long id;         // 药品的数据库id drug_id
+    private Long infId;         //
     private String barcode;     // 药品的条码 drug_barcode
     private String name;        // 药品名称 drug_name
     private Date productDate;   // 药品生产日期 drug_product_date

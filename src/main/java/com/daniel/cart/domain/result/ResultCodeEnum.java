@@ -30,10 +30,15 @@ public enum ResultCodeEnum {
 
     DRUG_ERROR(false, 24000, "药品相关异常"),
     DRUG_INF_MISS_ERROR(false, 24001, "药品信息缺失"),
-    DRUG_OPERATE_ERROR(false, 28002, "药品操作异常"),
+    DRUG_OPERATE_ERROR(false, 24002, "药品操作异常"),
 
-    GATEWAY_ERROR(false, 26000, "服务不能访问"),
+    BLOCK_ERROR(false, 25000, "Block相关异常"),
+    BLOCK_QUERY_ERROR(false, 25001, "Block查询时异常"),
+    BLOCK_OPERATE_ERROR(false, 25002, "Block操作时异常"),
 
+    GRID_ERROR(false, 26000, "Grid 相关异常"),
+    GRID_QUERY_ERROR(false, 26001, "Grid 查询时异常"),
+    GRID_OPERATE_ERROR(false, 26002, "Grid 操作时异常"),
 
 
     LOGIN_PHONE_ERROR(false, 28009, "手机号码不正确或已被禁用"),

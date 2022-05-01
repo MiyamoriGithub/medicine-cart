@@ -52,14 +52,19 @@
     <select id="getCountByLimit" resultType="java.lang.Long" parameterType="blockVo">
         select count(bi.block_id)
         from drug_cart_db.block_inf bi
-        left join drug_cart_db.drug_date_inf ddi
-        on bi.drug_id = ddi.drug_id
-        left join drug_inf di
-        on ddi.drug_inf_id = di.drug_inf_id
         where 1 = 1
         <if test="drugId!=null">
             and bi.drug_id = #{drugId}
         </if>
+        <if test="gridId!=null">
+            and bi.grid_id = #{gridId}
+        </if>
+    </select>
+    
+    <select id="getCountByGridAndNotEmpty" resultType="java.lang.Long" parameterType="blockVo">
+        select count(bi.block_id)
+        from drug_cart_db.block_inf bi
+        where bi.drug_id > 0
         <if test="gridId!=null">
             and bi.grid_id = #{gridId}
         </if>
