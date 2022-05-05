@@ -9,6 +9,18 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class PageVo {
-    private Integer start = 1;      // 当前页码
-    private Integer pageSize;   // 每页信息条数
+    private Integer start = 1;      // 当前页码， 默认值为1
+    private Integer pageSize;   // 每页信息条数，不设置默认值，否则每次查询均为分页查询
+
+    public void setStart(Integer start) {
+        if(start != null && start > 0) {
+            this.start = start;
+        }
+    }
+
+    public void setPageSize(Integer pageSize) {
+        if(pageSize != null && pageSize > 0) {
+            this.pageSize = pageSize;
+        }
+    }
 }

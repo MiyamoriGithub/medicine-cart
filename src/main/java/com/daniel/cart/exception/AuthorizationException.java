@@ -1,5 +1,6 @@
 package com.daniel.cart.exception;
 
+import com.daniel.cart.domain.result.ResultCodeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,8 +9,8 @@ import lombok.Setter;
 public class AuthorizationException extends RuntimeException{
     private static final long serialVersionUID = 2L;
 
-    private String message;
-    private Integer code;
+    private String message = ResultCodeEnum.AUTH_ERROR.getMessage();
+    private Integer code = ResultCodeEnum.AUTH_ERROR.getCode();
 
     public AuthorizationException() {}
 

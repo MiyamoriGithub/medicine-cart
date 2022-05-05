@@ -1,5 +1,6 @@
 package com.daniel.cart.exception;
 
+import com.daniel.cart.domain.result.ResultCodeEnum;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +11,8 @@ public class LoginException extends RuntimeException{
 
     private static final long serialVersionUID = 1L;
 
-    private String message;
-    private Integer code;
+    private String message = ResultCodeEnum.AUTH_ERROR.getMessage();
+    private Integer code = ResultCodeEnum.AUTH_ERROR.getCode();
 
     public LoginException() {}
 

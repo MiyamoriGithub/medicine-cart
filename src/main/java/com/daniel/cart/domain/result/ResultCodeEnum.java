@@ -26,7 +26,6 @@ public enum ResultCodeEnum {
     ILLEGAL_CALLBACK_REQUEST_ERROR(false, 23002, "非法回调请求"),
     FETCH_ACCESSTOKEN_FAILD(false, 23003, "获取accessToken失败"),
     FETCH_USERINFO_ERROR(false, 23004, "获取用户信息失败"),
-    LOGIN_ERROR(false, 23005, "登录失败"),
 
     DRUG_ERROR(false, 24000, "药品相关异常"),
     DRUG_INF_MISS_ERROR(false, 24001, "药品信息缺失"),
@@ -40,7 +39,12 @@ public enum ResultCodeEnum {
     GRID_QUERY_ERROR(false, 26001, "Grid 查询时异常"),
     GRID_OPERATE_ERROR(false, 26002, "Grid 操作时异常"),
 
+    CART_ERROR(false, 27000, "抢救车相关异常"),
+    CART_QUERY_ERROR(false, 27001, "抢救车查询时异常"),
+    CART_OPERATE_ERROR(false, 27002, "抢救车操作时异常"),
 
+
+    AUTH_ERROR(false, 28000, "登录和授权相关异常"),
     LOGIN_PHONE_ERROR(false, 28009, "手机号码不正确或已被禁用"),
     LOGIN_MOBILE_ERROR(false, 28001, "账号不正确"),
     LOGIN_PASSWORD_ERROR(false, 28008, "用户名或密码不正确"),

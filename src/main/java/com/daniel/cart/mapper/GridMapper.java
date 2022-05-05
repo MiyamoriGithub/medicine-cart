@@ -22,6 +22,8 @@ public interface GridMapper {
 
     public Grid findById(Long id);
 
+    public Grid findByPosit(Grid grid);
+
     public Long getCountByLimit(GridVo limit);
 
     public Long addGrid(Grid grid);

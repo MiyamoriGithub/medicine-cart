@@ -34,7 +34,7 @@
             and di.drug_barcode = #{barcode}
         </if>
         <if test="start!=null and pageSize!=null">
-            limit #{start},#{pageSize}
+            limit #{start - 1},#{pageSize}
         </if>
     </select>
     

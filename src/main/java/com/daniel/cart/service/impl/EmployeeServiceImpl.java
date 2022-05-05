@@ -14,7 +14,6 @@ import java.util.List;
 @Transactional
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeMapper mapper;
-    private static final Integer DEFAULT_START = 0;
 
     @Autowired
     public EmployeeServiceImpl(EmployeeMapper mapper) {
@@ -30,7 +29,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<Employee> findAllByInfo(EmployeeVo info) {
         // 如果起始条目为空则设置为0
         if(info.getStart() == null) {
-            info.setStart(DEFAULT_START);
+//            info.setStart(DEFAULT_START);
         }
         List<Employee> employees = mapper.findAllByLimit(info);
         return employees;

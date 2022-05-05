@@ -1,9 +1,11 @@
 package com.daniel.cart.service;
 
 import com.daniel.cart.domain.Cart;
+import com.daniel.cart.domain.enums.CartStateEnum;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Cart 实体类的 Service 层接口
@@ -13,32 +15,54 @@ import java.util.List;
 
 @Service
 public interface CartService {
-    public List<Cart> findAll();
+    List<Cart> findAll();
 
-    public List<Cart> findAllByDepartment(String departmentName);
+    List<Cart> findAll(Integer start, Integer pageSize);
 
-    public List<Cart> findAllByDepartment(Long departmentId);
+    List<Cart> findAllByDepartment(String departmentName);
 
-    public List<Cart> findAllByState(String state);
+    List<Cart> findAllByDepartment(String departmentName, Integer start, Integer pageSize);
 
-    public Cart findById(Long id);
+    List<Cart> findAllByDepartment(Long departmentId);
 
-    public Long getCountByState(String state);
+    List<Cart> findAllByDepartment(Long departmentId, Integer start, Integer pageSize);
 
-    public Long getCountByDepartment(Long departmentId);
+    List<Cart> findAllByState(String state);
 
-    public Long getCountByDepartment(String departmentName);
+    List<Cart> findAllByState(String state, Integer start, Integer pageSize);
 
-    public Boolean addCart(Cart cart);
+    List<Cart> findByLimit(Long departmentId, String state);
 
-    public Boolean modifyCart(Cart cart);
+    List<Cart> findByLimit(Long departmentId, String state, Integer start, Integer pageSize);
 
-    public Boolean removeCart(Long id);
+    List<Cart> findByLimit(String departmentName, String state);
 
-    public Boolean setCartFree(Long id);
+    List<Cart> findByLimit(String departmentName, String state, Integer start, Integer pageSize);
 
-    public Boolean setCartInventory(Long id);
+    Cart findById(Long id);
 
-    public Boolean setCartEmergency(Long id);
+    Long getCountByState(String state);
+
+    Long getCountByDepartment(Long departmentId);
+
+    Long getCountByDepartment(String departmentName);
+
+    Long getCountByLimit(Long departmentId, String state);
+
+    Long getCountByLimit(String departmentName, String state);
+
+    Boolean addCart(Cart cart);
+
+    Boolean modifyCart(Cart cart);
+
+    Boolean removeCart(Long id);
+
+    Boolean setCartFree(Long id);
+
+    Boolean setCartInventory(Long id);
+
+    Boolean setCartEmergency(Long id);
+
+    Map<String, String> getAllStates();
 
 }

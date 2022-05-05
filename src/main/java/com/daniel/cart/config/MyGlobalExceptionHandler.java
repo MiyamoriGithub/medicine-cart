@@ -1,4 +1,4 @@
-package com.daniel.cart.handler;
+package com.daniel.cart.config;
 
 import com.daniel.cart.domain.result.Result;
 import com.daniel.cart.domain.result.ResultCodeEnum;
@@ -7,6 +7,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,7 +22,7 @@ public class MyGlobalExceptionHandler {
     @ExceptionHandler(value = LoginException.class)
     @ResponseBody
     public Result loginExceptionHandler(HttpServletRequest request, LoginException e) {
-        logger.error("发生业务异常，原因是：" + e.getMessage());
+        logger.error("发生登录异常，原因是：" + e.getMessage());
         return Result.error().code(e.getCode()).message(e.getMessage());
     }
 
@@ -49,7 +50,28 @@ public class MyGlobalExceptionHandler {
     @ExceptionHandler(value = DrugOperateException.class)
     @ResponseBody
     public Result drugOperateExceptionHandler(HttpServletRequest request, DrugOperateException e) {
-        logger.error("发生药品操作异常，原因是：" + e.getMessage());
+        logger.error("发生药品相关异常，原因是：" + e.getMessage());
+        return Result.error().code(e.getCode()).message(e.getMessage());
+    }
+
+    @ExceptionHandler(value = BlockOperateException.class)
+    @ResponseBody
+    public Result blockOperateExceptionHandler(HttpServletRequest request, BlockOperateException e) {
+        logger.error("发生 Block 相关异常" + e.getMessage());
+        return Result.error().code(e.getCode()).message(e.getMessage());
+    }
+
+    @ExceptionHandler(value = GridOperateException.class)
+    @ResponseBody
+    public Result gridOperateExceptionHandler(HttpServletRequest request, GridOperateException e) {
+        logger.error("发生 Grid 相关异常" + e.getMessage());
+        return Result.error().code(e.getCode()).message(e.getMessage());
+    }
+
+    @ExceptionHandler(value = CartOperateException.class)
+    @ResponseBody
+    public Result cartOperateExceptionHandler(HttpServletRequest request, CartOperateException e) {
+        logger.error("发生抢救车相关异常" + e.getMessage());
         return Result.error().code(e.getCode()).message(e.getMessage());
     }
 

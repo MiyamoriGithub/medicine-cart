@@ -1,5 +1,6 @@
 package com.daniel.cart.exception;
 
+import com.daniel.cart.domain.result.Result;
 import com.daniel.cart.domain.result.ResultCodeEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,8 +10,8 @@ import lombok.Setter;
 public class DrugOperateException extends RuntimeException{
     private static final long serialVersionUID = 3L;
 
-    private String message;
-    private Integer code = 24000;
+    private String message = ResultCodeEnum.DRUG_ERROR.getMessage();
+    private Integer code = ResultCodeEnum.DRUG_ERROR.getCode();
 
     public DrugOperateException() {}
 

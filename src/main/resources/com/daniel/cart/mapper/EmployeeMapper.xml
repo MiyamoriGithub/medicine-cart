@@ -31,7 +31,7 @@
             and ei.employee_name like #{nameCondition}
         </if>
         <if test="start!=null and pageSize!=null">
-            limit #{start},#{pageSize}
+            limit #{start - 1},#{pageSize}
         </if>
 
     </select>

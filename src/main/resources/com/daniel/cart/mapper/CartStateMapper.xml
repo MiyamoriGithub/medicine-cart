@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daniel.cart.mapper.CartStateMapper">
+    <select id="findAll" resultType="hashmap">
+        select state as 'key', `name` as 'value'
+        from drug_cart_db.cart_state
+    </select>
+</mapper>

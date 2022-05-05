@@ -35,7 +35,7 @@
             and bi.grid_id = #{gridId}
         </if>
         <if test="start!=null and pageSize!=null">
-            limit #{start},#{pageSize}
+            limit #{start - 1},#{pageSize}
         </if>
     </select>
     

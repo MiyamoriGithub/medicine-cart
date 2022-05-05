@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 // Todo 完成剩余的接口
 // Todo 增加账户权限检查逻辑
@@ -45,5 +46,12 @@ public class CartController {
     public Result findById(Long id) {
         Cart cart = service.findById(id);
         return Result.ok().data("item", cart);
+    }
+
+    @ApiOperation("查询急救车的全部状态枚举值")
+    @GetMapping("getAllStates")
+    public Result getAllStates() {
+        Map<String, String> states = service.getAllStates();
+        return Result.ok().data("items", states);
     }
 }

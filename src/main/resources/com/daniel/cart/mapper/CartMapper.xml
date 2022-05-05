@@ -14,15 +14,15 @@
 
     <select id="findAll" resultMap="cartMap">
         select ci.cart_id, ci.department_id, ci.add_time, ci.status_type, di.department_name
-        from carts_inf ci
-        left join department_inf di on ci.department_id = di.department_id
+        from drug_cart_db.carts_inf ci
+        left join drug_cart_db.department_inf di on ci.department_id = di.department_id
         where ci.is_enable = 1;
     </select>
 
     <select id="findAllByLimit" resultMap="cartMap" parameterType="cartVo">
         select ci.cart_id, ci.department_id, ci.add_time, ci.status_type, di.department_name
-        from carts_inf ci
-        left join department_inf di on ci.department_id = di.department_id
+        from drug_cart_db.carts_inf ci
+        left join drug_cart_db.department_inf di on ci.department_id = di.department_id
         where ci.is_enable = 1
         <if test="departmentName!=null">
             and di.department_name like #{departmentName}
@@ -34,14 +34,14 @@
             and status_type = #{state}
         </if>
         <if test="start!=null and pageSize!=null">
-            limit #{start},#{pageSize}
+            limit #{start - 1},#{pageSize}
         </if>
     </select>
 
     <select id="getById" resultMap="cartMap" parameterType="java.lang.Long">
         select ci.cart_id, ci.department_id, ci.add_time, ci.status_type, di.department_name
-        from carts_inf ci
-        left join department_inf di on ci.department_id = di.department_id
+        from drug_cart_db.carts_inf ci
+        left join drug_cart_db.department_inf di on ci.department_id = di.department_id
         where ci.is_enable = 1
         <if test="id!=null">
             and cart_id = #{id}
@@ -50,7 +50,7 @@
     
     <select id="getCountByLimit" resultType="java.lang.Long" parameterType="cartVo">
         select count(cart_id)
-        from carts_inf
+        from drug_cart_db.carts_inf
         where is_enable = 1
         <if test="state!=null">
             and status_type = #{state}
@@ -58,7 +58,7 @@
     </select>
 
     <insert id="addCart" parameterType="Cart">
-        insert into carts_inf(
+        insert into drug_cart_db.carts_inf(
                               <if test="departmentId!=null">department_id</if>
                               <if test="addTime!=null">, add_time</if>
                               <if test="state!=null">, status_type</if>
@@ -75,13 +75,13 @@
 <!--    </delete>-->
 
     <update id="removeById" parameterType="java.lang.Long">
-        update carts_inf
+        update drug_cart_db.carts_inf
         set is_enable=0
         where cart_id = #{id};
     </update>
 
     <update id="modifyCart" parameterType="Cart">
-        update carts_inf
+        update drug_cart_db.carts_inf
         <set>
             <if test="departmentId!=null">department_id = #{departmentId},</if>
             <if test="state!=null">status_type = #{state},</if>

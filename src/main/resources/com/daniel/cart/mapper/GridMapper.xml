@@ -31,7 +31,7 @@
             </if>
         </if>
         <if test="start!=null and pageSize!=null">
-            limit #{start},#{pageSize}
+            limit #{start - 1},#{pageSize}
         </if>
     </select>
     
@@ -39,6 +39,15 @@
         select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id
         from drug_cart_db.grid_inf
         where grid_id = #{id}
+    </select>
+
+    <select id="findByPosit" resultType="grid" parameterType="grid">
+        select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id
+        from drug_cart_db.grid_inf
+        where cart_id = #{cartId}
+            and cart_layer = #{layer}
+            and cart_row = #{row}
+            and cart_column = #{column}
     </select>
     
     <select id="getCountByLimit" resultType="java.lang.Long" parameterType="gridVo">

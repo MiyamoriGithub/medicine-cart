@@ -1,6 +1,8 @@
 package com.daniel.cart.exception;
 
 import com.daniel.cart.domain.result.ResultCodeEnum;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Grid 操作异常类
@@ -9,6 +11,8 @@ import com.daniel.cart.domain.result.ResultCodeEnum;
  * @create 2022-05-01 21:57
  **/
 
+@Getter
+@Setter
 public class GridOperateException extends RuntimeException{
     private static final long serialVersionUID = 5L;
 

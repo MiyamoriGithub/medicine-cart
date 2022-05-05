@@ -5,14 +5,9 @@ import lombok.Getter;
 
 @Getter
 public class CartVo extends PageVo {
-    private Long id;
     private Long departmentId;
     private String departmentName;
     private CartStateEnum state;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public void setDepartmentId(Long departmentId) {
         if(departmentName!=null) {
@@ -22,9 +17,6 @@ public class CartVo extends PageVo {
     }
 
     public void setDepartmentName(String departmentName) {
-        if(id != null) {
-            return;
-        }
         StringBuffer tmp = new StringBuffer();
         tmp.append('%');
         tmp.append(departmentName);
