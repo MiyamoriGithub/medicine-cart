@@ -83,4 +83,13 @@ public class EmployeeMapperTest {
             mapper.modifyEmployee(employee);
         }
     }
+
+    @Test
+    public void addEmployee() {
+        Employee employee = new Employee();
+        employee.setPassword(Md5Utils.code("123456"));
+        employee.setPhone("17009305325");
+        employee.setName("测试王");
+        mapper.addEmployee(employee);
+    }
 }

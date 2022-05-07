@@ -41,6 +41,8 @@ public interface CartService {
 
     Cart findById(Long id);
 
+    Long getCount();
+
     Long getCountByState(String state);
 
     Long getCountByDepartment(Long departmentId);

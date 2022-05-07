@@ -9,24 +9,38 @@ import java.util.List;
 @Service
 public interface DrugService {
 
-    public List<Drug> findAll();
+    List<Drug> findAll();
 
-    public List<Drug> findAllTemporary();
+    List<Drug> findAll(Integer start, Integer pageSize);
 
-    public List<Drug> findAllExpire();
+    List<Drug> findTemporary();
 
-    public List<Drug> findByBarcode(String barcode);
+    List<Drug> findTemporary(List<Drug> list);
 
-    public List<Drug> findByLimit(DrugVo limit);
+    List<Drug> findExpire();
 
-    public Drug findById(Long id);
+    List<Drug> findExpire(List<Drug> list);
 
-    public Long getCountByLimit(DrugVo limit);
+    List<Drug> findByBarcode(String barcode);
 
-    public Boolean addDrug(Drug drug);
+    List<Drug> findByBarcode(String barcode, Integer start, Integer pageSize);
 
-    public Boolean modifyDrug(Drug drug);
+    List<Drug> findByName(String name);
 
-    public Boolean deleteDrug(Long id);
+    List<Drug> findByName(String name, Integer start, Integer pageSize);
+
+//    List<Drug> findByLimit(DrugVo limit);
+
+    Drug findById(Long id);
+
+    Long getCount();
+
+    Long getCountByLimit(DrugVo limit);
+
+    Boolean addDrug(Drug drug);
+
+    Boolean modifyDrug(Drug drug);
+
+    Boolean deleteDrug(Long id);
 
 }

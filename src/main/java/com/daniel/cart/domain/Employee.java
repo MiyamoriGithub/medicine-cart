@@ -1,5 +1,6 @@
 package com.daniel.cart.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.daniel.cart.domain.enums.RoleEnum;
 import lombok.Data;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class Employee {
     private Long departmentId;          // 员工部门id department_id
     private String departmentName;
 //    private Boolean isEnable;
+    @JSONField(serialize = false)
     private String password;
     private RoleEnum role;
 

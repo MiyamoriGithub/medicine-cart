@@ -21,6 +21,10 @@ public class Cart {
         departmentName = "暂无";
     }
 
+    public Cart(Long departmentId) {
+        this.departmentId = departmentId;
+    }
+
     @Override
     public String toString() {
         return "Cart{" +

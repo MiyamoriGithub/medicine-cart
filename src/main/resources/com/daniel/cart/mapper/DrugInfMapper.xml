@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daniel.cart.mapper.DrugInfMapper">
+    <resultMap id="drugInfMap" type="com.daniel.cart.domain.DrugInf">
+        <id column="drug_inf_id" property="drugInfId"/>
+        <result column="drug_barcode" property="barcode"/>
+        <result column="drug_name" property="name"/>
+        <result column="drug_shelf_life" property="shelfLife"/>
+        <result column="drug_package" property="drugPackage"/>
+    </resultMap>
+    
+    <select id="findAll" resultMap="drugInfMap">
+        select drug_inf_id, drug_barcode, drug_name, drug_shelf_life, drug_package
+        from drug_cart_db.drug_inf
+    </select>
+
+    <select id="findByLimit" parameterType="drugInfVo" resultMap="drugInfMap">
+        select drug_inf_id, drug_barcode, drug_name, drug_shelf_life, drug_package
+        from drug_cart_db.drug_inf
+        where 1 = 1
+        <if test="nameCondition!=null">
+            and drug_name=#{nameCondition}
+        </if>
+        <if test="start!=null and pageSize!=null">
+            limit #{start - 1},#{pageSize}
+        </if>
+    </select>
+
+    <select id="findById" resultMap="drugInfMap" parameterType="long">
+        select drug_inf_id, drug_barcode, drug_name, drug_shelf_life, drug_package
+        from drug_cart_db.drug_inf
+        where drug_inf_id = #{id}
+    </select>
+    
+    <select id="getCountById" parameterType="drugInfVo">
+        select drug_inf_id, drug_barcode, drug_name, drug_shelf_life, drug_package
+        from drug_cart_db.drug_inf
+        where 1 = 1
+        <if test="nameCondition!=null">
+            and drug_name=#{nameCondition}
+        </if>
+    </select>
+
+    <insert id="addDrugInf" parameterType="drugInf">
+        insert into drug_cart_db.drug_inf (
+                                        drug_barcode,
+                                        drug_name,
+                                        drug_shelf_life
+                                        <if test="drugPackage!=null">drug_package</if>
+        ) values (
+                  #{barcode},
+                  #{name},
+                  #{shelfLife}
+                  <if test="drugPackage!=null">#{drugPackage}</if>
+        )
+    </insert>
+    
+    <update id="modifyDrugInf" parameterType="drugInf">
+        update drug_cart_db.drug_inf
+        <set>
+            <if test="name!=null">drug_name=#{name}</if>
+            <if test="shelfLife!=null">drug_shelf_life=#{shelfLife}</if>
+            <if test="barcode!=null">drug_barcode=#{barcode}</if>
+            <if test="drugPackage!=null">drug_package=#{drugPackage}</if>
+        </set>
+        where drug_inf_id=#{drugInfId}
+    </update>
+    
+    <delete id="removeDrugInf" parameterType="long">
+        delete from drug_cart_db.drug_inf where drug_inf_id = #{id}
+    </delete>
+
+</mapper>

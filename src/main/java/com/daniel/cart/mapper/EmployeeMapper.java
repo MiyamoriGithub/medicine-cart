@@ -47,5 +47,9 @@ public interface EmployeeMapper {
 
     Long modifyEmployee(Employee employee);
 
-    Long removeEmployee(Long id);
+    Long disableEmployee(Long id);
+
+    Long enableEmployee(String phone);
+
+
 }

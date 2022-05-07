@@ -10,6 +10,7 @@ import com.daniel.cart.mapper.BlockMapper;
 import com.daniel.cart.mapper.DrugMapper;
 import com.daniel.cart.mapper.GridMapper;
 import com.daniel.cart.service.BlockService;
+import com.daniel.cart.util.AttributeCheck;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,7 +69,7 @@ public class BlockServiceImpl implements BlockService {
 
     @Override
     public Block findById(Long id) {
-        if(id == null || id <= 0l) {
+        if(id == null || id <= 0L) {
             throw new BlockOperateException(25001, "药品信息缺失");
         }
         return mapper.findById(id);
@@ -105,12 +106,12 @@ public class BlockServiceImpl implements BlockService {
         if(block == null ||
                 block.getGridId() == null ||
                 block.getDrugId() == null ||
-                block.getGridId() <= 0l ||
-                block.getDrugId() <= 0l
+                block.getGridId() <= 0L ||
+                block.getDrugId() <= 0L
         ) {
             throw new BlockOperateException(25002, "待添加的 Block 信息缺失");
         }
-        return mapper.addBlock(block) > 0l;
+        return mapper.addBlock(block) > 0L;
     }
 
     @Override
@@ -118,7 +119,7 @@ public class BlockServiceImpl implements BlockService {
         if(!isBlockInfOk(block)) {
             throw new BlockOperateException(25002, "待删除的 Block 信息缺失");
         }
-        return mapper.removeById(block.getId()) > 0l;
+        return mapper.removeById(block.getId()) > 0L;
     }
 
     @Override
@@ -129,25 +130,25 @@ public class BlockServiceImpl implements BlockService {
         if(!isBlockInfOk(block)) {
             throw new BlockOperateException(25002, "Block 信息缺失");
         }
-        if(drug.getInfId() == null || drug.getInfId() <= 0) {
+        if(!AttributeCheck.isIdOk(drug.getDrugInf().getDrugInfId())) {
             throw new BlockOperateException(25002, "药品信息缺失");
         }
         Grid grid = gridMapper.findById(block.getGridId());
         Long drugInfIdOfGrid = grid.getDrugInfId();
         if(drugInfIdOfGrid == null || drugInfIdOfGrid <= 0) {
             // 如果 grid 无药品信息，则说明 grid 为空，则为其绑定新的药品
-            grid.setDrugInfId(drug.getInfId());
+            grid.setDrugInfId(drug.getDrugInf().getDrugInfId());
             Long modifyRes = gridMapper.modifyGrid(grid);
             if(modifyRes <= 0) {
                 throw new GridOperateException(26002, "修改 Grid 信息失败");
             }
-        } else if(drugInfIdOfGrid != drug.getInfId()) {
+        } else if(!drugInfIdOfGrid.equals(drug.getDrugInf().getDrugInfId())) {
             throw new BlockOperateException(25002, "药品存放位置错误");
         } else {
             // 查询 Grid 中存储的
             Long stock = getStockInGrid(block.getGridId());
             Long capacity = Long.valueOf(gridMapper.findById(block.getGridId()).getCapacity());
-            if(capacity == null || capacity <= stock) {
+            if(capacity <= stock) {
                 throw new BlockOperateException(25002, "Grid 容量已达上限");
             }
         }
@@ -163,13 +164,13 @@ public class BlockServiceImpl implements BlockService {
         if(!isBlockInfOk(block)) {
             throw new BlockOperateException(25002, "Block 信息缺失");
         }
-        block.setDrugId(-1l);
+        block.setDrugId(-1L);
         if(getStockInGrid(block.getGridId()) <= 0) {
             Grid grid = gridMapper.findById(block.getGridId());
             if(!isGridInfOk(grid)) {
                 throw new BlockOperateException(25002, "Grid 信息缺失");
             }
-            grid.setDrugInfId(-1l);
+            grid.setDrugInfId(-1L);
             gridMapper.modifyGrid(grid);
         }
         return null;
@@ -186,9 +187,7 @@ public class BlockServiceImpl implements BlockService {
     @Override
     public Boolean isBlockEmpty(Long blockId) {
         Block block = mapper.findById(blockId);
-        if(block.getDrugId() == null || block.getDrugId() <= 0) {
-            return false;
-        }
+        isBlockInfOk(block);
         return true;
     }
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class Department {
     private Long departmentId;            // department_id int primary key
     private String name;        // department_name varchar(50)
-    private Boolean isValid;    // is_enable default true
+//    private Boolean isValid;    // is_enable default true
 
     public Department() {}
 }

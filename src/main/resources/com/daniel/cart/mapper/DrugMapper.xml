@@ -5,13 +5,16 @@
 <mapper namespace="com.daniel.cart.mapper.DrugMapper">
     <resultMap id="drugMap" type="com.daniel.cart.domain.Drug">
         <id column="drug_id" property="id"/>
-        <result column="drug_inf_id" property="infId"/>
-        <result column="drug_barcode" property="barcode"/>
-        <result column="drug_name" property="name"/>
         <result column="drug_product_date" property="productDate"/>
-        <result column="drug_shelf_life" property="shelfLife"/>
         <result column="drug_stock" property="stock"/>
-        <result column="drug_package" property="pack"/>
+        <result column="drug_inf_id" property="drugInfId"/>
+        <association property="drugInf" javaType="drugInf">
+            <id column="drug_inf_id" property="drugInfId"/>
+            <result column="drug_barcode" property="barcode"/>
+            <result column="drug_name" property="name"/>
+            <result column="drug_shelf_life" property="shelfLife"/>
+            <result column="drug_package" property="drugPackage"/>
+        </association>
     </resultMap>
 
     <select id="findAll" resultMap="drugMap">
@@ -21,7 +24,7 @@
         on di.drug_inf_id = ddi.drug_inf_id
     </select>
     
-    <select id="findAllByLimit" resultMap="drugMap" parameterType="drugVo">
+    <select id="findByLimit" resultMap="drugMap" parameterType="drugVo">
         select ddi.drug_id, di.drug_inf_id, di.drug_barcode, di.drug_name, ddi.drug_product_date, di.drug_shelf_life, ddi.drug_stock, di.drug_package
         from drug_cart_db.drug_date_inf ddi
         inner join drug_cart_db.drug_inf di

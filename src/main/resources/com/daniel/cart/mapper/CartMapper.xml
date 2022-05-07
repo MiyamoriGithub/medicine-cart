@@ -20,21 +20,21 @@
     </select>
 
     <select id="findAllByLimit" resultMap="cartMap" parameterType="cartVo">
-        select ci.cart_id, ci.department_id, ci.add_time, ci.status_type, di.department_name
+        select ci.`cart_id`, ci.`department_id`, ci.`add_time`, ci.`status_type`, di.`department_name`
         from drug_cart_db.carts_inf ci
-        left join drug_cart_db.department_inf di on ci.department_id = di.department_id
-        where ci.is_enable = 1
+        left join drug_cart_db.department_inf di on ci.`department_id` = di.`department_id`
+        where ci.`is_enable` = 1
         <if test="departmentName!=null">
-            and di.department_name like #{departmentName}
+            and di.`department_name` like #{departmentName}
         </if>
         <if test="departmentId!=null">
-            and ci.department_id = #{departmentId}
+            and ci.`department_id` = #{departmentId}
         </if>
         <if test="state!=null">
-            and status_type = #{state}
+            and ci.`status_type` = #{state}
         </if>
         <if test="start!=null and pageSize!=null">
-            limit #{start - 1},#{pageSize}
+            limit #{start},#{pageSize}
         </if>
     </select>
 
@@ -49,24 +49,27 @@
     </select>
     
     <select id="getCountByLimit" resultType="java.lang.Long" parameterType="cartVo">
-        select count(cart_id)
-        from drug_cart_db.carts_inf
-        where is_enable = 1
+        select count(ci.cart_id)
+        from drug_cart_db.carts_inf ci
+        left join department_inf di on ci.department_id = di.department_id
+        where ci.is_enable = 1
         <if test="state!=null">
-            and status_type = #{state}
+            and ci.status_type = #{state}
+        </if>
+        <if test="departmentId!=null">
+            and ci.department_id = #{departmentId}
+        </if>
+        <if test="departmentName!=null">
+            and di.department_name = #{departmentName}
         </if>
     </select>
 
     <insert id="addCart" parameterType="Cart">
         insert into drug_cart_db.carts_inf(
                               <if test="departmentId!=null">department_id</if>
-                              <if test="addTime!=null">, add_time</if>
-                              <if test="state!=null">, status_type</if>
                             )
         values(
                <if test="departmentId!=null">#{departmentId}</if>
-               <if test="addTime!=null">, #{addTime}</if>
-               <if test="state!=null">, #{state}</if>
                )
     </insert>
 
@@ -86,6 +89,6 @@
             <if test="departmentId!=null">department_id = #{departmentId},</if>
             <if test="state!=null">status_type = #{state},</if>
         </set>
-        where cart_id = #{id} and isEnable=1;
+        where cart_id = #{id} and is_enable=1;
     </update>
 </mapper>

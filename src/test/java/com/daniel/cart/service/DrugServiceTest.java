@@ -8,8 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import static org.junit.Assert.*;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @WebAppConfiguration
@@ -21,20 +19,20 @@ public class DrugServiceTest {
     @Test
     public void findAll() {
         for (Drug drug : service.findAll()) {
-            System.out.println(drug);
+            System.out.println(drug.toString());
         }
     }
 
     @Test
     public void findAllTemporary() {
-        for (Drug drug : service.findAllTemporary()) {
+        for (Drug drug : service.findTemporary()) {
             System.out.println(drug);
         }
     }
 
     @Test
     public void findAllExpire() {
-        for (Drug drug : service.findAllExpire()) {
+        for (Drug drug : service.findExpire()) {
             System.out.println(drug);
         }
     }

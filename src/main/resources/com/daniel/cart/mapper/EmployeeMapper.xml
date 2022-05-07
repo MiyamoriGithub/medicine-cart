@@ -23,15 +23,24 @@
     </select>
 
     <select id="findAllByLimit" resultMap="employeeMap" parameterType="EmployeeVo">
-        select ei.employee_id, ei.employee_name, ei.employee_phone, ei.employee_add_time, ei.department_id, di.department_name, ei.role
-        from employees_inf ei
-        left join department_inf di on ei.department_id = di.department_id
-        where ei.enable_flag=1
+        select ei.`employee_id`, ei.`employee_name`, ei.`employee_phone`, ei.`employee_add_time`, ei.`department_id`, di.`department_name`, ei.`role`
+        from `drug_cart_db`.`employees_inf` ei
+        left join `drug_cart_db`.`department_inf` di on ei.`department_id` = di.`department_id`
+        where ei.`enable_flag`=1
+        <if test="departmentId!=null">
+            and ei.`department_id` = #{departmentId}
+        </if>
+        <if test="role!=null">
+            and ei.`role` = #{role}
+        </if>
         <if test="nameCondition!=null">
-            and ei.employee_name like #{nameCondition}
+            and ei.`employee_name` like #{nameCondition}
+        </if>
+        <if test="departmentId==null and departmentName!=null">
+            and di.`department_name` like #{departmentName}
         </if>
         <if test="start!=null and pageSize!=null">
-            limit #{start - 1},#{pageSize}
+            limit #{start},#{pageSize}
         </if>
 
     </select>
@@ -51,42 +60,50 @@
     </select>
 
     <select id="getCountByLimit" resultType="java.lang.Long" parameterType="EmployeeVo">
-        select count(employee_id) as `count`
-        from employees_inf
-        where enable_flag=1
+        select count(ei.`employee_id`)
+        from `drug_cart_db`.`employees_inf` ei
+        left join `drug_cart_db`.`department_inf` di on ei.`department_id` = di.`department_id`
+        where ei.`enable_flag`=true
+        <if test="role!=null">
+            and ei.`role` = #{role}
+        </if>
         <if test="nameCondition!=null">
-            and employee_name like #{nameCondition}
+            and ei.`employee_name` like #{nameCondition}
+        </if>
+        <if test="departmentId!=null">
+            and ei.`department_id` = #{departmentId}
+        </if>
+        <if test="departmentId==null and departmentName!=null">
+            and di.`department_name` like #{departmentName}
         </if>
     </select>
     
     <insert id="addEmployee" parameterType="employee">
-        insert into employees_inf(
-        <if test="name!=null">employee_name</if>
-        <if test="phone!=null">, employee_phone</if>
-        <if test="addTime!=null">, employee_add_time</if>
-        <if test="departmentId!=null">, department_id</if>
-        <if test="password!=null">, password_md5</if>
-        <if test="role!=null">, role</if>
+        insert into  drug_cart_db.employees_inf(
+        `employee_name`,
+        `employee_phone`
+        <if test="departmentId!=null">, `department_id`</if>
+        <if test="password!=null">, `password_md5`</if>
+        <if test="role!=null">, `role`</if>
         )
         values(
-        <if test="name!=null">#{name}</if>
+        #{name}
         <if test="phone!=null">, #{phone}</if>
-        <if test="addTime!=null">, #{addTime}</if>
         <if test="departmentId!=null">, #{departmentId}</if>
         <if test="password!=null">, #{password}</if>
         <if test="role!=null">, #{role}</if>
-
+        )
     </insert>
     
     <update id="modifyEmployee" parameterType="employee">
-        update employees_inf
+        update drug_cart_db.`employees_inf`
         <set>
-            <if test="name!=null">employee_name=#{name}</if>
-            <if test="phone!=null">employee_phone=#{phone}</if>
-            <if test="addTime!=null">employee_addTime=#{addTime}</if>
-            <if test="departmentId!=null">department_id=#{departmentId}</if>
-            <if test="password!=null">password_md5=#{password}</if>
-            <if test="role!=null">role=#{role}</if>
+            <if test="name!=null">`employee_name`=#{name}, </if>
+            <if test="phone!=null">`employee_phone`=#{phone}, </if>
+            <if test="addTime!=null">`employee_add_time`=#{addTime}, </if>
+            <if test="departmentId!=null">`department_id`=#{departmentId}, </if>
+            <if test="password!=null">`password_md5`=#{password}, </if>
+            <if test="role!=null">`role`=#{role}, </if>
         </set>
         where employee_id=#{id} and enable_flag=1;
     </update>
@@ -95,10 +112,16 @@
 <!--        delete from employees_inf where employee_id = #{id}-->
 <!--    </delete>-->
 
-    <update id="removeEmployee" parameterType="java.lang.Long">
-        update employees_inf
+    <update id="disableEmployee" parameterType="java.lang.Long">
+        update drug_cart_db.employees_inf
         set enable_flag=0
         where employee_id=#{id}
+    </update>
+
+    <update id="enableEmployee" parameterType="java.lang.String">
+        update drug_cart_db.employees_inf
+        set enable_flag=1
+        where employee_phone=#{phone}
     </update>
 
 </mapper>

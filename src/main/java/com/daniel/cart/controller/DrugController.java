@@ -31,10 +31,21 @@ public class DrugController {
     }
 
     @ApiOperation("查询全部药品信息")
-    @GetMapping("findAll")
-    public Result findAll() {
-        List<Drug> carts = service.findAll();
-        return Result.ok().data("items", carts);
+    @GetMapping("find")
+    public Result find(
+            @RequestParam(value = "抢救车id信息", required = false) Long id,
+            @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,
+            @RequestParam(value = "每页信息数量" , required = false) Integer pageSize
+    ) {
+        if(id != null) {
+            Drug drug = service.findById(id);
+            return Result.ok().data("item", drug);
+        } else {
+
+            List<Drug> carts = service.findAll();
+            Long count = service.getCount();
+            return Result.ok().data("items", carts).data("count", count);
+        }
     }
 
     @ApiOperation("根据条码查询药品信息")

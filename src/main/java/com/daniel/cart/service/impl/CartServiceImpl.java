@@ -73,7 +73,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<Cart> findAllByState(String state, Integer start, Integer pageSize) {
         stateCheck(state);
-        return findAllByLimit(null, null, state, start, pageSize);
+        return findAllByLimit(null, null, CartStateEnum.valueOf(state), start, pageSize);
     }
 
     @Override
@@ -85,31 +85,36 @@ public class CartServiceImpl implements CartService {
     public List<Cart> findByLimit(Long departmentId, String state, Integer start, Integer pageSize) {
         departmentIdCheck(departmentId);
         stateCheck(state);
-        return findAllByLimit(departmentId, null, state, start, pageSize);
+        return findAllByLimit(departmentId, null, CartStateEnum.valueOf(state), start, pageSize);
     }
 
     @Override
     public List<Cart> findByLimit(String departmentName, String state) {
-        return findByLimit(departmentName, state);
+        return findAllByLimit(null, departmentName, CartStateEnum.valueOf(state), null, null);
     }
 
     @Override
     public List<Cart> findByLimit(String departmentName, String state, Integer start, Integer pageSize) {
         stateCheck(state);
         departmentNameCheck(departmentName);
-        return findAllByLimit(null, departmentName, state, start, pageSize);
+        return findAllByLimit(null, departmentName, CartStateEnum.valueOf(state), start, pageSize);
     }
 
     @Override
     public Cart findById(Long id) {
-        isIdOk(id);
+        idCheck(id);
         return mapper.getById(id);
+    }
+
+    @Override
+    public Long getCount() {
+        return getCountByLimit(null, null, null);
     }
 
     @Override
     public Long getCountByState(String state) {
         stateCheck(state);
-        return getCountByLimit(null, null, state);
+        return getCountByLimit(null, null, CartStateEnum.valueOf(state));
     }
 
     @Override
@@ -126,14 +131,16 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Long getCountByLimit(Long departmentId, String state) {
-        return null;
+        stateCheck(state);
+        departmentIdCheck(departmentId);
+        return getCountByLimit(departmentId, null, CartStateEnum.valueOf(state));
     }
 
     @Override
     public Long getCountByLimit(String departmentName, String state) {
         stateCheck(state);
         departmentNameCheck(departmentName);
-        return getCountByLimit(null, departmentName, state);
+        return getCountByLimit(null, departmentName, CartStateEnum.valueOf(state));
     }
 
     @Override
@@ -141,21 +148,13 @@ public class CartServiceImpl implements CartService {
         if(cart == null) {
             return false;
         }
-        long res = mapper.addCart(cart);
-        if(res > 0) {
-            return true;
-        }
-        return false;
+        return mapper.addCart(cart) > 0;
     }
 
     @Override
     public Boolean modifyCart(Cart cart) {
-        if(cart == null || cart.getId() == null) {
-            return false;
-        }
-        Long res = mapper.modifyCart(cart);
-        if(res > 0) {
-            return true;
+        if(cart != null && cart.getId() != null) {
+            return mapper.modifyCart(cart) > 0;
         }
         return false;
     }
@@ -203,19 +202,19 @@ public class CartServiceImpl implements CartService {
         return mapper.modifyCart(cart) > 0;
     }
 
-    private Long getCountByLimit(Long departmentId, String nameCondition, String state) {
+    private Long getCountByLimit(Long departmentId, String nameCondition, CartStateEnum state) {
         CartVo limit = new CartVo();
         limit.setDepartmentId(departmentId);
         limit.setDepartmentName(nameCondition);
-        limit.setState(CartStateEnum.valueOf(state));
+        limit.setState(state);
         return mapper.getCountByLimit(limit);
     }
 
-    private List<Cart> findAllByLimit(Long departmentId, String nameCondition, String state, Integer start, Integer pageSize) {
+    private List<Cart> findAllByLimit(Long departmentId, String nameCondition, CartStateEnum state, Integer start, Integer pageSize) {
         CartVo limit = new CartVo();
         limit.setDepartmentId(departmentId);
         limit.setDepartmentName(nameCondition);
-        limit.setState(CartStateEnum.valueOf(state));
+        limit.setState(state);
         limit.setStart(start);
         limit.setPageSize(pageSize);
         return mapper.findAllByLimit(limit);

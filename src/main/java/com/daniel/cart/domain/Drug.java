@@ -16,24 +16,25 @@ import java.sql.Timestamp;
 @Setter
 public class Drug {
     private Long id;         // 药品的数据库id drug_id
-    private Long infId;         //
-    private String barcode;     // 药品的条码 drug_barcode
-    private String name;        // 药品名称 drug_name
     private Date productDate;   // 药品生产日期 drug_product_date
-    private Integer shelfLife;  // 药品保质期，单位：天，其他单位需转换为天后再存入 drug_shelf_life
     private Integer stock;      // 药品库存，单位：支
-    private Integer pack;       // 药品包装规格，单位：支/盒，在单位转换时使用
+    private Long drugInfId;
+    //    private String barcode;     // 药品的条码 drug_barcode
+    //    private String name;        // 药品名称 drug_name
+    //    private Integer shelfLife;  // 药品保质期，单位：天，其他单位需转换为天后再存入 drug_shelf_life
+    //    private Integer pack;       // 药品包装规格，单位：支/盒，在单位转换时使用
+    private DrugInf drugInf;
 
     public Drug() {}
+
 
     @Override
     public String toString() {
         return "Drug{" +
                 "id=" + id +
-                ", barcode='" + barcode + '\'' +
-                ", name='" + name + '\'' +
                 ", productDate=" + productDate +
-                ", shelfLife=" + shelfLife +
+                ", stock=" + stock +
+                ", drugInf=" + drugInf.toString() +
                 '}';
     }
 }

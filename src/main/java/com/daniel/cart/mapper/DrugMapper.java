@@ -12,7 +12,7 @@ import java.util.List;
 public interface DrugMapper {
     public List<Drug> findAll();
 
-    public List<Drug> findAllByLimit(DrugVo limit);
+    public List<Drug> findByLimit(DrugVo limit);
 
     public Drug findById(Long id);
 

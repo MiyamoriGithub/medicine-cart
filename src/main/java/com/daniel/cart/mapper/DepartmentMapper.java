@@ -11,11 +11,18 @@ import java.util.List;
 @Repository
 public interface DepartmentMapper {
 
-    public List<Department> findAll();
+    List<Department> findAll();
 
-    public List<Department> findAllByLimit(DepartmentVo limit);
+    List<Department> findByLimit(DepartmentVo limit);
 
-    public Department findById(Long id);
+    Long getCountByLimit(DepartmentVo limit);
 
+    Department findById(Long id);
+
+    Long add(Department department);
+
+    Long modify(Department department);
+
+    Long remove(Long id);
 
 }

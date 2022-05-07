@@ -4,34 +4,52 @@ import com.daniel.cart.domain.Employee;
 import com.daniel.cart.domain.vo.EmployeeVo;
 import org.springframework.stereotype.Service;
 
+import javax.print.DocFlavor;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface EmployeeService {
-    /**
-     * 查询所有 Employees 信息
-     * @return Employee 类对象的 List 集合
-     */
-    public List<Employee> findAll();
 
-    public List<Employee> findAllByInfo(EmployeeVo info);
+    List<Employee> findAll();
 
-    /**
-     * 根据 id 查询 Employee 信息
-     * @param id 雇员 id
-     * @return Employee 类型对象
-     */
-    public Employee  findById(Long id);
+    List<Employee> findAll(Integer start, Integer pageSize);
 
-    public Employee findByPhone(String phone);
+    List<Employee> findByName(String name);
 
-    /**
-     * 查询雇员信息条目总数
-     * @return 条目总数
-     */
-    public Long getCount(EmployeeVo info);
+    List<Employee> findByName(String name, Integer start, Integer pageSize);
 
-    public boolean modifyEmployee(Employee employee);
+    List<Employee> findByDepartment(String departmentName);
 
-    boolean removeEmployee(Long id);
+    List<Employee> findByDepartment(String departmentName, Integer start, Integer pageSize);
+
+    List<Employee> findByDepartment(Long departmentId);
+
+    List<Employee> findByDepartment(Long departmentId, Integer start, Integer pageSize);
+
+    List<Employee> findByRole(String role);
+
+    List<Employee> findByRole(String role, Integer start, Integer pageSize);
+
+    Employee  findById(Long id);
+
+    Employee findByPhone(String phone);
+
+    Long getCount();
+
+    Long getCountByName(String name);
+
+    Long getCountByDepartment(String departmentName);
+
+    Long getCountByDepartment(Long departmentId);
+
+    Long getCountByRole(String role);
+
+    Boolean addEmployee(Employee employeee);
+
+    Boolean modifyEmployee(Employee employee);
+
+    Boolean removeEmployee(Long id);
+
+    Map<String, String> getAllRoles();
 }

@@ -30,6 +30,7 @@ public enum ResultCodeEnum {
     DRUG_ERROR(false, 24000, "药品相关异常"),
     DRUG_INF_MISS_ERROR(false, 24001, "药品信息缺失"),
     DRUG_OPERATE_ERROR(false, 24002, "药品操作异常"),
+    DRUG_QUERY_ERROR(false, 24003, "药品查询异常"),
 
     BLOCK_ERROR(false, 25000, "Block相关异常"),
     BLOCK_QUERY_ERROR(false, 25001, "Block查询时异常"),
@@ -52,7 +53,12 @@ public enum ResultCodeEnum {
     REGISTER_MOBILE_ERROR(false, 28003, "手机号已被注册"),
     LOGIN_AUTH(false, 28004, "需要登录"),
     LOGIN_ACL(false, 28005, "没有权限"),
-    LOGIN_EXPIR_ERROR(false, 28006, "登录已过期或未登录");
+    LOGIN_EXPIR_ERROR(false, 28006, "登录已过期或未登录"),
+
+    EMPLOYEE_ERROR(false, 29000, "用户相关异常"),
+    EMPLOYEE_QUERY_ERROR(false, 29001, "用户查询相关异常"),
+    EMPLOYEE_OPERATE_ERROR(false, 29002, "用户操作相关异常"),
+    EMPLOYEE_PHONE_ERROR(false, 29003, "手机号码格式错误");
 
 
 

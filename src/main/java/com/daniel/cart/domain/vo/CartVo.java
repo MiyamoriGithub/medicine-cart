@@ -1,6 +1,7 @@
 package com.daniel.cart.domain.vo;
 
 import com.daniel.cart.domain.enums.CartStateEnum;
+import com.daniel.cart.util.AttributeCheck;
 import lombok.Getter;
 
 @Getter
@@ -19,8 +20,11 @@ public class CartVo extends PageVo {
     public void setDepartmentName(String departmentName) {
         StringBuffer tmp = new StringBuffer();
         tmp.append('%');
-        tmp.append(departmentName);
+        if(AttributeCheck.isStringOk(departmentName)) {
+            tmp.append(departmentName.trim());
+        }
         tmp.append('%');
+        departmentName = tmp.toString();
     }
 
     public void setState(CartStateEnum state) {

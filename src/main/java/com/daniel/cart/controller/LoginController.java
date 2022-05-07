@@ -31,15 +31,6 @@ public class LoginController {
     @PostMapping("login")
     @ApiResponses(value = {@ApiResponse(code=20000, message = "成功")})
     public Result login(@RequestParam("username") String username, @RequestParam("password") String password) {
-//        LoginVo user = new LoginVo();
-//        user.setPhone(phone);
-//        user.setPassword(password);
-//        Boolean res = service.login(user);
-//        if(res) {
-//            return Result.ok().data("res", "true");
-//        } else {
-//            return Result.error(ResultCodeEnum.LOGIN_PASSWORD_ERROR);
-//        }
 
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);

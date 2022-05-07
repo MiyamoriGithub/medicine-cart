@@ -6,24 +6,31 @@
     <resultMap id="departmentMap" type="com.daniel.cart.domain.Department">
         <id column="department_id" property="departmentId"/>
         <result column="department_name" property="name"/>
-        <result column="is_enable" property="isValid"/>
+<!--        <result column="is_enable" property="isValid"/>-->
     </resultMap>
 
     <select id="findAll" resultMap="departmentMap">
         select * from drug_cart_db.department_inf
     </select>
     
-    <select id="findAllByLimit" resultMap="departmentMap" parameterType="departmentVo">
+    <select id="findByLimit" resultMap="departmentMap" parameterType="departmentVo">
         select department_id, department_name, is_enable
-        from drug_cart_db.department_inf where 1 = 1
-        <if test="departmentId!=null">
-            and department_id = #{departmentId}
-        </if>
+        from drug_cart_db.department_inf
+        where is_enable = true
         <if test="departmentName!=null">
-            and department_name like #{departmentName}
+            and department_name like #{name}
         </if>
         <if test="start!=null and pageSize!=null">
             limit #{start - 1},#{pageSize}
+        </if>
+    </select>
+    
+    <select id="getCountByLimit" parameterType="departmentVo" resultType="long">
+        select count(department_id)
+        from drug_cart_db.department_inf
+        where is_enable = true
+        <if test="departmentName!=null">
+            and department_name like #{departmentName}
         </if>
     </select>
     
@@ -35,5 +42,28 @@
             and department_id = #{id}
         </if>
     </select>
+    
+    <insert id="add" parameterType="department">
+        insert into drug_cart_db.department_inf(
+                                                department_name
+        ) values (
+                  #{name}
+                         )
+    </insert>
+    
+    <update id="remove" parameterType="long">
+        update drug_cart_db.department_inf
+        <set>
+            is_enable = false
+        </set>
+        where drug_inf_id = #{id}
+    </update>
+    
+    <update id="modify" parameterType="department">
+        update drug_cart_db.department_inf
+        <set>
+            <if test="name!=null">department_name=#{name}</if>
+        </set>
+    </update>
 
 </mapper>
