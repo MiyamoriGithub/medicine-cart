@@ -8,6 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.Comparator;
+import java.util.List;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @WebAppConfiguration
@@ -39,6 +42,12 @@ public class DrugServiceTest {
 
     @Test
     public void findByBarcode() {
+
+        List<Drug> list = service.findByBarcode("86901190000781");
+        list.sort(Comparator.comparing(Drug::getProductDate));
+        for (Drug drug : list) {
+            System.out.println(drug.toString());
+        }
     }
 
     @Test

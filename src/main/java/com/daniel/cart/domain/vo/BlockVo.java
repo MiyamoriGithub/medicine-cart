@@ -8,5 +8,9 @@ import lombok.Setter;
 @Setter
 public class BlockVo extends PageVo{
     private Long drugId;
+    private Long drugInfId;
     private Long gridId;
+    private Long cartId;
+    private Integer layer;
+    private Long departmentId;
 }

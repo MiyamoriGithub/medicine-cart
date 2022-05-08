@@ -37,7 +37,7 @@
             and di.drug_barcode = #{barcode}
         </if>
         <if test="start!=null and pageSize!=null">
-            limit #{start - 1},#{pageSize}
+            limit #{start},#{pageSize}
         </if>
     </select>
     
@@ -70,7 +70,7 @@
             <if test="stock!=null">, drug_stock</if>
         )
         values(
-            #{infId},
+            #{drugInfId},
             #{productDate}
             <if test="stock!=null">, #{stock}</if>
         )
@@ -79,9 +79,9 @@
     <update id="modifyDrug" parameterType="drug">
         update drug_cart_db.drug_date_inf
         <set>
-            <if test="infId!=null">drug_inf_id=#{infId}</if>
-            <if test="productDate!=null">drug_product_date=#{productDate}</if>
-            <if test="stock!=null">drug_stock=#{stock}</if>
+            <if test="drugInfId!=null">drug_inf_id=#{drugInfId}, </if>
+            <if test="productDate!=null">drug_product_date=#{productDate}, </if>
+            <if test="stock!=null">drug_stock=#{stock}, </if>
         </set>
         where drug_id = #{id}
     </update>

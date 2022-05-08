@@ -9,6 +9,8 @@ import java.util.Objects;
 
 @Data
 @Component
+@Getter
+@Setter
 public class Grid {
     /**
      * 1， 每个Grid中最多有capacity个block
@@ -39,13 +41,6 @@ public class Grid {
         this.layer = layer;
         this.row = row;
         this.column = column;
-    }
-
-    // Todo 完成存入药品逻辑，以及编写对应的异常类
-    public void addBlock(Block block) {
-        if(this.drugInfId != block.getDrugInfId()) {
-            throw new RuntimeException("药品不一致");
-        }
     }
 
     @Override

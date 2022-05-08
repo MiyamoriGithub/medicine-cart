@@ -1,6 +1,7 @@
 package com.daniel.cart.service.impl;
 
 import com.daniel.cart.domain.Drug;
+import com.daniel.cart.domain.DrugInf;
 import com.daniel.cart.domain.result.ResultCodeEnum;
 import com.daniel.cart.domain.vo.DrugVo;
 import com.daniel.cart.exception.DrugOperateException;
@@ -18,8 +19,6 @@ import java.util.List;
 
 import static com.daniel.cart.util.AttributeCheck.isIdOk;
 import static com.daniel.cart.util.AttributeCheck.isStringOk;
-
-// Todo 细化实现逻辑
 
 @Service("drugService")
 @Transactional
@@ -82,6 +81,16 @@ public class DrugServiceImpl implements DrugService {
     }
 
     @Override
+    public List<Drug> findByDrugInfId(Long id) {
+        return findByDrugInfId(id, null, null);
+    }
+
+    @Override
+    public List<Drug> findByDrugInfId(Long id, Integer start, Integer pageSize) {
+        return findByLimit(id, null, null, start, pageSize);
+    }
+
+    @Override
     public List<Drug> findByBarcode(String barcode) {
         return findByBarcode(barcode, null,null);
     }
@@ -104,11 +113,6 @@ public class DrugServiceImpl implements DrugService {
         return findByLimit(null, null, name, start, pageSize);
     }
 
-//    @Override
-//    public List<Drug> findByLimit(DrugVo limit) {
-//        return mapper.findAllByLimit(limit);
-//    }
-
     @Override
     public Drug findById(Long id) {
         return mapper.findById(id);
@@ -120,24 +124,53 @@ public class DrugServiceImpl implements DrugService {
     }
 
     @Override
-    public Long getCountByLimit(DrugVo limit) {
-        return mapper.getCountByLimit(limit);
+    public Long getCountByDrugInfId(Long id) {
+        return getCountByLimit(id, null, null);
+    }
+
+    @Override
+    public Long getCountByBarcode(String barcode) {
+        barcodeCheck(barcode);
+        return getCountByLimit(null, barcode, null);
+    }
+
+    @Override
+    public Long getCountByName(String nameCondition) {
+        drugNameCheck(nameCondition);
+        return getCountByLimit(null, null, nameCondition);
     }
 
     @Override
     public Boolean addDrug(Drug drug) {
-        if(drug == null) {
-             return mapper.addDrug(drug) > 0;
+        long operate = 0L;
+        if(drug != null) {
+            operate = mapper.addDrug(drug);
+            DrugInf res = null;
+            if(drug.getDrugInfId() != null) {
+                 res = drugInfMapper.findById(drug.getDrugInfId());
+            } else if(drug.getDrugInf() != null) {
+                 DrugInf inf = drug.getDrugInf();
+                 barcodeCheck(inf.getBarcode());
+                 res = drugInfMapper.findByBarcode(inf.getBarcode());
+             }
+            if(res == null) {
+                DrugInf inf = drug.getDrugInf();
+                barcodeCheck(inf.getBarcode());
+                drugNameCheck(inf.getName());
+                shelfLifeCheck(inf.getShelfLife());
+                operate += drugInfMapper.addDrugInf(inf);
+            }
         }
-        return false;
+        return operate > 0L;
     }
 
     @Override
     public Boolean modifyDrug(Drug drug) {
         if(drug.getId() != null && drug.getDrugInf() != null && drug.getDrugInf().getDrugInfId() != null) {
             idCheck(drug.getId());
-            drugInfIdCheck(drug.getDrugInf().getDrugInfId());
-            return mapper.modifyDrug(drug) > 0L && drugInfMapper.modifyDrugInf(drug.getDrugInf()) > 0L;
+            DrugInf newInf = drug.getDrugInf();
+            drugInfIdCheck(newInf.getDrugInfId());
+            return mapper.modifyDrug(drug) > 0L;
         }
         return false;
     }
@@ -153,7 +186,7 @@ public class DrugServiceImpl implements DrugService {
             throw new DrugOperateException(ResultCodeEnum.DRUG_INF_MISS_ERROR.getCode(), ResultCodeEnum.DRUG_INF_MISS_ERROR.getMessage());
         }
         int res = (int) ((System.currentTimeMillis() - drug.getProductDate().getTime()) / (1000 * 60 * 60 * 24));
-        logger.info(drug.getDrugInf().getName() + " : " + (drug.getDrugInf().getShelfLife() - res));
+//        logger.info(drug.getDrugInf().getName() + " : " + (drug.getDrugInf().getShelfLife() - res));
         return drug.getDrugInf().getShelfLife() - res;
     }
 
@@ -178,6 +211,12 @@ public class DrugServiceImpl implements DrugService {
     private void idCheck(Long id) {
         if(!isIdOk(id)) {
             throw new DrugOperateException(ResultCodeEnum.DRUG_OPERATE_ERROR.getCode(), "药品 id 信息缺失");
+        }
+    }
+
+    private void shelfLifeCheck(Integer shelfLife) {
+        if(!isIdOk(shelfLife)) {
+            throw new DrugOperateException(ResultCodeEnum.DRUG_OPERATE_ERROR.getCode(), "药品保质期信息缺失");
         }
     }
 

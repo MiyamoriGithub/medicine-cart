@@ -16,19 +16,21 @@ import java.util.List;
 @Mapper
 @Repository
 public interface GridMapper {
-    public List<Grid> findAll();
+    List<Grid> findAll();
 
-    public List<Grid> findAllByLimit(GridVo limit);
+    List<Grid> findAllByLimit(GridVo limit);
 
-    public Grid findById(Long id);
+    Grid findById(Long id);
 
-    public Grid findByPosit(Grid grid);
+    Grid findByPosit(Grid grid);
 
-    public Long getCountByLimit(GridVo limit);
+    Long getCount();
 
-    public Long addGrid(Grid grid);
+    Long getCountByLimit(GridVo limit);
 
-    public Long removeById(Long id);
+    Long addGrid(Grid grid);
 
-    public Long modifyGrid(Grid grid);
+    Long removeById(Long id);
+
+    Long modifyGrid(Grid grid);
 }

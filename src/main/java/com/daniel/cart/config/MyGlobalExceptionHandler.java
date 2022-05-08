@@ -75,7 +75,7 @@ public class MyGlobalExceptionHandler {
         return Result.error().code(e.getCode()).message(e.getMessage());
     }
 
-    @ExceptionHandler(value =Exception.class)
+//    @ExceptionHandler(value =Exception.class)
     @ResponseBody
     public Result exceptionHandler(HttpServletRequest request, Exception e){
         logger.error("发生未知异常" + e.getClass() + "，原因是:",e.getMessage());

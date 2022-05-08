@@ -9,10 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class Block {
     private Long id;
-    private Long drugId;
-    private Long drugInfId;
-    private Long gridId;
-    private String drugName;
+    private Long drugId;                // 药品 id
+    private Long drugInfId;             // 药品信息 id
+    private String drugName;            // 药品名称（方便 debug 加的，实际不应该有多余的属性）
+    private Long gridId;                // 对应的 grid id
+    private Integer serial;             // 取决于所在Grid的容量，为1-8或者1-10
 }
 
 

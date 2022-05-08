@@ -1,6 +1,7 @@
 package com.daniel.cart.domain.vo;
 
 
+import com.daniel.cart.util.AttributeCheck;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,7 +18,9 @@ public class DrugVo extends PageVo{
     public void setNameCondition(String nameCondition) {
         StringBuffer buffer = new StringBuffer();
         buffer.append('%');
-        buffer.append(nameCondition.trim());
+        if(nameCondition!=null) {
+            buffer.append(nameCondition.trim());
+        }
         buffer.append('%');
         this.nameCondition = buffer.toString();
     }

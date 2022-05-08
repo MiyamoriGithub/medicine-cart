@@ -10,15 +10,16 @@
         <result column="cart_row" property="row"/>
         <result column="cart_column" property="column"/>
         <result column="drug_inf_id" property="drugInfId"/>
+        <result column="capacity" property="capacity"/>
     </resultMap>
     
     <select id="findAll" resultMap="gridMap">
-        select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id
+        select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id, capacity
         from drug_cart_db.grid_inf
     </select>
     
     <select id="findAllByLimit" resultMap="gridMap" parameterType="gridVo">
-        select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id
+        select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id, capacity
         from drug_cart_db.grid_inf
         where 1 = 1
         <if test="drugInfId!=null">
@@ -31,25 +32,30 @@
             </if>
         </if>
         <if test="start!=null and pageSize!=null">
-            limit #{start - 1},#{pageSize}
+            limit #{start},#{pageSize}
         </if>
     </select>
     
     <select id="findById" resultMap="gridMap" parameterType="java.lang.Long">
-        select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id
+        select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id, capacity
         from drug_cart_db.grid_inf
         where grid_id = #{id}
     </select>
 
-    <select id="findByPosit" resultType="grid" parameterType="grid">
-        select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id
+    <select id="findByPosit" resultMap="gridMap" parameterType="grid">
+        select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id, capacity
         from drug_cart_db.grid_inf
         where cart_id = #{cartId}
             and cart_layer = #{layer}
             and cart_row = #{row}
             and cart_column = #{column}
     </select>
-    
+
+    <select id="getCount" resultType="java.lang.Long">
+        select count(grid_id)
+        from drug_cart_db.grid_inf
+    </select>
+
     <select id="getCountByLimit" resultType="java.lang.Long" parameterType="gridVo">
         select count(grid_id)
         from drug_cart_db.grid_inf

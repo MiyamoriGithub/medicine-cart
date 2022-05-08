@@ -17,32 +17,37 @@ public interface GridService {
 
     List<Grid> findAll();
 
-    List<Grid> findAllByCart(Long cartId);
+    List<Grid> findAll(Integer start, Integer pageSize);
 
-    List<Grid> findAllByCart(Long cartId, Integer start, Integer pageSize);
+//    List<Grid> findByDepartment();
 
-    List<Grid> findAllByCartAndLayer(Long cartId, Integer layer);
+    List<Grid> findByCart(Long cartId);
 
-    List<Grid> findAllByCartAndLayer(Long cartId, Integer layer, Integer start, Integer pageSize);
+    List<Grid> findByCart(Long cartId, Integer start, Integer pageSize);
+
+    List<Grid> findByLayer(Long cartId, Integer layer);
+
+    List<Grid> findByLayer(Long cartId, Integer layer, Integer start, Integer pageSize);
+
+    List<Grid> findNeedInventory();
+
+    List<Grid> findNeedInventory(List<Grid> grids);
 
     Grid findById(Long id);
 
-    Grid findByPosit(Grid grid);
+    Grid findByPosit(Long cartId, Integer layer, Integer row, Integer column);
 
-    /**
-     * 查询 Grid id 对应的所有 Block
-     * @param id Grid Id
-     * @return 满足条件的所有 Block 类对象
-     */
-    List<Block> findBlocksByGridId(Long id);
+//    List<Block> findByGridId(Long id);
+
+    Long getCount();
 
     Long getCountByCart(Long cartId);
 
-    Long getCountByCartAndLayer(Long cartId, Integer layer);
+    Long getCountByLayer(Long cartId, Integer layer);
 
-    Long addGrid(Grid grid);
+    Boolean addGrid(Grid grid);
 
-    Long modifyDrugInfInGrid(Grid grid);
+    Boolean modifyDrugInfInGrid(Grid grid);
 
-    Long removeGrid(Long id);
+    Boolean removeGrid(Long id);
 }

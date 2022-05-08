@@ -34,6 +34,12 @@
         where drug_inf_id = #{id}
     </select>
     
+    <select id="findByBarcode" resultMap="drugInfMap" parameterType="string">
+        select drug_inf_id, drug_barcode, drug_name, drug_shelf_life, drug_package
+        from drug_cart_db.drug_inf
+        where drug_barcode = #{barcode}
+    </select>
+    
     <select id="getCountById" parameterType="drugInfVo">
         select drug_inf_id, drug_barcode, drug_name, drug_shelf_life, drug_package
         from drug_cart_db.drug_inf
@@ -60,10 +66,10 @@
     <update id="modifyDrugInf" parameterType="drugInf">
         update drug_cart_db.drug_inf
         <set>
-            <if test="name!=null">drug_name=#{name}</if>
-            <if test="shelfLife!=null">drug_shelf_life=#{shelfLife}</if>
-            <if test="barcode!=null">drug_barcode=#{barcode}</if>
-            <if test="drugPackage!=null">drug_package=#{drugPackage}</if>
+            <if test="name!=null">drug_name=#{name}, </if>
+            <if test="shelfLife!=null">drug_shelf_life=#{shelfLife}, </if>
+            <if test="barcode!=null">drug_barcode=#{barcode}, </if>
+            <if test="drugPackage!=null">drug_package=#{drugPackage}, </if>
         </set>
         where drug_inf_id=#{drugInfId}
     </update>

@@ -19,7 +19,9 @@ public interface DrugInfMapper {
 
     List<DrugInf> findByLimit();
 
-    DrugInf findById();
+    DrugInf findById(Long id);
+
+    DrugInf findByBarcode(String barcode);
 
     Long addDrugInf(DrugInf drugInf);
 

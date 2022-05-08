@@ -8,25 +8,30 @@ import com.daniel.cart.service.CartService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.EnumUtils;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-// Todo 完成剩余的接口
+/**
+ * 急救车管理接口
+ *
+ * @author Daniel Zheng
+ **/
+
 // Todo 增加账户权限检查逻辑
 
-@Api(value = "急救车Controller", tags = {"急救车信息管理接口"})
+@Api(value = "急救车Controller", tags = {"急救车管理接口"})
 @RestController
 @CrossOrigin
 @RequestMapping("cart")
 public class CartController {
 
     private final CartService service;
-//    private final Logger logger = LoggerFactory.getLogger(CartController.class);
+    private final Logger logger = LoggerFactory.getLogger(CartController.class);
 
     @Autowired
     public CartController(CartService service) {
@@ -119,31 +124,21 @@ public class CartController {
     @GetMapping("free")
     public Result setFree(@RequestParam("抢救车id") Long id) {
         Boolean res = service.setCartFree(id);
-        if(res) {
-            return Result.ok().data("msg", "操作成功");
-        }
-        return Result.error();
+        return returnMessage(res);
     }
 
     @ApiOperation("设置急救车为补充药品状态")
     @GetMapping("inventory")
     public Result setInventory(@RequestParam("抢救车id") Long id) {
         Boolean res = service.setCartInventory(id);
-        if(res) {
-            return Result.ok().data("msg", "操作成功");
-        }
-        return Result.error();
+        return returnMessage(res);
     }
 
     @ApiOperation("设置急救车为急救状态")
     @GetMapping("emergency")
     public Result setEmergency(@RequestParam("抢救车id") Long id) {
         Boolean res = service.setCartEmergency(id);
-        if(res) {
-            return Result.ok().data("msg", "操作成功");
-        } else {
-            return Result.error().data("msg", "操作失败");
-        }
+        return returnMessage(res);
     }
 
     @ApiOperation("添加急救车")
@@ -151,22 +146,14 @@ public class CartController {
     public Result add(@RequestParam("部门id") Long departmentId) {
         Cart cart = new Cart(departmentId);
         Boolean res = service.addCart(cart);
-        if(res) {
-            return Result.ok().data("msg", "操作成功");
-        } else {
-            return Result.error().data("msg", "操作失败");
-        }
+        return returnMessage(res);
     }
 
     @ApiOperation("删除急救车")
     @GetMapping("remove")
     public Result remove(@RequestParam("急救车id") Long id) {
         Boolean res = service.removeCart(id);
-        if(res) {
-            return Result.ok().data("msg", "操作成功");
-        } else {
-            return Result.error().data("msg", "操作失败");
-        }
+        return returnMessage(res);
     }
 
     @ApiOperation("修改急救车")
@@ -182,13 +169,15 @@ public class CartController {
             cart.setState(CartStateEnum.valueOf(state));
         }
         Boolean res = service.modifyCart(cart);
-        if(res) {
-            return Result.ok().data("msg", "操作成功");
-        } else {
-            return Result.error().data("msg", "操作失败");
-        }
+        return returnMessage(res);
     }
 
-
+    private Result returnMessage(Boolean res) {
+        if(res) {
+            return Result.ok().message("操作成功");
+        } else {
+            return Result.error().message("操作失败");
+        }
+    }
 
 }

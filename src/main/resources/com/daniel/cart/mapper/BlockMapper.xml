@@ -9,10 +9,11 @@
         <result column="drug_id" property="drugId"/>
         <result column="drug_inf_id" property="drugInfId"/>
         <result column="drug_name" property="drugName"/>
+        <result column="serial" property="serial"/>
     </resultMap>
     
     <select id="findAll" resultMap="blockMap">
-        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name
+        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name, bi.serial
         from drug_cart_db.block_inf bi
         left join drug_cart_db.drug_date_inf ddi
             on bi.drug_id = ddi.drug_id
@@ -21,12 +22,16 @@
     </select>
     
     <select id="findAllByLimit" resultMap="blockMap" parameterType="blockVo">
-        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name
+        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name, bi.serial
         from drug_cart_db.block_inf bi
         left join drug_cart_db.drug_date_inf ddi
-        on bi.drug_id = ddi.drug_id
+            on bi.`drug_id` = ddi.`drug_id`
         left join drug_inf di
-        on ddi.drug_inf_id = di.drug_inf_id
+            on ddi.`drug_inf_id` = di.`drug_inf_id`
+        left join grid_inf gi
+            on gi.`grid_id` = bi.`grid_id`
+        left join carts_inf ci
+        on gi.cart_id = ci.cart_id
         where 1 = 1
         <if test="drugId!=null">
             and bi.drug_id = #{drugId}
@@ -34,13 +39,22 @@
         <if test="gridId!=null">
             and bi.grid_id = #{gridId}
         </if>
+        <if test="cartId!=null">
+            and gi.cart_id = #{cartId}
+            <if test="layer!=null">
+                and gi.cart_layer = #{layer}
+            </if>
+        </if>
+        <if test="departmentId!=null">
+            and ci.department_id = #{departmentId}
+        </if>
         <if test="start!=null and pageSize!=null">
             limit #{start - 1},#{pageSize}
         </if>
     </select>
     
     <select id="findById" resultMap="blockMap" parameterType="java.lang.Long">
-        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name
+        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name, bi.serial
         from drug_cart_db.block_inf bi
                  left join drug_cart_db.drug_date_inf ddi
                            on bi.drug_id = ddi.drug_id
@@ -73,11 +87,11 @@
     <insert id="addBlock" parameterType="block">
         insert into drug_cart_db.block_inf (
             <if test="drugId!=null">drug_id, </if>
-            grid_id
+            grid_id, serial
         )
         values(
-            <if test="drugId!=null">#{drugId}</if>
-            #{gridId}
+            <if test="drugId!=null">#{drugId}, </if>
+            #{gridId}, #{serial}
         )
     </insert>
     

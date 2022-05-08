@@ -29,8 +29,11 @@ public class BlockMapperTest {
     @Test
     public void findAllByLimit() {
         BlockVo limit = new BlockVo();
-        limit.setGridId(1l);
-        limit.setPageSize(5);
+//        limit.setGridId(1L);
+//        limit.setPageSize(5);
+        limit.setCartId(1L);
+        limit.setLayer(1);
+//        limit.setDepartmentId(1L);
         for (Block block : mapper.findAllByLimit(limit)) {
             System.out.println(block);
         }
@@ -38,13 +41,13 @@ public class BlockMapperTest {
 
     @Test
     public void findById() {
-        System.out.println(mapper.findById(10l));
+        System.out.println(mapper.findById(10L));
     }
 
     @Test
     public void getCountByLimit() {
         BlockVo limit = new BlockVo();
-        limit.setGridId(1l);
+        limit.setGridId(1L);
         limit.setPageSize(5);
         System.out.println(mapper.getCountByLimit(limit));
     }
@@ -52,20 +55,20 @@ public class BlockMapperTest {
     @Test
     public void addBlock() {
         Block block = new Block();
-        block.setGridId(4l);
+        block.setGridId(4L);
 //        block.setDrugId(6l);
         System.out.println(mapper.addBlock(block));
     }
 
     @Test
     public void removeById() {
-        System.out.println(mapper.removeById(25l));
+        System.out.println(mapper.removeById(25L));
     }
 
     @Test
     public void modifyBlock() {
-        Block block = mapper.findById(25l);
-        block.setDrugId(6l);
+        Block block = mapper.findById(25L);
+        block.setDrugId(6L);
         System.out.println(mapper.modifyBlock(block));
     }
 }

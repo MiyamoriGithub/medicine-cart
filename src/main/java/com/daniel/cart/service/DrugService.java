@@ -21,6 +21,10 @@ public interface DrugService {
 
     List<Drug> findExpire(List<Drug> list);
 
+    List<Drug> findByDrugInfId(Long id);
+
+    List<Drug> findByDrugInfId(Long id, Integer start, Integer pageSize);
+
     List<Drug> findByBarcode(String barcode);
 
     List<Drug> findByBarcode(String barcode, Integer start, Integer pageSize);
@@ -29,13 +33,15 @@ public interface DrugService {
 
     List<Drug> findByName(String name, Integer start, Integer pageSize);
 
-//    List<Drug> findByLimit(DrugVo limit);
-
     Drug findById(Long id);
 
     Long getCount();
 
-    Long getCountByLimit(DrugVo limit);
+    Long getCountByDrugInfId(Long id);
+
+    Long getCountByBarcode(String barcode);
+
+    Long getCountByName(String nameCondition);
 
     Boolean addDrug(Drug drug);
 
