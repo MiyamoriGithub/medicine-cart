@@ -150,7 +150,9 @@ public class BlockServiceImpl implements BlockService {
 
     @Override
     public Block findByPosit(Grid grid, Integer serial) {
-        return null;
+        idCheck(grid.getId(), "gridId");
+        idCheck(serial, "serial");
+        return mapper.findByPosit(grid.getId(), serial);
     }
 
     @Override
@@ -324,6 +326,15 @@ public class BlockServiceImpl implements BlockService {
     }
 
     private void idCheck(Long id, String name) {
+        if(!isStringOk(name)) {
+            name = "id";
+        }
+        if(!isIdOk(id)) {
+            throw new BlockOperateException(ResultCodeEnum.BLOCK_OPERATE_ERROR.getCode(), name + "信息缺失");
+        }
+    }
+
+    private void idCheck(Integer id, String name) {
         if(!isStringOk(name)) {
             name = "id";
         }

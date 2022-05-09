@@ -17,7 +17,7 @@
         from drug_cart_db.block_inf bi
         left join drug_cart_db.drug_date_inf ddi
             on bi.drug_id = ddi.drug_id
-        left join drug_inf di
+        left join drug_cart_db.drug_inf di
             on ddi.drug_inf_id = di.drug_inf_id
     </select>
     
@@ -58,9 +58,19 @@
         from drug_cart_db.block_inf bi
                  left join drug_cart_db.drug_date_inf ddi
                            on bi.drug_id = ddi.drug_id
-                 left join drug_inf di
+                 left join drug_cart_db.drug_inf di
                            on ddi.drug_inf_id = di.drug_inf_id
         where block_id = #{id}
+    </select>
+
+    <select id="findByPosit" resultMap="blockMap">
+        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name, bi.serial
+        from drug_cart_db.block_inf bi
+                 left join drug_cart_db.drug_date_inf ddi
+                           on bi.drug_id = ddi.drug_id
+                 left join drug_cart_db.drug_inf di
+                           on ddi.drug_inf_id = di.drug_inf_id
+        where grid_id = #{gridId} and `serial` = #{serial}
     </select>
 
     <select id="getCountByLimit" resultType="java.lang.Long" parameterType="blockVo">

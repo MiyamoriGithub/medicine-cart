@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.daniel.cart.util.AttributeCheck.isIdOk;
 
 /**
- * 实现类
+ * DrugInf Service 接口的实现类
  *
  * @author Daniel Zheng
  **/

@@ -12,19 +12,21 @@ import java.util.List;
 @Mapper
 @Repository
 public interface BlockMapper {
-    public List<Block> findAll();
+    List<Block> findAll();
 
-    public List<Block> findAllByLimit(BlockVo limit);
+    List<Block> findAllByLimit(BlockVo limit);
 
-    public Block findById(Long id);
+    Block findById(Long id);
 
-    public Long getCountByLimit(BlockVo limit);
+    Block findByPosit(Long gridId, Integer serial);
 
-    public Long getCountByGridAndNotEmpty(BlockVo limit);
+    Long getCountByLimit(BlockVo limit);
 
-    public Long addBlock(Block block);
+    Long getCountByGridAndNotEmpty(BlockVo limit);
 
-    public Long removeById(Long id);
+    Long addBlock(Block block);
 
-    public Long modifyBlock(Block block);
+    Long removeById(Long id);
+
+    Long modifyBlock(Block block);
 }
