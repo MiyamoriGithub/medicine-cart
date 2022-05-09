@@ -26,8 +26,7 @@ public class SwaggerConfig {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("swagger和springBoot整合").description("swagger的API文档")
-                .version("1.0").build();
+        return new ApiInfoBuilder().title("医用抢救车药品管理系统").description("抢救车药品管理系统后端的 API 文档").version("1.0").build();
     }
 
 }

@@ -28,7 +28,7 @@ import java.util.Map;
 @RestController
 @CrossOrigin
 @RequestMapping("cart")
-public class CartController {
+public class CartController implements AbstractController {
 
     private final CartService service;
     private final Logger logger = LoggerFactory.getLogger(CartController.class);
@@ -40,6 +40,7 @@ public class CartController {
 
     @ApiOperation("查询急救车信息")
     @GetMapping("find")
+    @Override
     public Result find(
             @RequestParam(value = "抢救车id信息", required = false) Long id,
             @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,

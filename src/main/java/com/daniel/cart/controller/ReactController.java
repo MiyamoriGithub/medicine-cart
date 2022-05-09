@@ -20,23 +20,12 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @author Daniel Zheng
+ * 抢救车常用接口集合
  *
- *     /**
- *      * 根据药品 id 获取药品信息
- *      * <p>
- *      * 向 block 中添加药品：车id， 层数，行，列，第几个位置， 药品id
- *      * <p>
- *      * 从 block 中取出药品：车id， 层数，行，列，第几个位置
- *      * <p>
- *      * 根据 block 信息查药品信息：车id， 层数，行，列，第几个位置
- *      * <p>
- *      * 根据 grid 查询药品信息：车id， 层数，行，列
- * <p>
- * （设置状态）
+ * @author Daniel Zheng
  **/
 
-@Api(value = "Grid Controller", tags = {"急救车常用接口集合"})
+@Api(value = "Grid Controller", tags = {"抢救车常用接口集合"})
 @RestController
 @CrossOrigin
 @RequestMapping("react")

@@ -30,6 +30,7 @@ public class DrugController implements AbstractController {
 
     @ApiOperation("查询全部药品信息")
     @GetMapping("find")
+    @Override
     public Result find(
             @RequestParam(value = "药品id信息", required = false) Long id,
             @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,

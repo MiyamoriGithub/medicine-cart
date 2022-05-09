@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping("grid")
-public class GridController {
+public class GridController implements AbstractController{
 
     private final GridService service;
     private final DrugInfService drugInfService;
@@ -37,6 +37,7 @@ public class GridController {
 
     @ApiOperation("查询 Grid 信息")
     @GetMapping("find")
+    @Override
     public Result find(
             @RequestParam(value = "Grid id信息", required = false) Long id,
             @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,
