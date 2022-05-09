@@ -2,8 +2,6 @@ package com.daniel.cart.service;
 
 import com.daniel.cart.domain.Employee;
 import com.daniel.cart.domain.enums.RoleEnum;
-import com.daniel.cart.domain.vo.EmployeeVo;
-import com.daniel.cart.service.impl.EmployeeServiceImpl;
 import com.daniel.cart.util.Md5Utils;
 import org.junit.After;
 import org.junit.Before;
@@ -13,10 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -60,6 +54,6 @@ public class EmployeeServiceTest {
         employee.setPhone("17009305325");
         employee.setName("测试王");
         employee.setPassword(Md5Utils.code("1234567"));
-        employeeService.addEmployee(employee);
+        employeeService.add(employee);
     }
 }

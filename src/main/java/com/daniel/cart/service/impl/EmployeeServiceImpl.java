@@ -132,7 +132,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Boolean addEmployee(Employee employee) {
+    public Boolean add(Employee employee) {
         /*
             因为删除本质上是将数据禁用，因此添加数据时会出现手机号重复的问题，也就是 DuplicateKeyException
             这个时候就需要将原数据重新启用并进行更新操作
@@ -154,7 +154,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Boolean modifyEmployee(Employee employee) {
+    public Boolean modify(Employee employee) {
         if(employee == null || employee.getId() == null) {
             return false;
         }
@@ -162,7 +162,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Boolean removeEmployee(Long id) {
+    public Boolean remove(Long id) {
         idCheck(id);
         if(null == findById(id)) {
             throw new EmployeeOperateException(ResultCodeEnum.EMPLOYEE_OPERATE_ERROR.getCode(), "待删除的用户信息不存在");

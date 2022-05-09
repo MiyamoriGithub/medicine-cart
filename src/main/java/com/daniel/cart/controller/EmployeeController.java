@@ -124,7 +124,7 @@ public class EmployeeController{
     @ApiOperation("修改员工信息")
     @PostMapping("modify")
     public Result modify(@RequestBody Employee employee) {
-        boolean res =  service.modifyEmployee(employee);
+        boolean res =  service.modify(employee);
         if(res) {
             return Result.ok().data("msg", "操作成功");
         }
@@ -134,7 +134,7 @@ public class EmployeeController{
     @ApiOperation("通过id删除员工信息")
     @GetMapping("remove")
     public Result remove(@RequestParam("待删除用户 Id") Long id) {
-        boolean res = service.removeEmployee(id);
+        boolean res = service.remove(id);
         if(res) {
             return Result.ok().data("msg", "操作成功");
         }
@@ -144,7 +144,7 @@ public class EmployeeController{
     @ApiOperation("添加用户信息")
     @PostMapping("add")
     public Result add(@RequestBody Employee employee) {
-        boolean res = service.addEmployee(employee);
+        boolean res = service.add(employee);
         if(res) {
             return Result.ok().data("msg", "操作成功");
         }

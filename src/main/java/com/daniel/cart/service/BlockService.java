@@ -15,11 +15,7 @@ import java.util.List;
  **/
 
 @Service
-public interface BlockService {
-
-    List<Block> findAll();
-
-    List<Block> findAll(Integer start, Integer pageSize);
+public interface BlockService extends AbstractService<Block> {
 
     List<Block> findByDrugInf(Long drugInfId);
 
@@ -56,11 +52,7 @@ public interface BlockService {
      */
     List<Block> findByLimit(BlockVo limit);
 
-    Block findById(Long id);
-
     Block findByPosit(Grid grid, Integer serial);
-
-    Long getCount();
 
     Long getCountByDrug(Long drugId);
 
@@ -71,10 +63,6 @@ public interface BlockService {
     Long getCountByCart(Long cartId);
 
     Long getCountByLayer(Long cartId, Integer layer);
-
-    Boolean addBlock(Block block);
-
-    Boolean removeBlock(Long blockId);
 
     /**
      * 向 block 中存入 drug

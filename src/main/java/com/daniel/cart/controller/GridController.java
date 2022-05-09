@@ -127,7 +127,7 @@ public class GridController implements AbstractController{
                 grid.setDrugInfId(drugInfId);
             }
         }
-        Boolean res = service.addGrid(grid);
+        Boolean res = service.add(grid);
         if(res) {
             logger.info("新增 grid 信息：" + grid);
         }
@@ -142,7 +142,7 @@ public class GridController implements AbstractController{
     ) {
         Grid grid = service.findById(id);
         grid.setDrugInfId(drugInfId);
-        Boolean res = service.modifyDrugInfInGrid(grid);
+        Boolean res = service.modify(grid);
         if(res) {
             logger.info("grid 信息被修改：" + grid);
         }
@@ -153,7 +153,7 @@ public class GridController implements AbstractController{
     @GetMapping("remove")
     public Result remove(@RequestParam("待删除的 Grid id") Long id) {
         Grid grid = service.findById(id);
-        Boolean res = service.removeGrid(id);
+        Boolean res = service.remove(id);
         if(res) {
             logger.info("grid 信息被删除" + grid);
         }

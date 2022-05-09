@@ -1,6 +1,5 @@
 package com.daniel.cart.service.impl;
 
-import com.daniel.cart.domain.Block;
 import com.daniel.cart.domain.Grid;
 import com.daniel.cart.domain.result.ResultCodeEnum;
 import com.daniel.cart.domain.vo.BlockVo;
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.daniel.cart.util.AttributeCheck.isIdOk;
+import static com.daniel.cart.util.AttributeCheck.isStringOk;
 
 /**
  * GridService 接口的实现类
@@ -30,6 +30,9 @@ public class GridServiceImpl implements GridService {
 
     private final GridMapper mapper;
     private final BlockMapper blockMapper;
+
+    // 规定 block 为空即药品信息为 -1
+    private static final Long EMPTY = -1L;
 
     @Autowired
     public GridServiceImpl(GridMapper mapper, BlockMapper blockMapper) {
@@ -47,11 +50,6 @@ public class GridServiceImpl implements GridService {
         return findByLimit(null, null, start, pageSize);
     }
 
-//    @Override
-//    public List<Grid> findByDepartment() {
-//        return null;
-//    }
-
     @Override
     public List<Grid> findByCart(Long cartId) {
         return findByCart(cartId, null, null);
@@ -59,9 +57,7 @@ public class GridServiceImpl implements GridService {
 
     @Override
     public List<Grid> findByCart(Long cartId, Integer start, Integer pageSize) {
-        if(!isIdOk(cartId)) {
-            throw new GridOperateException(ResultCodeEnum.GRID_QUERY_ERROR.getCode(),  "cart id 信息缺失");
-        }
+        idCheck(cartId, "cartId");
         return findByLimit(cartId, null, start, pageSize);
     }
 
@@ -72,12 +68,8 @@ public class GridServiceImpl implements GridService {
 
     @Override
     public List<Grid> findByLayer(Long cartId, Integer layer, Integer start, Integer pageSize) {
-        if(!isIdOk(cartId)) {
-            throw new GridOperateException(ResultCodeEnum.GRID_QUERY_ERROR.getCode(), "cart id 信息缺失");
-        }
-        if(!isIdOk(layer)) {
-            throw new GridOperateException(ResultCodeEnum.GRID_QUERY_ERROR.getCode(), "layer 信息缺失");
-        }
+        idCheck(cartId, "cartId");
+        idCheck(layer, "layer");
         return findByLimit(cartId, layer, start, pageSize);
     }
 
@@ -103,9 +95,7 @@ public class GridServiceImpl implements GridService {
 
     @Override
     public Grid findById(Long id) {
-        if(!isIdOk(id)) {
-            throw new GridOperateException(ResultCodeEnum.GRID_QUERY_ERROR.getCode(),  "id 信息缺失");
-        }
+        idCheck(id, "id");
         return mapper.findById(id);
     }
 
@@ -122,16 +112,6 @@ public class GridServiceImpl implements GridService {
         return mapper.findByPosit(grid);
     }
 
-//    @Override
-//    public List<Block> findByGridId(Long id) {
-//        if(isIdOk(id)) {
-//            throw new GridOperateException(ResultCodeEnum.GRID_QUERY_ERROR.getCode(),  "id 信息缺失");
-//        }
-//        BlockVo limit = new BlockVo();
-//        limit.setGridId(id);
-//        return blockMapper.findAllByLimit(limit);
-//    }
-
     @Override
     public Long getCount() {
         return mapper.getCount();
@@ -139,25 +119,19 @@ public class GridServiceImpl implements GridService {
 
     @Override
     public Long getCountByCart(Long cartId) {
-        if(!isIdOk(cartId)) {
-            throw new GridOperateException(ResultCodeEnum.GRID_QUERY_ERROR.getCode(), "cart id 信息缺失");
-        }
+        idCheck(cartId, "cartId");
         return getCountByLimit(cartId, null);
     }
 
     @Override
     public Long getCountByLayer(Long cartId, Integer layer) {
-        if(!isIdOk(cartId)) {
-            throw new GridOperateException(ResultCodeEnum.GRID_QUERY_ERROR.getCode(), "cart id 信息缺失");
-        }
-        if(!isIdOk(layer)) {
-            throw new GridOperateException(ResultCodeEnum.GRID_QUERY_ERROR.getCode(), "layer 信息缺失");
-        }
+        idCheck(cartId, "cartId");
+        idCheck(layer, "layer");
         return getCountByLimit(cartId, layer);
     }
 
     @Override
-    public Boolean addGrid(Grid grid) {
+    public Boolean add(Grid grid) {
         grid.setId(null);
         if(findByPosit(grid.getCartId(), grid.getLayer(), grid.getRow(), grid.getColumn()) != null) {
             throw new GridOperateException(ResultCodeEnum.GRID_OPERATE_ERROR.getCode(), "待添加的 Grid 已经存在");
@@ -166,21 +140,17 @@ public class GridServiceImpl implements GridService {
     }
 
     @Override
-    public Boolean modifyDrugInfInGrid(Grid grid) {
-        if(findById(grid.getId()) == null) {
-            throw new GridOperateException(ResultCodeEnum.GRID_OPERATE_ERROR.getCode(), "待修改的 Grid 不存在");
-        }
-        if(findByPosit(grid.getCartId(), grid.getLayer(), grid.getRow(), grid.getColumn()) == null) {
+    public Boolean modify(Grid grid) {
+        // 如果通过 id 和 位置信息都无法找在数据库到 grid 信息
+        if(findById(grid.getId()) == null && findByPosit(grid.getCartId(), grid.getLayer(), grid.getRow(), grid.getColumn()) == null) {
             throw new GridOperateException(ResultCodeEnum.GRID_OPERATE_ERROR.getCode(), "待修改的 Grid 不存在");
         }
         return mapper.modifyGrid(grid) > 0;
     }
 
     @Override
-    public Boolean removeGrid(Long id) {
-        if(findById(id) == null) {
-            throw new GridOperateException(ResultCodeEnum.GRID_OPERATE_ERROR.getCode(), "待修改的 Grid 不存在");
-        }
+    public Boolean remove(Long id) {
+        idCheck(id, "id");
         return mapper.removeById(id) > 0;
     }
 
@@ -188,12 +158,8 @@ public class GridServiceImpl implements GridService {
         GridVo limit = new GridVo();
         limit.setCartId(cartId);
         limit.setLayer(layer);
-        if(start != null && start > 0) {
-            limit.setStart(start);
-        }
-        if(pageSize != null && pageSize > 0) {
-            limit.setPageSize(pageSize);
-        }
+        limit.setStart(start);
+        limit.setPageSize(pageSize);
         return mapper.findAllByLimit(limit);
     }
 
@@ -202,6 +168,25 @@ public class GridServiceImpl implements GridService {
         limit.setCartId(cartId);
         limit.setLayer(layer);
         return mapper.getCountByLimit(limit);
+    }
+
+
+    private void idCheck(Long id, String name) {
+        if(!isStringOk(name)) {
+            name = "id";
+        }
+        if(!isIdOk(id)) {
+            throw new GridOperateException(ResultCodeEnum.GRID_QUERY_ERROR.getCode(), name + "信息缺失");
+        }
+    }
+
+    private void idCheck(Integer id, String name) {
+        if(!isStringOk(name)) {
+            name = "id";
+        }
+        if(!isIdOk(id)) {
+            throw new GridOperateException(ResultCodeEnum.GRID_QUERY_ERROR.getCode(), name + "信息缺失");
+        }
     }
 
 }

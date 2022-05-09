@@ -1,7 +1,6 @@
 package com.daniel.cart.service;
 
 import com.daniel.cart.domain.Cart;
-import com.daniel.cart.service.CartService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class CartServiceTest {
 
     @Test
     public void findAllByState() {
-        List<Cart> carts = service.findAllByState("inventory");
+        List<Cart> carts = service.findByState("inventory");
         for (Cart cart : carts) {
             System.out.println(cart);
         }
@@ -76,7 +75,7 @@ public class CartServiceTest {
     public void setCartEmergency() {
         Set<Long> set = new HashSet<>();
         for (int i = 0; i < 10; i++) {
-            Long id = Long.valueOf(new Random().nextInt(104) + 1);
+            Long id = (long) (new Random().nextInt(104) + 1);
             set.add(id);
         }
         for (Long id : set) {
@@ -88,7 +87,7 @@ public class CartServiceTest {
     public void setCartInventory() {
         Set<Long> set = new HashSet<>();
         for (int i = 0; i < 10; i++) {
-            Long id = Long.valueOf(new Random().nextInt(104) + 1);
+            Long id = (long) (new Random().nextInt(104) + 1);
             set.add(id);
         }
         for (Long id : set) {

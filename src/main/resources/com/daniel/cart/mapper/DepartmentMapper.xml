@@ -6,38 +6,45 @@
     <resultMap id="departmentMap" type="com.daniel.cart.domain.Department">
         <id column="department_id" property="departmentId"/>
         <result column="department_name" property="name"/>
-<!--        <result column="is_enable" property="isValid"/>-->
     </resultMap>
 
     <select id="findAll" resultMap="departmentMap">
-        select * from drug_cart_db.department_inf
+        select `department_id`, `department_name`
+        from drug_cart_db.department_inf
+        where is_enable = true
     </select>
     
     <select id="findByLimit" resultMap="departmentMap" parameterType="departmentVo">
-        select department_id, department_name, is_enable
+        select `department_id`, `department_name`
         from drug_cart_db.department_inf
         where is_enable = true
-        <if test="departmentName!=null">
-            and department_name like #{name}
+        <if test="nameCondition!=null">
+            and department_name like #{nameCondition}
         </if>
         <if test="start!=null and pageSize!=null">
             limit #{start - 1},#{pageSize}
         </if>
     </select>
     
+    <select id="getCount" resultType="long">
+        select count(`department_id`)
+        from drug_cart_db.department_inf
+        where is_enable = true
+    </select>
+    
     <select id="getCountByLimit" parameterType="departmentVo" resultType="long">
         select count(department_id)
         from drug_cart_db.department_inf
         where is_enable = true
-        <if test="departmentName!=null">
-            and department_name like #{departmentName}
+        <if test="nameCondition!=null">
+            and department_name like #{nameCondition}
         </if>
     </select>
     
     <select id="findById" resultMap="departmentMap" parameterType="java.lang.Long">
-        select department_id, department_name, is_enable
+        select department_id, department_name
         from drug_cart_db.department_inf
-        where 1 = 1
+        where is_enable = true
         <if test="departmentId!=null">
             and department_id = #{id}
         </if>

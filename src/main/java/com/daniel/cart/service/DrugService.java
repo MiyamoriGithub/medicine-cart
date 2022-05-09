@@ -1,17 +1,12 @@
 package com.daniel.cart.service;
 
 import com.daniel.cart.domain.Drug;
-import com.daniel.cart.domain.vo.DrugVo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public interface DrugService {
-
-    List<Drug> findAll();
-
-    List<Drug> findAll(Integer start, Integer pageSize);
+public interface DrugService extends AbstractService<Drug> {
 
     List<Drug> findTemporary();
 
@@ -21,7 +16,7 @@ public interface DrugService {
 
     List<Drug> findExpire(List<Drug> list);
 
-    List<Drug> findByDrugInfId(Long id);
+    List<Drug> findByDrugInfId(Long drugInfId);
 
     List<Drug> findByDrugInfId(Long id, Integer start, Integer pageSize);
 
@@ -33,20 +28,17 @@ public interface DrugService {
 
     List<Drug> findByName(String name, Integer start, Integer pageSize);
 
-    Drug findById(Long id);
-
-    Long getCount();
+    /**
+     * 添加特定批次药品的方法
+     * @param drug 特定药品信息，注意在添加之前必须在数据库中已有对应的 drugInf 信息
+     * @return 是否添加成功
+     */
+    Boolean add(Drug drug);
 
     Long getCountByDrugInfId(Long id);
 
     Long getCountByBarcode(String barcode);
 
     Long getCountByName(String nameCondition);
-
-    Boolean addDrug(Drug drug);
-
-    Boolean modifyDrug(Drug drug);
-
-    Boolean deleteDrug(Long id);
 
 }

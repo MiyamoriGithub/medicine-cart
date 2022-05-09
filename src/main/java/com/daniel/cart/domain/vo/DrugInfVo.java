@@ -17,7 +17,9 @@ public class DrugInfVo extends PageVo{
     public void setNameCondition(String nameCondition) {
         StringBuffer tmp = new StringBuffer();
         tmp.append('%');
-        tmp.append(nameCondition.trim());
+        if(nameCondition != null) {
+            tmp.append(nameCondition.trim());
+        }
         tmp.append('%');
         this.nameCondition = tmp.toString();
     }

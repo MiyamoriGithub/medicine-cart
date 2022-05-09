@@ -1,19 +1,13 @@
 package com.daniel.cart.service;
 
 import com.daniel.cart.domain.Employee;
-import com.daniel.cart.domain.vo.EmployeeVo;
 import org.springframework.stereotype.Service;
 
-import javax.print.DocFlavor;
 import java.util.List;
 import java.util.Map;
 
 @Service
-public interface EmployeeService {
-
-    List<Employee> findAll();
-
-    List<Employee> findAll(Integer start, Integer pageSize);
+public interface EmployeeService extends AbstractService<Employee> {
 
     List<Employee> findByName(String name);
 
@@ -31,11 +25,7 @@ public interface EmployeeService {
 
     List<Employee> findByRole(String role, Integer start, Integer pageSize);
 
-    Employee  findById(Long id);
-
     Employee findByPhone(String phone);
-
-    Long getCount();
 
     Long getCountByName(String name);
 
@@ -44,12 +34,6 @@ public interface EmployeeService {
     Long getCountByDepartment(Long departmentId);
 
     Long getCountByRole(String role);
-
-    Boolean addEmployee(Employee employeee);
-
-    Boolean modifyEmployee(Employee employee);
-
-    Boolean removeEmployee(Long id);
 
     Map<String, String> getAllRoles();
 }

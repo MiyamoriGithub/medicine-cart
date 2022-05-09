@@ -152,14 +152,14 @@ public class BlockController implements AbstractController {
         if(drugId != null) {
             block.setDrugId(drugId);
         }
-        Boolean res = service.addBlock(block);
+        Boolean res = service.add(block);
         return returnMessage(res);
     }
 
     @ApiOperation("删除 block")
     @GetMapping("remove")
     public Result remove(Long blockId) {
-        Boolean res = service.removeBlock(blockId);
+        Boolean res = service.remove(blockId);
         return returnMessage(res);
     }
 

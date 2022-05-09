@@ -81,8 +81,8 @@ public class DrugServiceImpl implements DrugService {
     }
 
     @Override
-    public List<Drug> findByDrugInfId(Long id) {
-        return findByDrugInfId(id, null, null);
+    public List<Drug> findByDrugInfId(Long drugInfId) {
+        return findByDrugInfId(drugInfId, null, null);
     }
 
     @Override
@@ -141,43 +141,40 @@ public class DrugServiceImpl implements DrugService {
     }
 
     @Override
-    public Boolean addDrug(Drug drug) {
+    public Boolean add(Drug drug) {
         long operate = 0L;
         if(drug != null) {
-            operate = mapper.addDrug(drug);
             DrugInf res = null;
+            // 通过 drug 中的 drugInfId 或者 barcode 获取drugInf，如果获取不到则通用信息添加失败
             if(drug.getDrugInfId() != null) {
-                 res = drugInfMapper.findById(drug.getDrugInfId());
+                res = drugInfMapper.findById(drug.getDrugInfId());
             } else if(drug.getDrugInf() != null) {
-                 DrugInf inf = drug.getDrugInf();
-                 barcodeCheck(inf.getBarcode());
-                 res = drugInfMapper.findByBarcode(inf.getBarcode());
-             }
-            if(res == null) {
                 DrugInf inf = drug.getDrugInf();
                 barcodeCheck(inf.getBarcode());
-                drugNameCheck(inf.getName());
-                shelfLifeCheck(inf.getShelfLife());
-                operate += drugInfMapper.addDrugInf(inf);
+                res = drugInfMapper.findByBarcode(inf.getBarcode());
             }
+            if(res == null) {
+                throw new DrugOperateException("待添加的药品通用信息不存在");
+            }
+            operate = mapper.addDrug(drug);
         }
         return operate > 0L;
     }
 
     @Override
-    public Boolean modifyDrug(Drug drug) {
+    public Boolean modify(Drug drug) {
         if(drug.getId() != null && drug.getDrugInf() != null && drug.getDrugInf().getDrugInfId() != null) {
-            idCheck(drug.getId());
+            idCheck(drug.getId(), "drugId");
             DrugInf newInf = drug.getDrugInf();
-            drugInfIdCheck(newInf.getDrugInfId());
+            idCheck(newInf.getDrugInfId(), "drugInfId");
             return mapper.modifyDrug(drug) > 0L;
         }
         return false;
     }
 
     @Override
-    public Boolean deleteDrug(Long id) {
-        idCheck(id);
+    public Boolean remove(Long id) {
+        idCheck(id, "drugId");
         return mapper.removeById(id) > 0;
     }
 
@@ -208,32 +205,30 @@ public class DrugServiceImpl implements DrugService {
         return mapper.findByLimit(limit);
     }
 
-    private void idCheck(Long id) {
+    private void idCheck(Long id, String name) {
         if(!isIdOk(id)) {
-            throw new DrugOperateException(ResultCodeEnum.DRUG_OPERATE_ERROR.getCode(), "药品 id 信息缺失");
+            logger.error(name + "信息缺失");
+            throw new DrugOperateException(ResultCodeEnum.DRUG_OPERATE_ERROR.getCode(), name + "信息缺失");
         }
     }
 
     private void shelfLifeCheck(Integer shelfLife) {
         if(!isIdOk(shelfLife)) {
+            logger.error("药品保质期信息缺失");
             throw new DrugOperateException(ResultCodeEnum.DRUG_OPERATE_ERROR.getCode(), "药品保质期信息缺失");
-        }
-    }
-
-    private void drugInfIdCheck(Long id) {
-        if(!isIdOk(id)) {
-            throw new DrugOperateException(ResultCodeEnum.DRUG_QUERY_ERROR.getCode(), "药品通用信息 id 信息缺失");
         }
     }
 
     private void drugNameCheck(String drugName) {
         if(!isStringOk(drugName)) {
+            logger.error("药品名称信息缺失");
             throw new DrugOperateException(ResultCodeEnum.DRUG_QUERY_ERROR.getCode(), "药品名称信息缺失");
         }
     }
 
     private void barcodeCheck(String barcode) {
         if(!isStringOk(barcode)) {
+            logger.error("药品条码信息缺失");
             throw new DrugOperateException(ResultCodeEnum.DRUG_QUERY_ERROR.getCode(), "药品条码信息缺失");
         }
     }

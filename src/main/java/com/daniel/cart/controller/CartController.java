@@ -94,9 +94,9 @@ public class CartController implements AbstractController {
     ) {
         List<Cart> carts;
         if(start == null || pageSize == null) {
-            carts = service.findAllByDepartment(departmentId);
+            carts = service.findByDepartment(departmentId);
         } else {
-            carts = service.findAllByDepartment(departmentId, start, pageSize);
+            carts = service.findByDepartment(departmentId, start, pageSize);
         }
         Long count = service.getCountByDepartment(departmentId);
         Result res = Result.ok().data("items", carts);
@@ -112,9 +112,9 @@ public class CartController implements AbstractController {
     ) {
         List<Cart> carts;
         if(start == null || pageSize == null) {
-            carts = service.findAllByState(state);
+            carts = service.findByState(state);
         } else {
-            carts = service.findAllByState(state, start, pageSize);
+            carts = service.findByState(state, start, pageSize);
         }
         Long count = service.getCountByState(state);
         Result res = Result.ok().data("items", carts);
@@ -146,14 +146,14 @@ public class CartController implements AbstractController {
     @GetMapping("add")
     public Result add(@RequestParam("部门id") Long departmentId) {
         Cart cart = new Cart(departmentId);
-        Boolean res = service.addCart(cart);
+        Boolean res = service.add(cart);
         return returnMessage(res);
     }
 
     @ApiOperation("删除急救车")
     @GetMapping("remove")
     public Result remove(@RequestParam("急救车id") Long id) {
-        Boolean res = service.removeCart(id);
+        Boolean res = service.remove(id);
         return returnMessage(res);
     }
 
@@ -169,7 +169,7 @@ public class CartController implements AbstractController {
         if(state != null && EnumUtils.isValidEnum(CartStateEnum.class, state)) {
             cart.setState(CartStateEnum.valueOf(state));
         }
-        Boolean res = service.modifyCart(cart);
+        Boolean res = service.modify(cart);
         return returnMessage(res);
     }
 

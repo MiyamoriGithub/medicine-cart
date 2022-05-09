@@ -27,6 +27,10 @@ public enum ResultCodeEnum {
     FETCH_ACCESSTOKEN_FAILD(false, 23003, "获取accessToken失败"),
     FETCH_USERINFO_ERROR(false, 23004, "获取用户信息失败"),
 
+    DEPARTMENT_ERROR(false, 22000, "部门信息相关异常"),
+    DEPARTMENT_QUERY_ERROR(false, 22001, "部门信息查询异常"),
+    DEPARTMENT_OPERATE_ERROR(false, 22002, "部门信息操作异常"),
+
     DRUG_ERROR(false, 24000, "药品相关异常"),
     DRUG_INF_MISS_ERROR(false, 24001, "药品信息缺失"),
     DRUG_OPERATE_ERROR(false, 24002, "药品操作异常"),

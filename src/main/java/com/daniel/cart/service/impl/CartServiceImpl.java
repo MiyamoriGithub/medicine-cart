@@ -44,34 +44,34 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<Cart> findAllByDepartment(String departmentName) {
-        return findAllByDepartment(departmentName, null, null);
+    public List<Cart> findByDepartment(String departmentName) {
+        return findByDepartment(departmentName, null, null);
     }
 
     @Override
-    public List<Cart> findAllByDepartment(String departmentName, Integer start, Integer pageSize) {
+    public List<Cart> findByDepartment(String departmentName, Integer start, Integer pageSize) {
         departmentNameCheck(departmentName);
         return findAllByLimit(null, departmentName, null, start, pageSize);
     }
 
     @Override
-    public List<Cart> findAllByDepartment(Long departmentId) {
-        return findAllByDepartment(departmentId, null, null);
+    public List<Cart> findByDepartment(Long departmentId) {
+        return findByDepartment(departmentId, null, null);
     }
 
     @Override
-    public List<Cart> findAllByDepartment(Long departmentId, Integer start, Integer pageSize) {
+    public List<Cart> findByDepartment(Long departmentId, Integer start, Integer pageSize) {
         departmentIdCheck(departmentId);
         return findAllByLimit(departmentId, null, null, start, pageSize);
     }
 
     @Override
-    public List<Cart> findAllByState(String state) {
-        return findAllByState(state, null, null);
+    public List<Cart> findByState(String state) {
+        return findByState(state, null, null);
     }
 
     @Override
-    public List<Cart> findAllByState(String state, Integer start, Integer pageSize) {
+    public List<Cart> findByState(String state, Integer start, Integer pageSize) {
         stateCheck(state);
         return findAllByLimit(null, null, CartStateEnum.valueOf(state), start, pageSize);
     }
@@ -144,7 +144,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Boolean addCart(Cart cart) {
+    public Boolean add(Cart cart) {
         if(cart == null) {
             return false;
         }
@@ -152,7 +152,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Boolean modifyCart(Cart cart) {
+    public Boolean modify(Cart cart) {
         if(cart != null && cart.getId() != null) {
             return mapper.modifyCart(cart) > 0;
         }
@@ -160,7 +160,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Boolean removeCart(Long id) {
+    public Boolean remove(Long id) {
         idCheck(id);
         if(null == findById(id)) {
             throw new CartOperateException(ResultCodeEnum.CART_OPERATE_ERROR.getCode(), "待删除的急救车信息不存在");

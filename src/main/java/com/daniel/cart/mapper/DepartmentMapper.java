@@ -15,6 +15,8 @@ public interface DepartmentMapper {
 
     List<Department> findByLimit(DepartmentVo limit);
 
+    Long getCount();
+
     Long getCountByLimit(DepartmentVo limit);
 
     Department findById(Long id);

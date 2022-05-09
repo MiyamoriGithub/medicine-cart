@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.daniel.cart.util.AttributeCheck.isIdOk;
 import static com.daniel.cart.util.AttributeCheck.isStringOk;
@@ -34,6 +35,9 @@ public class BlockServiceImpl implements BlockService {
     private final GridMapper gridMapper;
     private final DrugMapper drugMapper;
 
+    // 规定 block 为空即药品信息为 -1
+    private static final Long EMPTY = -1L;
+
     public BlockServiceImpl(BlockMapper mapper, GridMapper gridMapper, DrugMapper drugMapper) {
         this.mapper = mapper;
         this.gridMapper = gridMapper;
@@ -47,7 +51,7 @@ public class BlockServiceImpl implements BlockService {
 
     @Override
     public List<Block> findAll(Integer start, Integer pageSize) {
-        return null;
+        return findAllByLimit(null, null, null, null, null, null, start, pageSize);
     }
 
     @Override
@@ -111,7 +115,7 @@ public class BlockServiceImpl implements BlockService {
     @Override
     public List<Block> findByLayer(Long cartId, Integer layer, Integer start, Integer pageSize) {
         idCheck(cartId, "cartId");
-        layerCheck(layer);
+        idCheck(layer, "layer");
         return findAllByLimit(null, null, null, cartId, layer, null, start, pageSize);
     }
 
@@ -185,12 +189,12 @@ public class BlockServiceImpl implements BlockService {
     @Override
     public Long getCountByLayer(Long cartId, Integer layer) {
         idCheck(cartId, "cartId");
-        layerCheck(layer);
+        idCheck(layer, "layer");
         return getCountByLimit(null, null, cartId, layer, null);
     }
 
     @Override
-    public Boolean addBlock(Block block) {
+    public Boolean add(Block block) {
         // 信息检查
         if(block == null ||
                 block.getGridId() == null ||
@@ -224,7 +228,13 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
-    public Boolean removeBlock(Long blockId) {
+    public Boolean modify(Block block) {
+        idCheck(block.getId(), "id");
+        return mapper.modifyBlock(block) > 0;
+    }
+
+    @Override
+    public Boolean remove(Long blockId) {
         idCheck(blockId, "blockId");
         return mapper.removeById(blockId) > 0L;
     }
@@ -236,7 +246,7 @@ public class BlockServiceImpl implements BlockService {
         if(!AttributeCheck.isIdOk(drug.getDrugInf().getDrugInfId())) {
             throw new BlockOperateException(ResultCodeEnum.BLOCK_OPERATE_ERROR.getCode(), "药品信息缺失");
         }
-        if(block.getDrugId() != null && block.getDrugId() > 0) {
+        if(block.getDrugId() != null && !Objects.equals(block.getDrugId(), EMPTY)) {
             throw new BlockOperateException(ResultCodeEnum.BLOCK_OPERATE_ERROR.getCode(), "当前 block 已有药品");
         }
         // 如果药品库存不足
@@ -253,18 +263,21 @@ public class BlockServiceImpl implements BlockService {
                 throw new GridOperateException(26002, "修改 Grid 信息失败");
             }
         } else if(!drugInfIdOfGrid.equals(drug.getDrugInf().getDrugInfId())) {
+            // 如果从数据库中查到的 grid 绑定的药品信息和待存放药品的药品信息不一致，则说明药品存放位置错误
             throw new BlockOperateException(25002, "药品存放位置错误");
         } else {
-            // 查询 Grid 中存储的药品数量
+            // 查询 Grid 中存储的药品数量并和 grid 的容量信息进行比较
+            // 这里的判断逻辑好像没什么必要，因为只要 block 为空就肯定容量够用，但是代码能跑就先不改了
             Long stock = getStockInGrid(block.getGridId());
             Long capacity = Long.valueOf(gridMapper.findById(block.getGridId()).getCapacity());
             if(capacity <= stock) {
-                throw new BlockOperateException(25002, "Grid 容量已达上限");
+                throw new BlockOperateException(ResultCodeEnum.BLOCK_OPERATE_ERROR.getCode(), "Grid 容量已达上限");
             }
         }
+        // 修改 block 中的 drugId 信息并对数据库内容进行修改
         block.setDrugId(drug.getId());
         if(mapper.modifyBlock(block) <= 0) {
-            throw new BlockOperateException(26002, "修改 Block 信息失败");
+            throw new BlockOperateException(ResultCodeEnum.BLOCK_OPERATE_ERROR.getCode(), "修改数据库 Block 中药品信息失败");
         }
         drug.setStock(drug.getStock() - 1);
         drugMapper.modifyDrug(drug);
@@ -277,13 +290,13 @@ public class BlockServiceImpl implements BlockService {
         idCheck(blockId, "blockId");
         Block block = mapper.findById(blockId);
         // 移除 block 中的药品信息
-        block.setDrugId(-1L);
+        block.setDrugId(EMPTY);
         Boolean res = mapper.modifyBlock(block) > 0;
         // 如果移除此药品导致 grid 为空，则移除 grid 绑定的药品信息
         if(getStockInGrid(block.getGridId()) <= 0) {
             Grid grid = gridMapper.findById(block.getGridId());
             isGridInfOk(grid);
-            grid.setDrugInfId(-1L);
+            grid.setDrugInfId(EMPTY);
             gridMapper.modifyGrid(grid);
         }
         return res;
@@ -340,12 +353,6 @@ public class BlockServiceImpl implements BlockService {
         }
         if(!isIdOk(id)) {
             throw new BlockOperateException(ResultCodeEnum.BLOCK_OPERATE_ERROR.getCode(), name + "信息缺失");
-        }
-    }
-
-    private void layerCheck(Integer layer) {
-        if(!isIdOk(layer)) {
-            throw new BlockOperateException(ResultCodeEnum.BLOCK_QUERY_ERROR.getCode(), "层级信息缺失");
         }
     }
 

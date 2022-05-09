@@ -1,21 +1,21 @@
 package com.daniel.cart.domain.vo;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class DepartmentVo extends PageVo{
-    private Long departmentId;
 
-    private String departmentName;
+    private String nameCondition;
 
-    private Boolean isEnabled;
-
-    public void setDepartmentId(Long id) {
-        this.departmentId = id;
-    }
-
-    public void setDepartmentName(String name) {
-        this.departmentName = name;
-    }
-
-    public void setIsEnabled(Boolean enabled) {
-        this.isEnabled = enabled;
+    public void setNameCondition(String nameCondition) {
+        StringBuffer tmp = new StringBuffer();
+        tmp.append("%");
+        if(nameCondition != null) {
+            tmp.append(nameCondition.trim());
+        }
+        tmp.append("%");
+        this.nameCondition = tmp.toString();
     }
 }

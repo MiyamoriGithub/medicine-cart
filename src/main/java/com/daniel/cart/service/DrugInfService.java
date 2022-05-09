@@ -1,9 +1,10 @@
 package com.daniel.cart.service;
 
 import com.daniel.cart.domain.DrugInf;
-import com.daniel.cart.mapper.DrugInfMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 药品信息的 Service 层接口
@@ -11,12 +12,13 @@ import org.springframework.stereotype.Service;
  * @author Daniel Zheng
  **/
 
-// Todo 完善接口
-
 @Service
 @Repository
-public interface DrugInfService {
+public interface DrugInfService extends AbstractService<DrugInf> {
 
-    DrugInf findById(Long id);
+    List<DrugInf> findByName(String name);
 
+    List<DrugInf> findByName(String name, Integer start, Integer pageSize);
+
+    DrugInf findByBarcode(String barcode);
 }
