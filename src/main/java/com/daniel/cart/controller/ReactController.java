@@ -11,6 +11,7 @@ import com.daniel.cart.service.DrugService;
 import com.daniel.cart.service.GridService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class ReactController {
     @ApiOperation("根据 id 查询药品信息")
     @GetMapping("findDrug")
     public Result findDrug(
-            @RequestParam(value = "药品 id") Long id
+            @RequestParam @ApiParam(value = "药品 id", required = true) Long id
     ) {
         Drug drug = drugService.findById(id);
         return Result.ok().data("drug", drug);
@@ -61,8 +62,8 @@ public class ReactController {
     @ApiOperation("根据药品 id 和 急救车 id 查询 grid 信息")
     @GetMapping("findPosit")
     public Result findPosit(
-            @RequestParam(value = "药品id信息") Long id,
-            @RequestParam(value = "急救车 id") Long cartId
+            @RequestParam @ApiParam(value = "药品id信息", required = true) Long id,
+            @RequestParam @ApiParam(value = "急救车 id", required = true) Long cartId
             ) {
         Drug drug = drugService.findById(id);
         Grid res = null;
@@ -81,10 +82,10 @@ public class ReactController {
     @GetMapping("getInfInGrid")
     @ApiOperation("查询指定位置存储的药品信息")
     public Result getInf(
-            @RequestParam("急救车 id") Long cartId,
-            @RequestParam(value = "层数") Integer layer,
-            @RequestParam(value = "行") Integer row,
-            @RequestParam(value = "列") Integer column
+            @RequestParam @ApiParam(value = "急救车 id", required = true) Long cartId,
+            @RequestParam @ApiParam(value = "层数", required = true) Integer layer,
+            @RequestParam @ApiParam(value = "行", required = true) Integer row,
+            @RequestParam @ApiParam(value = "列",required = true) Integer column
     ) {
         Grid grid = gridService.findByPosit(cartId, layer, row, column);
         DrugInf drugInf = drugInfService.findById(grid.getDrugInfId());
@@ -101,11 +102,11 @@ public class ReactController {
     @GetMapping("getInfInBlock")
     @ApiOperation("查询指定位置存储的药品信息")
     public Result getInf(
-            @RequestParam("急救车 id") Long cartId,
-            @RequestParam(value = "层数") Integer layer,
-            @RequestParam(value = "行") Integer row,
-            @RequestParam(value = "列") Integer column,
-            @RequestParam(value = "序列") Integer serial
+            @RequestParam @ApiParam(value = "急救车 id", required = true) Long cartId,
+            @RequestParam @ApiParam(value = "层数", required = true) Integer layer,
+            @RequestParam @ApiParam(value = "行", required = true) Integer row,
+            @RequestParam @ApiParam(value = "列", required = true) Integer column,
+            @RequestParam @ApiParam(value = "序列", required = true) Integer serial
     ) {
         Grid grid = gridService.findByPosit(cartId, layer, row, column);
         Block block = blockService.findByPosit(grid, serial);
@@ -120,12 +121,12 @@ public class ReactController {
     @ApiOperation("向指定位置存入药品")
     @GetMapping("deposit")
     public Result deposit(
-            @RequestParam("急救车 id") Long cartId,
-            @RequestParam(value = "层数") Integer layer,
-            @RequestParam(value = "行") Integer row,
-            @RequestParam(value = "列") Integer column,
-            @RequestParam(value = "序列") Integer serial,
-            @RequestParam(value = "药品 id") Long drugId
+            @RequestParam @ApiParam(value = "急救车 id", required = true) Long cartId,
+            @RequestParam @ApiParam(value = "层数", required = true) Integer layer,
+            @RequestParam @ApiParam(value = "行", required = true) Integer row,
+            @RequestParam @ApiParam(value = "列", required = true) Integer column,
+            @RequestParam @ApiParam(value = "序列", required = true) Integer serial,
+            @RequestParam @ApiParam(value = "药品 id", required = true) Long drugId
     ) {
         Grid grid = gridService.findByPosit(cartId, layer, row, column);
         Block block = blockService.findByPosit(grid, serial);
@@ -138,11 +139,11 @@ public class ReactController {
     @ApiOperation("取出指定位置的药品")
     @GetMapping("withdraw")
     public Result withdraw(
-            @RequestParam("急救车 id") Long cartId,
-            @RequestParam(value = "层数") Integer layer,
-            @RequestParam(value = "行") Integer row,
-            @RequestParam(value = "列") Integer column,
-            @RequestParam(value = "序列") Integer serial
+            @RequestParam @ApiParam(value = "急救车 id", required = true) Long cartId,
+            @RequestParam @ApiParam(value = "层数", required = true) Integer layer,
+            @RequestParam @ApiParam(value = "行", required = true) Integer row,
+            @RequestParam @ApiParam(value = "列", required = true) Integer column,
+            @RequestParam @ApiParam(value = "序列", required = true) Integer serial
     ) {
         Grid grid = gridService.findByPosit(cartId, layer, row, column);
         logger.info(grid.toString());

@@ -7,6 +7,7 @@ import com.daniel.cart.service.DrugInfService;
 import com.daniel.cart.service.DrugService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,9 @@ public class DrugController implements AbstractController {
     @GetMapping("find")
     @Override
     public Result find(
-            @RequestParam(value = "药品id信息", required = false) Long id,
-            @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(value = "每页信息数量", required = false) Integer pageSize
+            @RequestParam(required = false) @ApiParam(value = "药品id信息", required = false) Long id,
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量", required = false) Integer pageSize
     ) {
         List<Drug> drugs;
         if (id != null) {
@@ -55,9 +56,9 @@ public class DrugController implements AbstractController {
     @ApiOperation("根据条码查询药品信息")
     @GetMapping("barcode")
     public Result barcode(
-            @RequestParam("药品条码") String barcode,
-            @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(value = "每页信息数量", required = false) Integer pageSize
+            @RequestParam @ApiParam(value = "药品条码", required = true) String barcode,
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量", required = false) Integer pageSize
     ) {
         List<Drug> drugs;
         if (start != null && pageSize != null) {
@@ -72,9 +73,9 @@ public class DrugController implements AbstractController {
     @ApiOperation("根据名称查询药品信息")
     @GetMapping("name")
     public Result name(
-            @RequestParam("药品名称查询条件") String name,
-            @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(value = "每页信息数量", required = false) Integer pageSize
+            @RequestParam @ApiParam(value = "药品名称查询条件", required = true) String name,
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量", required = false) Integer pageSize
     ) {
         List<Drug> drugs;
         if (start != null && pageSize != null) {
@@ -89,8 +90,8 @@ public class DrugController implements AbstractController {
     @ApiOperation("查询临期药品信息")
     @GetMapping("temporary")
     public Result temporary(
-            @RequestParam(value = "药品条码", required = false) String barcode,
-            @RequestParam(value = "药品名称", required = false) String name
+            @RequestParam(required = false) @ApiParam(value = "药品条码", required = false) String barcode,
+            @RequestParam(required = false) @ApiParam(value = "药品名称", required = false) String name
     ) {
         List<Drug> temporaryDrugs;
         if (barcode != null) {
@@ -108,8 +109,8 @@ public class DrugController implements AbstractController {
     @ApiOperation("查询过期药品信息")
     @GetMapping("expire")
     public Result expire(
-            @RequestParam(value = "药品条码", required = false) String barcode,
-            @RequestParam(value = "药品名称", required = false) String name
+            @RequestParam(required = false) @ApiParam(value = "药品条码", required = false) String barcode,
+            @RequestParam(required = false) @ApiParam(value = "药品名称", required = false) String name
     ) {
         List<Drug> expireDrugs;
         if (barcode != null) {
@@ -127,13 +128,13 @@ public class DrugController implements AbstractController {
     @ApiOperation("添加药品")
     @GetMapping("add")
     public Result add(
-            @RequestParam(value = "药品信息 id，如果是新药品则需要添加其他药品信息", required = false) Long drugInfId,
-            @RequestParam(value = "生产日期") Date productDate,
-            @RequestParam(value = "库存", required = false) Integer stock,
-            @RequestParam(value = "条码", required = false) String barcode,
-            @RequestParam(value = "名称", required = false) String name,
-            @RequestParam(value = "保质期", required = false) Integer shelfLife,
-            @RequestParam(value = "包装规格", required = false) Integer drugPackage
+            @RequestParam(required = false) @ApiParam(value = "药品信息 id，如果是新药品则需要添加其他药品信息", required = false) Long drugInfId,
+            @RequestParam @ApiParam(value = "生产日期",required = true) Date productDate,
+            @RequestParam(required = false) @ApiParam(value = "库存", required = false) Integer stock,
+            @RequestParam(required = false) @ApiParam(value = "条码", required = false) String barcode,
+            @RequestParam(required = false) @ApiParam(value = "名称", required = false) String name,
+            @RequestParam(required = false) @ApiParam(value = "保质期", required = false) Integer shelfLife,
+            @RequestParam(required = false) @ApiParam(value = "包装规格", required = false) Integer drugPackage
             ) {
         // 首先通过 drugInf id 或者条形码查询 drugInf 信息，如果不存在就存入新的drugInf
         DrugInf drugInf = null;
@@ -164,7 +165,7 @@ public class DrugController implements AbstractController {
 
     @ApiOperation("删除药品")
     @GetMapping("remove")
-    public Result remove(@RequestParam("待删除药品 id") Long id) {
+    public Result remove(@RequestParam @ApiParam(value = "待删除药品 id", required = true) Long id) {
         Boolean res = service.remove(id);
         return returnMessage(res);
     }
@@ -172,14 +173,14 @@ public class DrugController implements AbstractController {
     @ApiOperation("修改药品")
     @GetMapping("modify")
     public Result modify(
-            @RequestParam("药品 id") Long id,
-            @RequestParam(value = "新的药品信息 id", required = false) Long drugInfId,
-            @RequestParam(value = "新的药品库存", required = false) Integer stock,
-            @RequestParam(value = "新的药品生产日期", required = false) Date productDate,
-            @RequestParam(value = "条形码",required = false) String barcode,
-            @RequestParam(value = "药品名称", required = false) String name,
-            @RequestParam(value = "药品保质期", required = false) Integer shelfLife,
-            @RequestParam(value = "药品包装规格", required = false) Integer drugPackage
+            @RequestParam @ApiParam(value = "药品 id", required = true) Long id,
+            @RequestParam(required = false) @ApiParam(value = "新的药品信息 id", required = false) Long drugInfId,
+            @RequestParam(required = false) @ApiParam(value = "新的药品库存", required = false) Integer stock,
+            @RequestParam(required = false) @ApiParam(value = "新的药品生产日期", required = false) Date productDate,
+            @RequestParam(required = false) @ApiParam(value = "条形码",required = false) String barcode,
+            @RequestParam(required = false) @ApiParam(value = "药品名称", required = false) String name,
+            @RequestParam(required = false) @ApiParam(value = "药品保质期", required = false) Integer shelfLife,
+            @RequestParam(required = false) @ApiParam(value = "药品包装规格", required = false) Integer drugPackage
     ) {
         DrugInf drugInf = null;
         if(drugInfId != null) {

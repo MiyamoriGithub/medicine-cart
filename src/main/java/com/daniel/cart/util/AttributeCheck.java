@@ -10,6 +10,9 @@ import java.util.regex.Pattern;
  **/
 
 public class AttributeCheck {
+
+    private final static Integer PHONE_LENGTH = 11;
+
     public static Boolean isIdOk(Long id) {
         return null != id && id > 0L;
     }
@@ -26,9 +29,10 @@ public class AttributeCheck {
         if(!isStringOk(phone)) {
             return false;
         }
-        String regex = "0\\d{2,3}[-]?\\d{7,8}|0\\d{2,3}\\s?\\d{7,8}|13[0-9]\\d{8}|15[1089]\\d{8}";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(phone);
-        return matcher.matches();
+//        String regex = "0\\d{2,3}[-]?\\d{7,8}|0\\d{2,3}\\s?\\d{7,8}|13[0-9]\\d{8}|15[1089]\\d{8}";
+//        Pattern pattern = Pattern.compile(regex);
+//        Matcher matcher = pattern.matcher(phone);
+//        return matcher.matches();
+        return phone.length() == PHONE_LENGTH && phone.startsWith("1");
     }
 }

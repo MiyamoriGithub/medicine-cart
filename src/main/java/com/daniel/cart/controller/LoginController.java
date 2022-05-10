@@ -2,10 +2,7 @@ package com.daniel.cart.controller;
 
 import com.daniel.cart.domain.result.Result;
 import com.daniel.cart.domain.result.ResultCodeEnum;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
@@ -30,8 +27,10 @@ public class LoginController {
     @ApiOperation("登录")
     @PostMapping("login")
     @ApiResponses(value = {@ApiResponse(code=20000, message = "成功")})
-    public Result login(@RequestParam("username") String username, @RequestParam("password") String password) {
-
+    public Result login(
+            @RequestParam @ApiParam(value = "username", required = true) String username,
+            @RequestParam @ApiParam(value = "password", required = true) String password
+    ) {
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         token.setRememberMe(true);
