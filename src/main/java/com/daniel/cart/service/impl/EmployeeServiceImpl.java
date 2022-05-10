@@ -9,6 +9,8 @@ import com.daniel.cart.exception.EmployeeOperateException;
 import com.daniel.cart.mapper.DepartmentMapper;
 import com.daniel.cart.mapper.EmployeeMapper;
 import com.daniel.cart.service.EmployeeService;
+import com.daniel.cart.util.AttributeCheck;
+import com.daniel.cart.util.Md5Utils;
 import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,6 +142,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(employee == null) {
             return false;
         }
+        phoneCheck(employee.getPhone());
+        stringCheck(employee.getName(), "name");
+//        idCheck(employee.getDepartmentId());
+        stringCheck(employee.getName(), "password");
+        employee.setPassword(Md5Utils.code(employee.getPassword()));
         Long res = 0L;
         try {
             res = mapper.addEmployee(employee);
@@ -157,6 +164,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Boolean modify(Employee employee) {
         if(employee == null || employee.getId() == null) {
             return false;
+        }
+        if(AttributeCheck.isStringOk(employee.getPassword())) {
+            employee.setPassword(Md5Utils.code(employee.getPassword()));
         }
         return mapper.modifyEmployee(employee) > 0;
     }
@@ -202,6 +212,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     private void idCheck(Long id) {
         if(!isIdOk(id)) {
             throw new EmployeeOperateException(ResultCodeEnum.EMPLOYEE_OPERATE_ERROR.getCode(), "id 信息缺失");
+        }
+    }
+
+    private void stringCheck(String string, String name) {
+        if(!isStringOk(string)) {
+            throw new EmployeeOperateException(ResultCodeEnum.EMPLOYEE_PHONE_ERROR.getCode(), name + "信息缺失");
         }
     }
 

@@ -7,6 +7,7 @@ import com.daniel.cart.domain.result.Result;
 import com.daniel.cart.service.CartService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +43,9 @@ public class CartController implements AbstractController {
     @GetMapping("find")
     @Override
     public Result find(
-            @RequestParam(value = "抢救车id信息", required = false) Long id,
-            @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(value = "每页信息数量" , required = false) Integer pageSize
+            @RequestParam(required = false) @ApiParam(value = "抢救车id信息") Long id,
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）") Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
     ) {
         if(id != null) {
             Cart cart = service.findById(id);
@@ -70,10 +71,10 @@ public class CartController implements AbstractController {
     @ApiOperation("根据限制条件查询急救车信息以及信息条目数量")
     @GetMapping("departAndState")
     public Result departAndState(
-            @RequestParam(value = "部门id信息") Long departmentId,
-            @RequestParam(value = "状态信息") String state,
-            @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(value = "每页信息数量", required = false) Integer pageSize
+            @RequestParam @ApiParam(value = "部门id信息",required = true) Long departmentId,
+            @RequestParam @ApiParam(value = "状态信息", required = true) String state,
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）") Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
     ) {
         List<Cart> carts;
         if(start == null || pageSize == null) {
@@ -88,9 +89,9 @@ public class CartController implements AbstractController {
     @ApiOperation("根据部门查询急救车信息以及信息条目数量")
     @GetMapping("depart")
     public Result depart(
-            @RequestParam("部门id信息") Long departmentId,
-            @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(value = "每页信息数量", required = false) Integer pageSize
+            @RequestParam @ApiParam(value = "部门id信息",required = true) Long departmentId,
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量", required = false) Integer pageSize
     ) {
         List<Cart> carts;
         if(start == null || pageSize == null) {
@@ -106,9 +107,9 @@ public class CartController implements AbstractController {
     @ApiOperation("根据状态查询急救车信息以及信息条目数量")
     @GetMapping("state")
     public Result state(
-            @RequestParam("状态信息") String state,
-            @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(value = "每页信息数量", required = false) Integer pageSize
+            @RequestParam @ApiParam(value = "状态信息",required = true) String state,
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量", required = false) Integer pageSize
     ) {
         List<Cart> carts;
         if(start == null || pageSize == null) {
@@ -123,28 +124,28 @@ public class CartController implements AbstractController {
 
     @ApiOperation("设置急救车为空闲状态")
     @GetMapping("free")
-    public Result setFree(@RequestParam("抢救车id") Long id) {
+    public Result setFree(@RequestParam @ApiParam(value = "抢救车id", required = true) Long id) {
         Boolean res = service.setCartFree(id);
         return returnMessage(res);
     }
 
     @ApiOperation("设置急救车为补充药品状态")
     @GetMapping("inventory")
-    public Result setInventory(@RequestParam("抢救车id") Long id) {
+    public Result setInventory(@RequestParam @ApiParam(value = "抢救车id",required = true) Long id) {
         Boolean res = service.setCartInventory(id);
         return returnMessage(res);
     }
 
     @ApiOperation("设置急救车为急救状态")
     @GetMapping("emergency")
-    public Result setEmergency(@RequestParam("抢救车id") Long id) {
+    public Result setEmergency(@RequestParam @ApiParam(value = "抢救车id", required = true) Long id) {
         Boolean res = service.setCartEmergency(id);
         return returnMessage(res);
     }
 
     @ApiOperation("添加急救车")
     @GetMapping("add")
-    public Result add(@RequestParam("部门id") Long departmentId) {
+    public Result add(@RequestParam @ApiParam(value = "部门id", required = true) Long departmentId) {
         Cart cart = new Cart(departmentId);
         Boolean res = service.add(cart);
         return returnMessage(res);
@@ -152,7 +153,7 @@ public class CartController implements AbstractController {
 
     @ApiOperation("删除急救车")
     @GetMapping("remove")
-    public Result remove(@RequestParam("急救车id") Long id) {
+    public Result remove(@RequestParam @ApiParam(value = "急救车id",required = true) Long id) {
         Boolean res = service.remove(id);
         return returnMessage(res);
     }
@@ -160,9 +161,9 @@ public class CartController implements AbstractController {
     @ApiOperation("修改急救车")
     @GetMapping("modify")
     public Result modify(
-            @RequestParam("急救车属性") Long id,
-            @RequestParam("急救车部门id") Long departmentId,
-            @RequestParam(value = "急救车状态", required = false) String state
+            @RequestParam @ApiParam(value = "急救车属性", required = true) Long id,
+            @RequestParam @ApiParam(value = "急救车部门id", required = true) Long departmentId,
+            @RequestParam(required = false) @ApiParam(value = "急救车状态", required = false) String state
             ) {
         Cart cart = service.findById(id);
         cart.setDepartmentId(departmentId);

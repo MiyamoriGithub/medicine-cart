@@ -6,6 +6,7 @@ import com.daniel.cart.service.DrugInfService;
 import com.daniel.cart.service.GridService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +40,9 @@ public class GridController implements AbstractController{
     @GetMapping("find")
     @Override
     public Result find(
-            @RequestParam(value = "Grid id信息", required = false) Long id,
-            @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(value = "每页信息数量" , required = false) Integer pageSize
+            @RequestParam(required = false) @ApiParam(value = "Grid id信息", required = false) Long id,
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量" , required = false) Integer pageSize
     ) {
         if(id != null) {
             Grid grid = service.findById(id);
@@ -60,9 +61,9 @@ public class GridController implements AbstractController{
     @ApiOperation("通过抢救车 id 获取 grid 信息以及条目数量")
     @GetMapping("cart")
     public Result cart(
-            @RequestParam(value = "急救车的 Id 信息") Long cartId,
-            @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(value = "每页信息数量" , required = false) Integer pageSize
+            @RequestParam @ApiParam(value = "急救车的 Id 信息", required = true) Long cartId,
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量" , required = false) Integer pageSize
     ) {
         List<Grid> grids;
         if(start != null && pageSize != null) {
@@ -77,10 +78,10 @@ public class GridController implements AbstractController{
     @ApiOperation("获取指定抢救车及其层数的全部 grid 信息")
     @GetMapping("layer")
     public Result layer(
-            @RequestParam(value = "急救车的 Id 信息") Long cartId,
-            @RequestParam(value = "层数信息") Integer layer,
-            @RequestParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(value = "每页信息数量" , required = false) Integer pageSize
+            @RequestParam @ApiParam(value = "急救车的 Id 信息", required = true) Long cartId,
+            @RequestParam @ApiParam(value = "层数信息", required = true) Integer layer,
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量" , required = false) Integer pageSize
     ) {
         List<Grid> grids;
         if(start != null && pageSize != null) {
@@ -107,12 +108,12 @@ public class GridController implements AbstractController{
     @ApiOperation("新增 Grid 信息")
     @GetMapping("add")
     public Result add(
-            @RequestParam("急救车的 Id") Long cartId,
-            @RequestParam("层数") Integer layer,
-            @RequestParam("行") Integer row,
-            @RequestParam("列") Integer column,
-            @RequestParam(value = "药品信息id（无效的 id 将被忽略）", required = false) Long drugInfId,
-            @RequestParam(value = "Grid 容量（默认为 8）", required = false) Integer capacity
+            @RequestParam @ApiParam(value = "急救车的 Id", required = true) Long cartId,
+            @RequestParam @ApiParam(value = "层数", required = true) Integer layer,
+            @RequestParam @ApiParam(value = "行",required = true) Integer row,
+            @RequestParam @ApiParam(value = "列", required = true) Integer column,
+            @RequestParam(required = false) @ApiParam(value = "药品信息id（无效的 id 将被忽略）", required = false) Long drugInfId,
+            @RequestParam(required = false) @ApiParam (value = "Grid 容量（默认为 8）", required = false) Integer capacity
     ) {
         Grid grid = new Grid();
         grid.setCartId(cartId);
@@ -137,8 +138,8 @@ public class GridController implements AbstractController{
     @ApiOperation("修改 Grid 中存放的药品信息")
     @GetMapping("modify")
     public Result modify(
-            @RequestParam("Grid id") Long id,
-            @RequestParam(value = "药品信息id（无效的 id 将被忽略）", required = false) Long drugInfId
+            @RequestParam @ApiParam(value = "Grid id", required = true) Long id,
+            @RequestParam(required = false) @ApiParam(value = "药品信息id（无效的 id 将被忽略）", required = false) Long drugInfId
     ) {
         Grid grid = service.findById(id);
         grid.setDrugInfId(drugInfId);
@@ -151,7 +152,7 @@ public class GridController implements AbstractController{
 
     @ApiOperation("删除指定的 Grid")
     @GetMapping("remove")
-    public Result remove(@RequestParam("待删除的 Grid id") Long id) {
+    public Result remove(@RequestParam @ApiParam(value = "待删除的 Grid id", required = true) Long id) {
         Grid grid = service.findById(id);
         Boolean res = service.remove(id);
         if(res) {
@@ -163,8 +164,8 @@ public class GridController implements AbstractController{
     @ApiOperation("查找需要补充药品的 Grid")
     @GetMapping("findInventory")
     public Result findInventory(
-            @RequestParam(value = "急救车 id", required = false) Long cartId,
-            @RequestParam(value = "急救车层数", required = false) Integer layer
+            @RequestParam(required = false) @ApiParam(value = "急救车 id", required = false) Long cartId,
+            @RequestParam(required = false) @ApiParam(value = "急救车层数", required = false) Integer layer
     ) {
         List<Grid> res;
         if(cartId != null && layer != null) {
