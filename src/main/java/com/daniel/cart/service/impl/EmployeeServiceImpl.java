@@ -1,6 +1,5 @@
 package com.daniel.cart.service.impl;
 
-import com.daniel.cart.controller.LoginController;
 import com.daniel.cart.domain.Employee;
 import com.daniel.cart.domain.enums.RoleEnum;
 import com.daniel.cart.domain.result.ResultCodeEnum;
@@ -19,9 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.daniel.cart.util.AttributeCheck.*;
 
@@ -147,7 +144,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        idCheck(employee.getDepartmentId());
         stringCheck(employee.getPassword(), "password");
         employee.setPassword(Md5Utils.code(employee.getPassword()));
-        Long res = 0L;
+        Long res;
         try {
             res = mapper.addEmployee(employee);
         } catch (org.springframework.dao.DuplicateKeyException e) {
@@ -181,12 +178,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Map<String, String> getAllRoles() {
-        Map<String, String> map = new HashMap<>();
+    public List<Map<String, String>> getAllRoles() {
+        List<Map<String, String>> roles = new ArrayList<>();
         for (RoleEnum value : RoleEnum.values()) {
-            map.put(value.name(), value.getName());
+            Map<String, String> role = new HashMap<>();
+            role.put("role", value.getRoleName().get(0));
+            role.put("name", value.getName());
+            roles.add(role);
         }
-        return map;
+        return roles;
     }
 
     private Long getCountByLimit(String name, Long departmentId, String departmentName, RoleEnum roleEnum) {

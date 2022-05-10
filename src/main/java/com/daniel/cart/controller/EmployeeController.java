@@ -1,6 +1,7 @@
 package com.daniel.cart.controller;
 
 import com.daniel.cart.domain.Employee;
+import com.daniel.cart.domain.enums.RoleEnum;
 import com.daniel.cart.domain.result.Result;
 import com.daniel.cart.service.EmployeeService;
 import io.swagger.annotations.Api;
@@ -128,7 +129,7 @@ public class EmployeeController {
     @ApiOperation("获取全部角色枚举")
     @GetMapping("getAllRoles")
     public Result getAllRoles() {
-        Map<String, String> roles = service.getAllRoles();
+        List<Map<String, String>> roles = service.getAllRoles();
         return Result.ok().data("items", roles);
     }
 
@@ -139,13 +140,17 @@ public class EmployeeController {
             @RequestParam(required = false) @ApiParam(value = "姓名") String name,
             @RequestParam(required = false) @ApiParam(value = "手机号码") String phone,
             @RequestParam(required = false) @ApiParam(value = "部门id") Long departmentId,
-            @RequestParam(required = false) @ApiParam(value = "密码") String password
+            @RequestParam(required = false) @ApiParam(value = "密码") String password,
+            @RequestParam(required = false) @ApiParam(value = "权限") String role
     ) {
         Employee employee = service.findById(id);
         employee.setName(name);
         employee.setPhone(phone);
         employee.setDepartmentId(departmentId);
         employee.setPassword(password);
+        if(RoleEnum.roleCheck(role)) {
+            employee.setRole(RoleEnum.valueOf(role));
+        }
         boolean res =  service.modify(employee);
         if(res) {
             return Result.ok().message("修改成功");
@@ -171,13 +176,18 @@ public class EmployeeController {
             @RequestParam @ApiParam(value = "姓名", required = true) String name,
             @RequestParam @ApiParam(value = "手机号码", required = true) String phone,
             @RequestParam(required = false) @ApiParam(value = "部门id") Long departmentId,
-            @RequestParam @ApiParam(value = "密码", required = true) String password
+            @RequestParam @ApiParam(value = "密码", required = true) String password,
+            @RequestParam(required = false) @ApiParam(value = "权限") String role
+
     ) {
         Employee employee = new Employee();
         employee.setName(name);
         employee.setPhone(phone);
         employee.setDepartmentId(departmentId);
         employee.setPassword(password);
+        if(RoleEnum.roleCheck(role)) {
+            employee.setRole(RoleEnum.valueOf(role));
+        }
         boolean res = service.add(employee);
         if(res) {
             return Result.ok().message("操作成功");

@@ -35,5 +35,5 @@ public interface EmployeeService extends AbstractService<Employee> {
 
     Long getCountByRole(String role);
 
-    Map<String, String> getAllRoles();
+    List<Map<String, String>> getAllRoles();
 }

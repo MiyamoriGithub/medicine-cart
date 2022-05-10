@@ -1,7 +1,9 @@
 package com.daniel.cart.domain.enums;
 
 
+import com.daniel.cart.util.AttributeCheck;
 import lombok.ToString;
+import org.apache.commons.lang3.EnumUtils;
 
 @ToString
 public enum CartStateEnum {
@@ -19,6 +21,14 @@ public enum CartStateEnum {
 
     public String getName() {
         return name;
+    }
+
+    public static Boolean roleCheck(String state) {
+        if(AttributeCheck.isStringOk(state)) {
+            boolean res = EnumUtils.isValidEnum(CartStateEnum.class, state);
+            return res;
+        }
+        return false;
     }
 
 }

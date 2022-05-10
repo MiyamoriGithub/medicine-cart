@@ -27,6 +27,7 @@ public class Employee {
 //    private Boolean isEnable;
     @JSONField(serialize = false)
     private String password;
+//    @JSONField(serialize = false)
     private RoleEnum role;
 
     @Override
@@ -37,7 +38,12 @@ public class Employee {
                 ", phone='" + phone + '\'' +
                 ", addTime=" + addTime +
                 ", departmentName='" + departmentName + '\'' +
-                ", role=" + role +
+                ", role=" + role.getName() +
                 '}';
+    }
+
+    @JSONField(name = "auth")
+    public String getAuth(){
+        return this.role.getName();
     }
 }

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -120,6 +121,24 @@ public class CartController implements AbstractController {
         Long count = service.getCountByState(state);
         Result res = Result.ok().data("items", carts);
         return res.data("count", count);
+    }
+
+    @ApiOperation("获取急救车的使用情况")
+    @GetMapping("states")
+    public Result states() {
+//        List<Map<String, String>> list = new ArrayList<>();
+        Map<String, String> map = new HashMap<>();
+        Long sum = service.getCount();
+        for (String state : service.getAllStates().keySet()) {
+//            Map<String, String> map = new HashMap<>();
+            Long count = service.getCountByState(state);
+//            map.put("state", String.valueOf(state));
+            long percentage = (count * 100) / sum;
+            map.put(state, String.valueOf(percentage));
+//            map.put("percentage", String.valueOf(percentage));
+//            list.add(map);
+        }
+        return Result.ok().data("items", map);
     }
 
     @ApiOperation("设置急救车为空闲状态")

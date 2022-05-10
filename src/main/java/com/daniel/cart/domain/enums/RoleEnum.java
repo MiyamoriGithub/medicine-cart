@@ -1,7 +1,9 @@
 package com.daniel.cart.domain.enums;
 
+import com.daniel.cart.util.AttributeCheck;
 import lombok.Getter;
 import lombok.ToString;
+import org.apache.commons.lang3.EnumUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,14 @@ public enum RoleEnum {
                 break;
         }
         return list;
+    }
+
+    public static Boolean roleCheck(String role) {
+        if(AttributeCheck.isStringOk(role)) {
+            boolean res = EnumUtils.isValidEnum(RoleEnum.class, role);
+            return res;
+        }
+        return false;
     }
 
 }
