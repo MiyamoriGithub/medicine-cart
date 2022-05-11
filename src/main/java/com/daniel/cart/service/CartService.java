@@ -2,6 +2,7 @@ package com.daniel.cart.service;
 
 import com.daniel.cart.domain.Cart;
 import com.daniel.cart.domain.enums.CartExceptionEnum;
+import com.daniel.cart.domain.res.CartBlockRes;
 import com.daniel.cart.domain.res.CartRes;
 import org.springframework.stereotype.Service;
 
@@ -57,13 +58,13 @@ public interface CartService extends AbstractService<Cart> {
 
     /**
      * 根据异常药品列表和药品的异常类型，找到 "列表中" 的存在异常信息的急救车并存在list中
-     * @param carts 目标急救车列表
+     * @param cartWithBlocks 目标急救车列表（带有 block 信息列表）
      * @param exceptionDrugMap 异常类型及其对应的异常药品列表
      * @return CartRes 中封装有 Cart 和 List<CartException>
      */
-    List<CartRes> getException(List<Cart> carts, Map<CartExceptionEnum, HashSet<Long>> exceptionDrugMap);
+    List<CartRes> getException(List<CartBlockRes> cartWithBlocks, Map<CartExceptionEnum, HashSet<Long>> exceptionDrugMap);
 
-    Boolean setCartFree(Long id);
+        Boolean setCartFree(Long id);
 
     Boolean setCartInventory(Long id);
 

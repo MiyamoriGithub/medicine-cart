@@ -1,6 +1,7 @@
 package com.daniel.cart.mapper;
 
 import com.daniel.cart.domain.Cart;
+import com.daniel.cart.domain.res.CartBlockRes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.*;
@@ -30,6 +32,13 @@ public class CartMapperTest {
 
     @Test
     public void findAllByLimit() {
+    }
+
+    @Test
+    public void findVacant() {
+        for (Cart cart : mapper.findVacant()) {
+            System.out.println(cart.toString());
+        }
     }
 
     @Test
@@ -62,5 +71,13 @@ public class CartMapperTest {
         cart.setDepartmentId(3l);
         cart.setId(4l);
         mapper.modifyCart(cart);
+    }
+
+    @Test
+    public void findCartWithBlock() {
+        List<CartBlockRes> cartWithBlock = mapper.findCartWithBlock();
+        for (CartBlockRes cartBlockRes : cartWithBlock) {
+            System.out.println(cartBlockRes.toString());
+        }
     }
 }

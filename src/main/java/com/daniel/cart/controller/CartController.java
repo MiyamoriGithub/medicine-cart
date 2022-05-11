@@ -137,17 +137,12 @@ public class CartController implements AbstractController {
     @ApiOperation("获取急救车的使用情况")
     @GetMapping("states")
     public Result states() {
-//        List<Map<String, String>> list = new ArrayList<>();
         Map<String, String> map = new HashMap<>();
         Long sum = service.getCount();
         for (String state : service.getAllStates().keySet()) {
-//            Map<String, String> map = new HashMap<>();
             Long count = service.getCountByState(state);
-//            map.put("state", String.valueOf(state));
             long percentage = (count * 100) / sum;
             map.put(state, String.valueOf(percentage));
-//            map.put("percentage", String.valueOf(percentage));
-//            list.add(map);
         }
         return Result.ok().data("items", map);
     }
@@ -158,7 +153,6 @@ public class CartController implements AbstractController {
     ) {
         List<Drug> drugs = drugService.findAll();
         Map<CartExceptionEnum, HashSet<Long>> map = drugService.findException(drugs);
-        // Todo 补充药品的功能还没做
         List<CartRes> exception = service.getException(map);
         return Result.ok().data("items", exception);
     }

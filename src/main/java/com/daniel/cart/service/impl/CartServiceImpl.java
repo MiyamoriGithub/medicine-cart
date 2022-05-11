@@ -2,9 +2,9 @@ package com.daniel.cart.service.impl;
 
 import com.daniel.cart.domain.Block;
 import com.daniel.cart.domain.Cart;
-import com.daniel.cart.domain.Drug;
 import com.daniel.cart.domain.enums.CartExceptionEnum;
 import com.daniel.cart.domain.enums.CartStateEnum;
+import com.daniel.cart.domain.res.CartBlockRes;
 import com.daniel.cart.domain.res.CartRes;
 import com.daniel.cart.domain.result.ResultCodeEnum;
 import com.daniel.cart.domain.vo.CartVo;
@@ -12,8 +12,11 @@ import com.daniel.cart.exception.CartOperateException;
 import com.daniel.cart.mapper.BlockMapper;
 import com.daniel.cart.mapper.CartMapper;
 import com.daniel.cart.mapper.DepartmentMapper;
+import com.daniel.cart.mapper.GridMapper;
 import com.daniel.cart.service.CartService;
 import org.apache.commons.lang3.EnumUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,15 +30,17 @@ import static com.daniel.cart.util.AttributeCheck.isStringOk;
 @Transactional
 public class CartServiceImpl implements CartService {
     private final CartMapper mapper;
-    private final BlockMapper blockMapper;
     private final DepartmentMapper departmentMapper;
+    private final GridMapper gridMapper;
+
+    private final Logger logger = LoggerFactory.getLogger(CartServiceImpl.class);
 
 
     @Autowired
-    public CartServiceImpl(CartMapper mapper, BlockMapper blockMapper, DepartmentMapper departmentMapper) {
+    public CartServiceImpl(CartMapper mapper,  DepartmentMapper departmentMapper, GridMapper gridMapper) {
         this.mapper = mapper;
-        this.blockMapper = blockMapper;
         this.departmentMapper = departmentMapper;
+        this.gridMapper = gridMapper;
     }
 
     @Override
@@ -150,48 +155,48 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartRes> getException(Map<CartExceptionEnum, HashSet<Long>> exceptionDrugMap){
-        List<Cart> carts = findAll();
-        return getException(carts, exceptionDrugMap);
+        // 查找带有 block 列表的急救车信息
+        List<CartBlockRes> cartWithBlocks = mapper.findCartWithBlock();
+        return getException(cartWithBlocks, exceptionDrugMap);
     }
 
     @Override
-    public List<CartRes> getException(List<Cart> carts, Map<CartExceptionEnum, HashSet<Long>> exceptionEnumSetMap){
+    public List<CartRes> getException(List<CartBlockRes> cartWithBlocks, Map<CartExceptionEnum, HashSet<Long>> exceptionDrugMap){
         // 存放结果的列表
         List<CartRes> res = new ArrayList<>();
-        // 将 map 中的 drug 的 list 转化为 drugId 的 set，提高程序的运行速度
-//        Map<CartExceptionEnum, HashSet<Long>> exceptionEnumSetMap = new HashMap<>();
-//        for (CartExceptionEnum exceptionEnum :exceptionDrugMap.keySet()){
-//            HashSet<Long> drugs = new HashSet<>();
-//            for(Drug drug: exceptionDrugMap.get(exceptionEnum)) {
-//                drugs.add(drug.getId());
-//            }
-//            exceptionEnumSetMap.put(exceptionEnum, drugs);
-//        }
-        // 对传入的每个 cart 进行判断
-        for (Cart cart : carts) {
+
+        // 获取到所有有空缺位置的急救车列表
+        HashSet<Cart> vacant = mapper.findVacant();
+
+        // 遍历列表
+        for (CartBlockRes cartWithBlock : cartWithBlocks) {
             // 每个车对应一个异常 list
             List<String> exceptionList = new ArrayList<>();
-            if(cart != null && cart.getId() != null) {
-                // 通过 cart id 查询每个 cart 对应的 block 列表
-//                BlockVo limit = new BlockVo();
-//                limit.setCartId(cart.getId());
-//                List<Block> blocksByCart = blockMapper.findAllByLimit(limit);
-                List<Block> blocksByCart = blockMapper.findByCart(cart.getId());
-                // 遍历 map 中全部异常
-                for (CartExceptionEnum exceptionEnum : exceptionEnumSetMap.keySet()) {
-                    // 如果 cart 有任意一个 block 处在异常状态，就将异常状态存入 list 中
-                    HashSet<Long> exceptionDrugs = exceptionEnumSetMap.get(exceptionEnum);
-                    for (Block block : blocksByCart) {
-                        if(exceptionDrugs.contains(block.getDrugId())) {
-                            exceptionList.add(exceptionEnum.getName());
-                            break;
-                        }
+
+            // 获取其中的 cart 信息，如果 cart 在 vacant 列表中，则当前 cart 有待补货的异常
+            Cart cart = cartWithBlock.getCart();
+            if(vacant.contains(cart)) {
+                exceptionList.add(CartExceptionEnum.vacant.getName());
+            }
+
+            // 获取当前急救车的 block 列表
+            List<Block> blockList = cartWithBlock.getBlockList();
+
+            // 遍历参数中的异常列表
+            for (CartExceptionEnum exceptionEnum : exceptionDrugMap.keySet()) {
+                // 如果 cart 有任意一个 block 处在异常状态，就将异常状态存入 list 中
+                HashSet<Long> exceptionDrugs = exceptionDrugMap.get(exceptionEnum);
+                for (Block block : blockList) {
+                    if(exceptionDrugs.contains(block.getDrugId())) {
+                        exceptionList.add(exceptionEnum.getName());
+                        break;
                     }
                 }
-                // 将存在异常的 cart 封装好加入结果中
-                if(!exceptionList.isEmpty()) {
-                    res.add(new CartRes(cart, exceptionList));
-                }
+            }
+
+            // 将存在异常的 cart 封装好加入结果中
+            if(!exceptionList.isEmpty()) {
+                res.add(new CartRes(cart, exceptionList));
             }
         }
         return res;
