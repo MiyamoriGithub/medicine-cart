@@ -55,7 +55,10 @@ public class DrugServiceTest {
     }
 
     @Test
-    public void findById() {
+    public void findByCart() {
+        for (Drug drug : service.findByCart(1L)) {
+            System.out.println(drug.toString());
+        }
     }
 
     @Test

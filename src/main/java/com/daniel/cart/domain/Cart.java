@@ -1,5 +1,6 @@
 package com.daniel.cart.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.daniel.cart.domain.enums.CartStateEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ public class Cart {
     private Long departmentId;   // department_id int
     private String departmentName;
     private Date addTime;           // add_time timestamp not null
+    @JSONField(serialize = false)
     private CartStateEnum state;           // status_type enum('free','inventory','emergency','unknown')
 //    private Boolean isEnable;       // is_enable boolean default 1
 
@@ -37,4 +39,9 @@ public class Cart {
     }
 
     private void getDepartmentName(String name) {}
+
+    @JSONField(name = "cartState")
+    public String getCartState() {
+        return this.state.getName();
+    }
 }

@@ -6,6 +6,7 @@ import com.daniel.cart.domain.Grid;
 import com.daniel.cart.domain.result.ResultCodeEnum;
 import com.daniel.cart.domain.vo.BlockVo;
 import com.daniel.cart.exception.BlockOperateException;
+import com.daniel.cart.exception.DrugOperateException;
 import com.daniel.cart.exception.GridOperateException;
 import com.daniel.cart.mapper.BlockMapper;
 import com.daniel.cart.mapper.DrugMapper;
@@ -249,10 +250,10 @@ public class BlockServiceImpl implements BlockService {
         if(block.getDrugId() != null && !Objects.equals(block.getDrugId(), EMPTY)) {
             throw new BlockOperateException(ResultCodeEnum.BLOCK_OPERATE_ERROR.getCode(), "当前 block 已有药品");
         }
-        // 如果药品库存不足
         if(drug.getStock() < 1) {
             throw new BlockOperateException(ResultCodeEnum.BLOCK_OPERATE_ERROR.getCode(), "药品库存不足");
         }
+
         Grid grid = gridMapper.findById(block.getGridId());
         Long drugInfIdOfGrid = grid.getDrugInfId();
         if(drugInfIdOfGrid == null || drugInfIdOfGrid <= 0) {
@@ -265,15 +266,17 @@ public class BlockServiceImpl implements BlockService {
         } else if(!drugInfIdOfGrid.equals(drug.getDrugInf().getDrugInfId())) {
             // 如果从数据库中查到的 grid 绑定的药品信息和待存放药品的药品信息不一致，则说明药品存放位置错误
             throw new BlockOperateException(25002, "药品存放位置错误");
-        } else {
-            // 查询 Grid 中存储的药品数量并和 grid 的容量信息进行比较
-            // 这里的判断逻辑好像没什么必要，因为只要 block 为空就肯定容量够用，但是代码能跑就先不改了
-            Long stock = getStockInGrid(block.getGridId());
-            Long capacity = Long.valueOf(gridMapper.findById(block.getGridId()).getCapacity());
-            if(capacity <= stock) {
-                throw new BlockOperateException(ResultCodeEnum.BLOCK_OPERATE_ERROR.getCode(), "Grid 容量已达上限");
-            }
         }
+
+        // 存入之前查询容量，如果存入之后已满就修改 grid 表值
+        Long stock = getStockInGrid(block.getGridId());
+        Long capacity = Long.valueOf(gridMapper.findById(block.getGridId()).getCapacity());
+        if(capacity == stock + 1) {
+            Grid g = gridMapper.findById(block.getGridId());
+            g.setIsFull(true);
+            gridMapper.modifyGrid(g);
+        }
+
         // 修改 block 中的 drugId 信息并对数据库内容进行修改
         block.setDrugId(drug.getId());
         if(mapper.modifyBlock(block) <= 0) {
@@ -289,12 +292,20 @@ public class BlockServiceImpl implements BlockService {
         // 检查 id 并通过 id 获取 block 对象
         idCheck(blockId, "blockId");
         Block block = mapper.findById(blockId);
+        if(EMPTY.equals(block.getDrugId())) {
+            throw new DrugOperateException("Block 为空，没有可被取出的药品");
+        }
         // 移除 block 中的药品信息
         block.setDrugId(EMPTY);
         Boolean res = mapper.modifyBlock(block) > 0;
-        // 如果移除此药品导致 grid 为空，则移除 grid 绑定的药品信息
-        if(getStockInGrid(block.getGridId()) <= 0) {
-            Grid grid = gridMapper.findById(block.getGridId());
+
+        // 如果 grid 之前为满，则移除当前 block 药品后不为满
+        Grid grid = gridMapper.findById(block.getGridId());
+        if(grid.getIsFull()) {
+            grid.setIsFull(false);
+            gridMapper.modifyGrid(grid);
+        } else if(getStockInGrid(grid.getId()) <= 0) {
+            // 如果移除此药品导致 grid 为空，则移除 grid 绑定的药品信息
             isGridInfOk(grid);
             grid.setDrugInfId(EMPTY);
             gridMapper.modifyGrid(grid);
@@ -311,8 +322,7 @@ public class BlockServiceImpl implements BlockService {
     @Override
     public Boolean isBlockEmpty(Long blockId) {
         Block block = mapper.findById(blockId);
-        isBlockInfOk(block);
-        return true;
+        return AttributeCheck.isIdOk(block.getDrugId());
     }
 
     private Long getCountByLimit(Long drugId, Long gridId, Long cartId, Integer layer, Long departmentId) {

@@ -11,7 +11,6 @@ public enum CartStateEnum {
     inventory("维护中"),
     emergency("急救中"),
     unknown("未知");
-    
 
     private String name;
 

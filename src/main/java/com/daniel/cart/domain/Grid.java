@@ -19,8 +19,7 @@ public class Grid {
      */
     private Long id;
 
-//    @Getter(AccessLevel.NONE)
-//    private List<Block> blocks;             // 每个格中有多个块，每个块存储一个药品
+    private Boolean isFull;
     private Integer capacity;               // 当前格的容量
     private Long drugInfId;                // 当前格存储药品的id，用于格中药品的校验，一个格只能存储一种药品不同日期的对象
 

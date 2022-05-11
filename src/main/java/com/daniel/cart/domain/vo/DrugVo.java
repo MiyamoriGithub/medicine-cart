@@ -12,7 +12,7 @@ import lombok.ToString;
 public class DrugVo extends PageVo{
     private Long drugInfId;
     private String nameCondition;
-    private String barcode;
+    private Long cartId;
 
 
     public void setNameCondition(String nameCondition) {

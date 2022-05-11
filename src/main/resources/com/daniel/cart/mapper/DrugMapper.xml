@@ -29,12 +29,19 @@
         from drug_cart_db.drug_date_inf ddi
         inner join drug_cart_db.drug_inf di
         on di.drug_inf_id = ddi.drug_inf_id
+        inner join drug_cart_db.grid_inf gi
+        on gi.drug_inf_id = di.drug_inf_id
+        inner join drug_cart_db.block_inf bi
+        on bi.drug_id = ddi.drug_id
         where 1 = 1
         <if test="nameCondition!=null">
             and di.drug_name like #{nameCondition}
         </if>
-        <if test="barcode!=null">
-            and di.drug_barcode = #{barcode}
+<!--        <if test="barcode!=null">-->
+<!--            and di.drug_barcode = #{barcode}-->
+<!--        </if>-->
+        <if test="cartId!=null">
+            and gi.cart_id = #{cartId}
         </if>
         <if test="start!=null and pageSize!=null">
             limit #{start},#{pageSize}
@@ -49,18 +56,30 @@
         where ddi.drug_id = #{id}
     </select>
     
+    <select id="getCount" resultType="long">
+        select count(drug_id)
+        from drug_cart_db.drug_date_inf
+    </select>
+    
     <select id="getCountByLimit" resultType="java.lang.Long" parameterType="drugVo">
         select count(ddi.drug_id)
         from drug_cart_db.drug_date_inf ddi
         inner join drug_cart_db.drug_inf di
         on di.drug_inf_id = ddi.drug_inf_id
+        inner join drug_cart_db.grid_inf gi
+        on gi.drug_inf_id = di.drug_inf_id
+        inner join drug_cart_db.block_inf bi
+        on bi.drug_id = ddi.drug_id
         where 1 = 1
         <if test="nameCondition!=null">
-            and drug_name like #{nameCondition}
+            and di.drug_name like #{nameCondition}
         </if>
-        <if test="barcode!=null">
-            and drug_barcode = #{barcode}
+        <if test="cartId!=null">
+            and gi.cart_id = #{cartId}
         </if>
+<!--        <if test="barcode!=null">-->
+<!--            and drug_barcode = #{barcode}-->
+<!--        </if>-->
     </select>
 
     <insert id="addDrug" parameterType="drug">

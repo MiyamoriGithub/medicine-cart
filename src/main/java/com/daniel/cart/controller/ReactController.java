@@ -66,14 +66,14 @@ public class ReactController {
             @RequestParam @ApiParam(value = "急救车 id", required = true) Long cartId
             ) {
         Drug drug = drugService.findById(id);
-        Grid res = null;
-        for (Grid grid : gridService.findByCart(cartId)) {
-            if(Objects.equals(grid.getDrugInfId(), drug.getDrugInfId())) {
-                res = grid;
+        Grid grid = null;
+        for (Grid g : gridService.findByCart(cartId)) {
+            if(Objects.equals(g.getDrugInfId(), drug.getDrugInfId())) {
+                grid = g;
             }
         }
-        if(res != null) {
-            return Result.ok().data("grid", res);
+        if(grid != null) {
+            return Result.ok().data("grid", grid).data("drugInf", drug.getDrugInf());
         } else {
             return Result.error().message("未查询到对应信息");
         }

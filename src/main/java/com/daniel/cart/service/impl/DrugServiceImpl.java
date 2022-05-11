@@ -1,7 +1,9 @@
 package com.daniel.cart.service.impl;
 
+import com.daniel.cart.domain.Cart;
 import com.daniel.cart.domain.Drug;
 import com.daniel.cart.domain.DrugInf;
+import com.daniel.cart.domain.enums.CartExceptionEnum;
 import com.daniel.cart.domain.result.ResultCodeEnum;
 import com.daniel.cart.domain.vo.DrugVo;
 import com.daniel.cart.exception.DrugOperateException;
@@ -14,8 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.daniel.cart.util.AttributeCheck.isIdOk;
 import static com.daniel.cart.util.AttributeCheck.isStringOk;
@@ -55,12 +56,32 @@ public class DrugServiceImpl implements DrugService {
     @Override
     public List<Drug> findTemporary(List<Drug> list) {
         List<Drug> res = new ArrayList<>();
+        long currentTimeMillis = System.currentTimeMillis();
         for (Drug drug : list) {
-            int days = this.getToExpire(drug);
+            int days = this.getToExpire(drug, currentTimeMillis);
             if(days > 0 && TEMPORARY >= days) {
                 res.add(drug);
             }
         }
+        return res;
+    }
+
+    @Override
+    public Map<CartExceptionEnum, HashSet<Long>> findException(List<Drug> list) {
+        HashSet<Long> expire = new HashSet<>();
+        HashSet<Long> temporary = new HashSet<>();
+        Map<CartExceptionEnum, HashSet<Long>> res = new HashMap<>();
+        long currentTimeMillis = System.currentTimeMillis();
+        for (Drug drug : list) {
+            int days = this.getToExpire(drug, currentTimeMillis);
+            if(days < 0) {
+                expire.add(drug.getId());
+            } else if(days > 0 && TEMPORARY >= days){
+                temporary.add(drug.getId());
+            }
+        }
+        res.put(CartExceptionEnum.expire, expire);
+        res.put(CartExceptionEnum.temporary, temporary);
         return res;
     }
 
@@ -72,8 +93,9 @@ public class DrugServiceImpl implements DrugService {
     @Override
     public List<Drug> findExpire(List<Drug> list) {
         List<Drug> res = new ArrayList<>();
+        long currentTimeMillis = System.currentTimeMillis();
         for (Drug drug : list) {
-            if(0 >= this.getToExpire(drug)) {
+            if(0 >= this.getToExpire(drug, currentTimeMillis)) {
                 res.add(drug);
             }
         }
@@ -87,7 +109,18 @@ public class DrugServiceImpl implements DrugService {
 
     @Override
     public List<Drug> findByDrugInfId(Long id, Integer start, Integer pageSize) {
-        return findByLimit(id, null, null, start, pageSize);
+        return findByLimit(null, id, null, start, pageSize);
+    }
+
+    @Override
+    public List<Drug> findByCart(Long cartId) {
+        return findByCart(cartId, null, null);
+    }
+
+    @Override
+    public List<Drug> findByCart(Long cartId, Integer start, Integer pageSize) {
+        idCheck(cartId, "cartId");
+        return findByLimit(cartId, null, null, start, pageSize);
     }
 
     @Override
@@ -99,7 +132,8 @@ public class DrugServiceImpl implements DrugService {
     @Override
     public List<Drug> findByBarcode(String barcode, Integer start, Integer pageSize) {
         barcodeCheck(barcode);
-        return findByLimit(null, barcode, null, start, pageSize);
+        Long drugInfId = drugInfMapper.findByBarcode(barcode).getDrugInfId();
+        return findByLimit(null, drugInfId, null, start, pageSize);
     }
 
     @Override
@@ -120,24 +154,25 @@ public class DrugServiceImpl implements DrugService {
 
     @Override
     public Long getCount() {
-        return mapper.getCountByLimit(new DrugVo());
+        return mapper.getCount();
     }
 
     @Override
     public Long getCountByDrugInfId(Long id) {
-        return getCountByLimit(id, null, null);
+        return getCountByLimit(id, null);
     }
 
     @Override
     public Long getCountByBarcode(String barcode) {
         barcodeCheck(barcode);
-        return getCountByLimit(null, barcode, null);
+        Long drugInfId = drugInfMapper.findByBarcode(barcode).getDrugInfId();
+        return getCountByLimit(drugInfId, null);
     }
 
     @Override
     public Long getCountByName(String nameCondition) {
         drugNameCheck(nameCondition);
-        return getCountByLimit(null, null, nameCondition);
+        return getCountByLimit(null, nameCondition);
     }
 
     @Override
@@ -178,27 +213,26 @@ public class DrugServiceImpl implements DrugService {
         return mapper.removeById(id) > 0;
     }
 
-    private Integer getToExpire(Drug drug) {
+    private Integer getToExpire(Drug drug, Long currentTimeMillis) {
         if(drug.getProductDate() == null || drug.getDrugInf().getShelfLife() == null) {
             throw new DrugOperateException(ResultCodeEnum.DRUG_INF_MISS_ERROR.getCode(), ResultCodeEnum.DRUG_INF_MISS_ERROR.getMessage());
         }
-        int res = (int) ((System.currentTimeMillis() - drug.getProductDate().getTime()) / (1000 * 60 * 60 * 24));
+        int res = (int) ((currentTimeMillis - drug.getProductDate().getTime()) / (1000 * 60 * 60 * 24));
 //        logger.info(drug.getDrugInf().getName() + " : " + (drug.getDrugInf().getShelfLife() - res));
         return drug.getDrugInf().getShelfLife() - res;
     }
 
-    private Long getCountByLimit(Long drugInfId, String barcode, String drugName) {
+    private Long getCountByLimit(Long drugInfId, String drugName) {
         DrugVo limit = new DrugVo();
         limit.setDrugInfId(drugInfId);
-        limit.setBarcode(barcode);
         limit.setNameCondition(drugName);
         return mapper.getCountByLimit(limit);
     }
 
-    private List<Drug> findByLimit(Long drugInfId, String barcode, String drugName, Integer start, Integer pageSize) {
+    private List<Drug> findByLimit(Long cartId, Long drugInfId, String drugName, Integer start, Integer pageSize) {
         DrugVo limit = new DrugVo();
+        limit.setCartId(cartId);
         limit.setDrugInfId(drugInfId);
-        limit.setBarcode(barcode);
         limit.setNameCondition(drugName);
         limit.setStart(start);
         limit.setPageSize(pageSize);

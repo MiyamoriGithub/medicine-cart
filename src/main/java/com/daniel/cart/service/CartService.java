@@ -1,8 +1,11 @@
 package com.daniel.cart.service;
 
 import com.daniel.cart.domain.Cart;
+import com.daniel.cart.domain.enums.CartExceptionEnum;
+import com.daniel.cart.domain.res.CartRes;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +47,21 @@ public interface CartService extends AbstractService<Cart> {
     Long getCountByLimit(Long departmentId, String state);
 
     Long getCountByLimit(String departmentName, String state);
+
+    /**
+     * 根据异常药品列表和药品的异常类型，找到 "所有" 的存在异常信息的急救车并存在list中
+     * @param exceptionDrugMap 异常类型及其对应的异常药品列表
+     * @return CartRes 中封装有 Cart 和 List<CartException>
+     */
+    List<CartRes> getException(Map<CartExceptionEnum, HashSet<Long>> exceptionDrugMap);
+
+    /**
+     * 根据异常药品列表和药品的异常类型，找到 "列表中" 的存在异常信息的急救车并存在list中
+     * @param carts 目标急救车列表
+     * @param exceptionDrugMap 异常类型及其对应的异常药品列表
+     * @return CartRes 中封装有 Cart 和 List<CartException>
+     */
+    List<CartRes> getException(List<Cart> carts, Map<CartExceptionEnum, HashSet<Long>> exceptionDrugMap);
 
     Boolean setCartFree(Long id);
 

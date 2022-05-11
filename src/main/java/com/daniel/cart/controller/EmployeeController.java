@@ -62,23 +62,6 @@ public class EmployeeController {
         return Result.ok().data("items", employees).data("count", count);
     }
 
-    @ApiOperation("通过姓名限定条件查询用户信息")
-    @GetMapping("name")
-    public Result name(
-            @RequestParam @ApiParam(value = "姓名限定条件", required = true) String nameCondition,
-            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）") Integer start,
-            @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
-    ) {
-        List<Employee> employees;
-        if(start == null || pageSize == null) {
-            employees = service.findByName(nameCondition);
-        } else {
-            employees = service.findByName(nameCondition, start, pageSize);
-        }
-        Long count = service.getCountByName(nameCondition);
-        return Result.ok().data("items", employees).data("count", count);
-    }
-
     @ApiOperation("通过部门限定条件查询用户信息")
     @GetMapping("depart")
     public Result depart(

@@ -2,9 +2,14 @@ package com.daniel.cart.controller;
 
 
 import com.daniel.cart.domain.Cart;
+import com.daniel.cart.domain.Drug;
+import com.daniel.cart.domain.enums.CartExceptionEnum;
 import com.daniel.cart.domain.enums.CartStateEnum;
+import com.daniel.cart.domain.res.CartRes;
 import com.daniel.cart.domain.result.Result;
+import com.daniel.cart.service.BlockService;
 import com.daniel.cart.service.CartService;
+import com.daniel.cart.service.DrugService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -15,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -33,11 +39,15 @@ import java.util.Map;
 public class CartController implements AbstractController {
 
     private final CartService service;
+    private final DrugService drugService;
+    private final BlockService blockService;
     private final Logger logger = LoggerFactory.getLogger(CartController.class);
 
     @Autowired
-    public CartController(CartService service) {
+    public CartController(CartService service, DrugService drugService, BlockService blockService) {
         this.service = service;
+        this.drugService = drugService;
+        this.blockService = blockService;
     }
 
     @ApiOperation("查询急救车信息")
@@ -87,6 +97,7 @@ public class CartController implements AbstractController {
         Result res = Result.ok().data("items", carts);
         return res.data("count", count);
     }
+
     @ApiOperation("根据部门查询急救车信息以及信息条目数量")
     @GetMapping("depart")
     public Result depart(
@@ -139,6 +150,17 @@ public class CartController implements AbstractController {
 //            list.add(map);
         }
         return Result.ok().data("items", map);
+    }
+
+    @ApiOperation("获取急救车需要补充和更换药品的情况")
+    @GetMapping("notification")
+    public Result notification(
+    ) {
+        List<Drug> drugs = drugService.findAll();
+        Map<CartExceptionEnum, HashSet<Long>> map = drugService.findException(drugs);
+        // Todo 补充药品的功能还没做
+        List<CartRes> exception = service.getException(map);
+        return Result.ok().data("items", exception);
     }
 
     @ApiOperation("设置急救车为空闲状态")

@@ -36,13 +36,16 @@ public class DepartmentController {
     @GetMapping("find")
     public Result find(
             @RequestParam(required = false) @ApiParam(value = "部门 id")Long id,
+            @RequestParam(required = false) @ApiParam(value = "名称查询条件") String nameCondition,
             @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
             @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
     ) {
         if(id != null) {
             Department department = service.findById(id);
             return Result.ok().data("item", department);
-        } else if(start != null && pageSize != null) {
+        }
+
+        if(start != null && pageSize != null) {
             List<Department> departments = service.findAll(start, pageSize);
             Long count = service.getCount();
             return Result.ok().data("items", departments).data("count", count);
@@ -50,6 +53,48 @@ public class DepartmentController {
             List<Department> departments = service.findAll();
             Long count = service.getCount();
             return Result.ok().data("items", departments).data("count", count);
+        }
+    }
+
+    @ApiOperation("添加部门信息")
+    @GetMapping("add")
+    public Result add(
+            @RequestParam(required = true) @ApiParam(value = "部门名称") String name
+    ) {
+        Department department = new Department();
+        department.setName(name);
+        Boolean res = service.add(department);
+        return returnMessage(res);
+    }
+
+    @ApiOperation("修改部门信息")
+    @GetMapping("modify")
+    public Result modify(
+            @RequestParam() @ApiParam(value = "部门 id", required = true)Long id,
+            @RequestParam(required = false) @ApiParam(value = "部门名称") String name
+    ) {
+        Department department = service.findById(id);
+        if(name != null) {
+            department.setName(name);
+        }
+        Boolean res = service.modify(department);
+        return returnMessage(res);
+    }
+
+    @ApiOperation("删除部门信息")
+    @GetMapping("remove")
+    public Result remove(
+            @RequestParam() @ApiParam(value = "部门 id", required = true)Long id
+    ) {
+        Boolean res = service.remove(id);
+        return returnMessage(res);
+    }
+
+    private Result returnMessage(Boolean res) {
+        if(res) {
+            return Result.ok().message("操作成功");
+        } else {
+            return Result.error().message("操作失败");
         }
     }
 }

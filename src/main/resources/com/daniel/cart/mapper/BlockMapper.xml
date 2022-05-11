@@ -26,11 +26,11 @@
         from drug_cart_db.block_inf bi
         left join drug_cart_db.drug_date_inf ddi
             on bi.`drug_id` = ddi.`drug_id`
-        left join drug_inf di
+        left join drug_cart_db.drug_inf di
             on ddi.`drug_inf_id` = di.`drug_inf_id`
-        left join grid_inf gi
+        left join drug_cart_db.grid_inf gi
             on gi.`grid_id` = bi.`grid_id`
-        left join carts_inf ci
+        left join drug_cart_db.carts_inf ci
         on gi.cart_id = ci.cart_id
         where 1 = 1
         <if test="drugId!=null">
@@ -51,6 +51,15 @@
         <if test="start!=null and pageSize!=null">
             limit #{start - 1},#{pageSize}
         </if>
+    </select>
+    
+    <select id="findByCart" resultMap="blockMap" parameterType="long">
+        select bi.block_id, bi.grid_id, bi.drug_id, gi.drug_inf_id, bi.serial
+        from drug_cart_db.block_inf bi
+        inner join drug_cart_db.grid_inf gi
+            on gi.grid_id = bi.grid_id
+        inner join drug_cart_db.carts_inf ci on gi.cart_id = ci.cart_id
+        where ci.cart_id = #{cartId}
     </select>
     
     <select id="findById" resultMap="blockMap" parameterType="java.lang.Long">

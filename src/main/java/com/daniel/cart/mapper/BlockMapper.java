@@ -16,6 +16,8 @@ public interface BlockMapper {
 
     List<Block> findAllByLimit(BlockVo limit);
 
+    List<Block> findByCart(Long cartId);
+
     Block findById(Long id);
 
     Block findByPosit(Long gridId, Integer serial);

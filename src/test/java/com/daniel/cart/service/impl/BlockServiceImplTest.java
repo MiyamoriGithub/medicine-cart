@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -24,10 +26,16 @@ public class BlockServiceImplTest {
 
     @Test
     public void addBlock() {
-        Block block = new Block();
-        block.setDrugId(37L);
-        block.setGridId(9L);
-//        service.addBlock(block);
+        List<Block> blocks = service.findAll();
+        for(Block block : blocks) {
+//            System.out.println(block.toString());
+            long id = block.getGridId() + 111;
+            if(id > 147) {
+                break;
+            }
+            block.setGridId(id);
+            service.add(block);
+        }
     }
 
     @Test

@@ -16,6 +16,8 @@ public interface DrugMapper {
 
     public Drug findById(Long id);
 
+    public Long getCount();
+
     public Long getCountByLimit(DrugVo limit);
 
     public Long addDrug(Drug drug);
