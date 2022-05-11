@@ -11,6 +11,22 @@
 <!--        <result column="is_enable" property="isEnable"/>-->
         <result column="department_name" property="departmentName"/>
     </resultMap>
+    
+    <resultMap id="cartBlock" type="com.daniel.cart.domain.res.CartBlockRes">
+        <id column="cart_id" property="id"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="add_time" property="addTime"/>
+        <result column="status_type" property="state"/>
+        <result column="department_name" property="departmentName"/>
+        <collection property="blockList" ofType="block">
+            <id column="block_id" property="id"/>
+            <result column="grid_id" property="gridId"/>
+            <result column="drug_id" property="drugId"/>
+            <result column="drug_inf_id" property="drugInfId"/>
+            <result column="drug_name" property="drugName"/>
+            <result column="serial" property="serial"/>
+        </collection>
+    </resultMap>
 
     <select id="findAll" resultMap="cartMap">
         select ci.cart_id, ci.department_id, ci.add_time, ci.status_type, di.department_name
@@ -36,6 +52,24 @@
         <if test="start!=null and pageSize!=null">
             limit #{start},#{pageSize}
         </if>
+    </select>
+    
+    <select id="findVacant" resultMap="cartMap">
+        select ci.cart_id, ci.department_id, ci.add_time, ci.status_type, di.department_name
+        from drug_cart_db.carts_inf ci
+                 inner join drug_cart_db.grid_inf gi on ci.cart_id = gi.cart_id
+                 left join drug_cart_db.department_inf di on ci.department_id = di.department_id
+        where gi.is_full = false
+        group by gi.cart_id;
+    </select>
+
+    <select id="findNotVacant" resultMap="cartMap">
+        select ci.cart_id, ci.department_id, ci.add_time, ci.status_type, di.department_name
+        from drug_cart_db.carts_inf ci
+                 inner join drug_cart_db.grid_inf gi on ci.cart_id = gi.cart_id
+                 left join drug_cart_db.department_inf di on ci.department_id = di.department_id
+        where gi.is_full = true
+        group by gi.cart_id;
     </select>
 
     <select id="getById" resultMap="cartMap" parameterType="java.lang.Long">
@@ -91,4 +125,12 @@
         </set>
         where cart_id = #{id} and is_enable=1;
     </update>
+    
+    <select id="findCartWithBlock" resultMap="cartBlock">
+        select ci.cart_id, ci.department_id, ci.add_time, ci.status_type, di.department_name, bi.grid_id, bi.block_id, bi.drug_id, bi.serial, gi.drug_inf_id
+        from drug_cart_db.carts_inf ci
+                 inner join drug_cart_db.grid_inf gi on ci.cart_id = gi.cart_id
+                 left join drug_cart_db.department_inf di on ci.department_id = di.department_id
+                inner join drug_cart_db.block_inf bi on gi.grid_id = bi.grid_id
+    </select>
 </mapper>

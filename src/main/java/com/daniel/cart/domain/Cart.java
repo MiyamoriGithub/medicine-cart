@@ -27,6 +27,14 @@ public class Cart {
         this.departmentId = departmentId;
     }
 
+    public Cart(Long id, Long departmentId, String departmentName, Date addTime, CartStateEnum state) {
+        this.id = id;
+        this.departmentId = departmentId;
+        this.departmentName = departmentName;
+        this.addTime = addTime;
+        this.state = state;
+    }
+
     @Override
     public String toString() {
         return "Cart{" +
