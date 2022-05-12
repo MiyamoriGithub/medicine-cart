@@ -82,6 +82,19 @@
         where grid_id = #{gridId} and `serial` = #{serial}
     </select>
 
+    <select id="findByPosit2" resultMap="blockMap">
+        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name, bi.serial
+        from drug_cart_db.block_inf bi
+                left join drug_cart_db.grid_inf gi
+                on bi.grid_id = gi.grid_id
+                 left join drug_cart_db.drug_date_inf ddi
+                           on bi.drug_id = ddi.drug_id
+                 left join drug_cart_db.drug_inf di
+                           on ddi.drug_inf_id = di.drug_inf_id
+        where gi.cart_id = #{cartId} and gi.cart_layer = #{layer} and cart_row = #{row} and cart_column = #{column}
+            and `serial` = #{serial}
+    </select>
+
     <select id="getCountByLimit" resultType="java.lang.Long" parameterType="blockVo">
         select count(bi.block_id)
         from drug_cart_db.block_inf bi

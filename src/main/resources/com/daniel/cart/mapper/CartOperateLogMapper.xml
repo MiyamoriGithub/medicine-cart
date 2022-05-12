@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daniel.cart.mapper.CartOperateLogMapper">
+    <resultMap id="cartOperateLogMap" type="cartOperateLog">
+        <id property="cartOperateId" column="cart_operate_id"/>
+        <result property="employeeId" column="employee_id"/>
+        <result property="employeeName" column="employee_name"/>
+        <result property="operateTime" column="operate_time"/>
+        <result property="operateType" column="operate_type"/>
+        <result property="departmentId" column="department_id"/>
+        <result property="departmentName" column="department_name"/>
+        <association property="cart" resultMap="cartMap"/>
+    </resultMap>
+    
+    <resultMap id="cartMap" type="cart">
+        <id property="id" column="cart_id"/>
+        <result property="departmentId" column="department_id"/>
+        <result property="addTime" column="add_time"/>
+        <result property="state" column="status_type"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="cartOperateLogMap">
+        select dol.*, ci.*, department_name, ei.employee_name
+        from drug_cart_db.cart_operate_log dol
+        left join drug_cart_db.carts_inf ci
+        on ci.cart_id = dol.cart_id
+        left join drug_cart_db.employees_inf ei
+        on ei.employee_id = dol.employee_id
+        left join drug_cart_db.department_inf di
+        on ei.department_id = di.department_id
+        where ci.is_enable = true
+        order by operate_time desc
+    </select>
+
+    <select id="findByLimit" resultMap="cartOperateLogMap" parameterType="pageVo">
+        select dol.*, ci.*, department_name, ei.employee_name
+        from drug_cart_db.cart_operate_log dol
+                 left join drug_cart_db.carts_inf ci
+                           on ci.cart_id = dol.cart_id
+                 left join drug_cart_db.employees_inf ei
+                           on ei.employee_id = dol.employee_id
+                 left join drug_cart_db.department_inf di
+                           on ei.department_id = di.department_id
+        where ci.is_enable = true
+        order by operate_time desc
+        <if test="start!=null and pageSize!=null">
+            limit #{start},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getCount" resultType="long">
+        select count(cart_operate_id)
+        from drug_cart_db.cart_operate_log
+    </select>
+    
+    <insert id="add" parameterType="cartOperateLog">
+        insert into drug_cart_db.cart_operate_log (
+                  <if test="cart.id != null">cart_id, </if>
+                  <if test="operateType != null">operate_type, </if>
+                  <if test="employeeId != null">employee_id</if>
+        ) values (
+            <if test="cart.id != null">#{cart.id}, </if>
+            <if test="operateType != null">#{operateType}, </if>
+            <if test="employeeId != null">#{employeeId}</if>
+                         )
+    </insert>
+</mapper>
+

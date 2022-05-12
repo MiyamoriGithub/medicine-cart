@@ -22,6 +22,8 @@ public interface BlockMapper {
 
     Block findByPosit(Long gridId, Integer serial);
 
+    Block findByPosit2(Long cartId, Integer layer, Integer row, Integer column, Integer serial);
+
     Long getCountByLimit(BlockVo limit);
 
     Long getCountByGridAndNotEmpty(BlockVo limit);

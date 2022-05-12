@@ -12,6 +12,13 @@ public class PageVo {
     private Integer start = 0;      // 当前页码， 默认值为0
     private Integer pageSize;   // 每页信息条数，不设置默认值，否则每次查询均为分页查询
 
+    public PageVo() {}
+
+    public PageVo(Integer start, Integer pageSize) {
+        this.start = start;
+        this.pageSize = pageSize;
+    }
+
     public void setStart(Integer start) {
         if(start != null && start > 0) {
             this.start = start - 1;

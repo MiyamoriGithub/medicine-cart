@@ -128,11 +128,10 @@ public class ReactController {
             @RequestParam @ApiParam(value = "序列", required = true) Integer serial,
             @RequestParam @ApiParam(value = "药品 id", required = true) Long drugId
     ) {
-        Grid grid = gridService.findByPosit(cartId, layer, row, column);
-        Block block = blockService.findByPosit(grid, serial);
+        Block block = blockService.findByPosit(cartId, layer, row, column, serial);
         Drug drug = drugService.findById(drugId);
         Boolean res = blockService.depositDrug(block, drug);
-        List<Block> blocks = blockService.findByGrid(grid.getId());
+        List<Block> blocks = blockService.findByGrid(block.getGridId());
         return returnMessage(res).data("items", blocks);
     }
 
@@ -149,10 +148,9 @@ public class ReactController {
         logger.info(grid.toString());
         Block block = blockService.findByPosit(grid, serial);
         logger.info(block.toString());
-        Boolean res = blockService.removeDrug(block.getId());
+        Boolean res = blockService.removeDrug(block);
         List<Block> blocks = blockService.findByGrid(grid.getId());
         return returnMessage(res).data("items", blocks);
-//        return returnMessage(res);
     }
 
     private Result returnMessage(Boolean res) {

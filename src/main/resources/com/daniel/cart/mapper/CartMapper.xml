@@ -8,7 +8,6 @@
         <result column="department_id" property="departmentId"/>
         <result column="add_time" property="addTime"/>
         <result column="status_type" property="state"/>
-<!--        <result column="is_enable" property="isEnable"/>-->
         <result column="department_name" property="departmentName"/>
     </resultMap>
     
@@ -85,7 +84,7 @@
     <select id="getCountByLimit" resultType="java.lang.Long" parameterType="cartVo">
         select count(ci.cart_id)
         from drug_cart_db.carts_inf ci
-        left join department_inf di on ci.department_id = di.department_id
+        left join drug_cart_db.department_inf di on ci.department_id = di.department_id
         where ci.is_enable = 1
         <if test="state!=null">
             and ci.status_type = #{state}

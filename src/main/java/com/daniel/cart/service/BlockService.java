@@ -54,6 +54,8 @@ public interface BlockService extends AbstractService<Block> {
 
     Block findByPosit(Grid grid, Integer serial);
 
+    Block findByPosit(Long cartId, Integer layer, Integer row, Integer column, Integer serial);
+
     Long getCountByDrug(Long drugId);
 
     Long getCountByGrid(Grid grid);
@@ -78,6 +80,8 @@ public interface BlockService extends AbstractService<Block> {
      * @return 是否成功取出
      */
     Boolean removeDrug(Long blockId);
+
+    Boolean removeDrug(Block block);
 
     /**
      * 获取 block 中的药品实体类

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daniel.cart.mapper.DrugOperateLogMapper">
+    <resultMap id="drugOperateLogMap" type="drugOperateLog">
+        <id column="drug_operate_id" property="drugOperateId"/>
+        <result column="operate_time" property="operateTime"/>
+        <result column="operate_type" property="operateType"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="employee_name" property="employeeName"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="department_name" property="departmentName"/>
+        <result column="block_id" property="blockId"/>
+        <result column="cart_id" property="cartId"/>
+        <association property="drug" resultMap="drugMap"/>
+        <association property="grid" resultMap="gridMap"/>
+    </resultMap>
+
+    <resultMap id="drugMap" type="com.daniel.cart.domain.Drug">
+        <id column="drug_id" property="id"/>
+        <result column="drug_product_date" property="productDate"/>
+        <result column="drug_stock" property="stock"/>
+        <result column="drug_inf_id" property="drugInfId"/>
+        <association property="drugInf" javaType="drugInf">
+            <id column="drug_inf_id" property="drugInfId"/>
+            <result column="drug_barcode" property="barcode"/>
+            <result column="drug_name" property="name"/>
+            <result column="drug_shelf_life" property="shelfLife"/>
+            <result column="drug_package" property="drugPackage"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="gridMap" type="com.daniel.cart.domain.Grid">
+        <id column="grid_id" property="id"/>
+        <result column="cart_id" property="cartId"/>
+        <result column="cart_layer" property="layer"/>
+        <result column="cart_row" property="row"/>
+        <result column="cart_column" property="column"/>
+        <result column="drug_inf_id" property="drugInfId"/>
+        <result column="capacity" property="capacity"/>
+        <result column="is_full" property="isFull"/>
+    </resultMap>
+
+
+    <select id="findAll" resultMap="drugOperateLogMap">
+        select dol.*,gi.*,di.*, ddi.*, ei.employee_name, de.department_id, department_name
+        from drug_cart_db.drug_operate_log dol
+        left join drug_cart_db.drug_date_inf ddi
+        on dol.drug_id = ddi.drug_id
+        left join drug_cart_db.drug_inf di
+        on di.drug_inf_id = ddi.drug_inf_id
+        left join drug_cart_db.employees_inf ei
+        on ei.employee_id = dol.employee_id
+        left join drug_cart_db.department_inf de
+        on de.department_id = ei.department_id
+        left join drug_cart_db.block_inf bl
+        on bl.block_id = dol.block_id
+        left join drug_cart_db.grid_inf gi
+        on gi.grid_id = bl.grid_id
+        order by operate_time desc
+    </select>
+
+    <select id="findByLimit" resultMap="drugOperateLogMap" parameterType="pageVo">
+        select dol.*,gi.*,di.*, ddi.*, ei.employee_name, de.department_id, department_name
+        from drug_cart_db.drug_operate_log dol
+                 left join drug_cart_db.drug_date_inf ddi
+                           on dol.drug_id = ddi.drug_id
+                 left join drug_cart_db.drug_inf di
+                           on di.drug_inf_id = ddi.drug_inf_id
+                 left join drug_cart_db.employees_inf ei
+                           on ei.employee_id = dol.employee_id
+                 left join drug_cart_db.department_inf de
+                           on de.department_id = ei.department_id
+                 left join drug_cart_db.block_inf bl
+                           on bl.block_id = dol.block_id
+                 left join drug_cart_db.grid_inf gi
+                           on gi.grid_id = bl.grid_id
+        order by operate_time desc
+        <if test="start != null and pageSize != null">
+            limit #{start}, #{pageSize}
+        </if>
+    </select>
+
+    <select id="getCount" resultType="long">
+        select count(drug_operate_id)
+        from drug_cart_db.drug_operate_log
+    </select>
+
+    <insert id="add" parameterType="drugOperateLog">
+        insert into drug_cart_db.drug_operate_log
+        (
+            <if test="drug.id != null">`drug_id`, </if>
+            <if test="blockId != null">`block_id`, </if>
+            <if test="operateType != null">`operate_type`,</if>
+            <if test="employeeId != null">`employee_id`,</if>
+            <if test="cartId != null">`cart_id`</if>
+        )
+        values (
+        <if test="drug.id != null">#{drug.id}, </if>
+        <if test="blockId != null">#{blockId}, </if>
+        <if test="operateType != null">#{operateType},</if>
+        <if test="employeeId != null">#{employeeId},</if>
+        <if test="cartId != null">#{cartId}</if>
+        )
+    </insert>
+
+</mapper>

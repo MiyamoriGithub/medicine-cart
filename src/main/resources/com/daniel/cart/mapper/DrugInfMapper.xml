@@ -11,6 +11,20 @@
         <result column="drug_package" property="drugPackage"/>
     </resultMap>
     
+    <resultMap id="drugInfResMap" type="drugInfRes">
+        <id column="drug_inf_id" property="drugInfId"/>
+        <result column="drug_barcode" property="barcode"/>
+        <result column="drug_name" property="name"/>
+        <result column="drug_shelf_life" property="shelfLife"/>
+        <collection property="drugList" ofType="drug">
+            <id column="drug_id" property="id"/>
+            <result column="drug_product_date" property="productDate"/>
+            <result column="drug_stock" property="stock"/>
+            <result column="drug_inf_id" property="drugInfId"/>
+            <association property="drugInf" resultMap="drugInfMap"/>
+        </collection>
+    </resultMap>
+    
     <select id="findAll" resultMap="drugInfMap">
         select drug_inf_id, drug_barcode, drug_name, drug_shelf_life, drug_package
         from drug_cart_db.drug_inf
@@ -92,5 +106,11 @@
     <delete id="removeDrugInf" parameterType="long">
         delete from drug_cart_db.drug_inf where drug_inf_id = #{id}
     </delete>
+    
+    <select id="findWithDrugList" resultMap="drugInfResMap">
+        select di.drug_inf_id, di.drug_barcode, di.drug_shelf_life, di.drug_name, di.drug_package, ddi.drug_id, ddi.drug_product_date, ddi.drug_stock
+        from drug_cart_db.drug_inf di
+        inner join drug_cart_db.drug_date_inf ddi on di.drug_inf_id = ddi.drug_inf_id
+    </select>
 
 </mapper>

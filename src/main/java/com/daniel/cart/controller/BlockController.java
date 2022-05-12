@@ -1,12 +1,11 @@
 package com.daniel.cart.controller;
 
-import com.daniel.cart.domain.Block;
-import com.daniel.cart.domain.Drug;
-import com.daniel.cart.domain.Grid;
+import com.daniel.cart.domain.*;
 import com.daniel.cart.domain.result.Result;
+import com.daniel.cart.domain.vo.PageVo;
+import com.daniel.cart.mapper.DrugOperateLogMapper;
 import com.daniel.cart.service.BlockService;
 import com.daniel.cart.service.DrugService;
-import com.daniel.cart.service.GridService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -33,15 +32,15 @@ import java.util.List;
 public class BlockController implements AbstractController {
 
     private final BlockService service;
-    private final GridService gridService;
     private final DrugService drugService;
+    private final DrugOperateLogMapper drugOperateLogMapper;
     private final Logger logger = LoggerFactory.getLogger(BlockController.class);
 
     @Autowired
-    public BlockController(BlockService service, GridService gridService, DrugService drugService) {
+    public BlockController(BlockService service, DrugService drugService, DrugOperateLogMapper mapper) {
         this.service = service;
-        this.gridService = gridService;
         this.drugService = drugService;
+        this.drugOperateLogMapper = mapper;
     }
 
     @ApiOperation("查询 block 信息")
@@ -63,6 +62,23 @@ public class BlockController implements AbstractController {
             Long count = service.getCount();
             return Result.ok().data("items", blocks).data("count", count);
         }
+    }
+
+    @ApiOperation("获取药品操作日志")
+    @GetMapping("log")
+    public Result find(
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）") Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
+    ) {
+        Long count = drugOperateLogMapper.getCount();
+        List<DrugOperateLog> logs;
+        if(start != null && pageSize != null) {
+            PageVo limit = new PageVo(start, pageSize);
+            logs = drugOperateLogMapper.findByLimit(limit);
+        } else {
+            logs = drugOperateLogMapper.findAll();
+        }
+        return Result.ok().data("items", logs).data("count", count);
     }
 
     @ApiOperation("通过药品 id 信息查询 block 信息")

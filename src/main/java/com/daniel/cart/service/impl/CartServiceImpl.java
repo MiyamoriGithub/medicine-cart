@@ -2,6 +2,8 @@ package com.daniel.cart.service.impl;
 
 import com.daniel.cart.domain.Block;
 import com.daniel.cart.domain.Cart;
+import com.daniel.cart.domain.CartOperateLog;
+import com.daniel.cart.domain.Employee;
 import com.daniel.cart.domain.enums.CartExceptionEnum;
 import com.daniel.cart.domain.enums.CartStateEnum;
 import com.daniel.cart.domain.res.CartBlockRes;
@@ -9,12 +11,11 @@ import com.daniel.cart.domain.res.CartRes;
 import com.daniel.cart.domain.result.ResultCodeEnum;
 import com.daniel.cart.domain.vo.CartVo;
 import com.daniel.cart.exception.CartOperateException;
-import com.daniel.cart.mapper.BlockMapper;
-import com.daniel.cart.mapper.CartMapper;
-import com.daniel.cart.mapper.DepartmentMapper;
-import com.daniel.cart.mapper.GridMapper;
+import com.daniel.cart.mapper.*;
 import com.daniel.cart.service.CartService;
 import org.apache.commons.lang3.EnumUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +32,18 @@ import static com.daniel.cart.util.AttributeCheck.isStringOk;
 public class CartServiceImpl implements CartService {
     private final CartMapper mapper;
     private final DepartmentMapper departmentMapper;
-    private final GridMapper gridMapper;
+    private final CartOperateLogMapper cartOperateLogMapper;
+    private final EmployeeMapper employeeMapper;
 
     private final Logger logger = LoggerFactory.getLogger(CartServiceImpl.class);
 
 
     @Autowired
-    public CartServiceImpl(CartMapper mapper,  DepartmentMapper departmentMapper, GridMapper gridMapper) {
+    public CartServiceImpl(CartMapper mapper, DepartmentMapper departmentMapper, CartOperateLogMapper cartOperateLogMapper, EmployeeMapper employeeMapper) {
         this.mapper = mapper;
         this.departmentMapper = departmentMapper;
-        this.gridMapper = gridMapper;
+        this.cartOperateLogMapper = cartOperateLogMapper;
+        this.employeeMapper = employeeMapper;
     }
 
     @Override
@@ -257,8 +260,26 @@ public class CartServiceImpl implements CartService {
         if(null == cart) {
             throw new CartOperateException(ResultCodeEnum.CART_OPERATE_ERROR.getCode(), "待修改的急救车信息不存在");
         }
+        if(cart.getState().equals(state)) {
+            throw new CartOperateException(ResultCodeEnum.CART_OPERATE_ERROR.getCode(), "待修改的急救车已处于该状态");
+        }
         cart.setState(state);
-        return mapper.modifyCart(cart) > 0;
+        Boolean res =  mapper.modifyCart(cart) > 0;
+        if(res) {
+            CartOperateLog log = new CartOperateLog();
+            log.setCart(cart);
+            log.setOperateType(state);
+            Subject subject = SecurityUtils.getSubject();
+            String principal = (String)subject.getPrincipal();
+            Employee employee = employeeMapper.findByPhone(principal);
+            if(employee != null && employee.getId() != null) {
+                log.setEmployeeId(employee.getId());
+            } else {
+                log.setEmployeeId(2L);
+            }
+            cartOperateLogMapper.add(log);
+        }
+        return res;
     }
 
     private Long getCountByLimit(Long departmentId, String nameCondition, CartStateEnum state) {

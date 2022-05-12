@@ -2,12 +2,14 @@ package com.daniel.cart.controller;
 
 
 import com.daniel.cart.domain.Cart;
+import com.daniel.cart.domain.CartOperateLog;
 import com.daniel.cart.domain.Drug;
 import com.daniel.cart.domain.enums.CartExceptionEnum;
 import com.daniel.cart.domain.enums.CartStateEnum;
 import com.daniel.cart.domain.res.CartRes;
 import com.daniel.cart.domain.result.Result;
-import com.daniel.cart.service.BlockService;
+import com.daniel.cart.domain.vo.PageVo;
+import com.daniel.cart.mapper.CartOperateLogMapper;
 import com.daniel.cart.service.CartService;
 import com.daniel.cart.service.DrugService;
 import io.swagger.annotations.Api;
@@ -40,14 +42,14 @@ public class CartController implements AbstractController {
 
     private final CartService service;
     private final DrugService drugService;
-    private final BlockService blockService;
+    private final CartOperateLogMapper cartOperateLogMapper;
     private final Logger logger = LoggerFactory.getLogger(CartController.class);
 
     @Autowired
-    public CartController(CartService service, DrugService drugService, BlockService blockService) {
+    public CartController(CartService service, DrugService drugService, CartOperateLogMapper mapper) {
         this.service = service;
         this.drugService = drugService;
-        this.blockService = blockService;
+        this.cartOperateLogMapper = mapper;
     }
 
     @ApiOperation("查询急救车信息")
@@ -70,6 +72,23 @@ public class CartController implements AbstractController {
             Long count = service.getCount();
             return Result.ok().data("items", carts).data("count", count);
         }
+    }
+
+    @ApiOperation("获取急救车操作日志")
+    @GetMapping("log")
+    public Result find(
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）") Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
+    ) {
+        Long count = cartOperateLogMapper.getCount();
+        List<CartOperateLog> logs;
+        if(start != null && pageSize != null) {
+            PageVo limit = new PageVo(start, pageSize);
+            logs = cartOperateLogMapper.findByLimit(limit);
+        } else {
+            logs = cartOperateLogMapper.findAll();
+        }
+        return Result.ok().data("items", logs).data("count", count);
     }
 
     @ApiOperation("查询急救车的全部状态枚举值")
@@ -102,8 +121,8 @@ public class CartController implements AbstractController {
     @GetMapping("depart")
     public Result depart(
             @RequestParam @ApiParam(value = "部门id信息",required = true) Long departmentId,
-            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(required = false) @ApiParam(value = "每页信息数量", required = false) Integer pageSize
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）") Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
     ) {
         List<Cart> carts;
         if(start == null || pageSize == null) {
@@ -120,8 +139,8 @@ public class CartController implements AbstractController {
     @GetMapping("state")
     public Result state(
             @RequestParam @ApiParam(value = "状态信息",required = true) String state,
-            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(required = false) @ApiParam(value = "每页信息数量", required = false) Integer pageSize
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）") Integer start,
+            @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
     ) {
         List<Cart> carts;
         if(start == null || pageSize == null) {
@@ -198,7 +217,7 @@ public class CartController implements AbstractController {
     public Result modify(
             @RequestParam @ApiParam(value = "急救车属性", required = true) Long id,
             @RequestParam @ApiParam(value = "急救车部门id", required = true) Long departmentId,
-            @RequestParam(required = false) @ApiParam(value = "急救车状态", required = false) String state
+            @RequestParam(required = false) @ApiParam(value = "急救车状态") String state
             ) {
         Cart cart = service.findById(id);
         cart.setDepartmentId(departmentId);
@@ -213,6 +232,7 @@ public class CartController implements AbstractController {
         if(res) {
             return Result.ok().message("操作成功");
         } else {
+            logger.error("操作失败");
             return Result.error().message("操作失败");
         }
     }

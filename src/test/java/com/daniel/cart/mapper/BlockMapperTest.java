@@ -45,6 +45,12 @@ public class BlockMapperTest {
     }
 
     @Test
+    public void findByPosit2() {
+        Block block = mapper.findByPosit2(1L, 1, 1, 1, 1);
+        System.out.println(block);
+    }
+
+    @Test
     public void getCountByLimit() {
         BlockVo limit = new BlockVo();
         limit.setGridId(1L);

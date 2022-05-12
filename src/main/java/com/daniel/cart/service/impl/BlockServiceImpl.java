@@ -1,18 +1,16 @@
 package com.daniel.cart.service.impl;
 
-import com.daniel.cart.domain.Block;
-import com.daniel.cart.domain.Drug;
-import com.daniel.cart.domain.Grid;
+import com.daniel.cart.domain.*;
 import com.daniel.cart.domain.result.ResultCodeEnum;
 import com.daniel.cart.domain.vo.BlockVo;
 import com.daniel.cart.exception.BlockOperateException;
 import com.daniel.cart.exception.DrugOperateException;
 import com.daniel.cart.exception.GridOperateException;
-import com.daniel.cart.mapper.BlockMapper;
-import com.daniel.cart.mapper.DrugMapper;
-import com.daniel.cart.mapper.GridMapper;
+import com.daniel.cart.mapper.*;
 import com.daniel.cart.service.BlockService;
 import com.daniel.cart.util.AttributeCheck;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,14 +33,18 @@ public class BlockServiceImpl implements BlockService {
     private final BlockMapper mapper;
     private final GridMapper gridMapper;
     private final DrugMapper drugMapper;
+    private final EmployeeMapper employeeMapper;
+    private final DrugOperateLogMapper drugOperateLogMapper;
 
     // 规定 block 为空即药品信息为 -1
     private static final Long EMPTY = -1L;
 
-    public BlockServiceImpl(BlockMapper mapper, GridMapper gridMapper, DrugMapper drugMapper) {
+    public BlockServiceImpl(BlockMapper mapper, GridMapper gridMapper, DrugMapper drugMapper, EmployeeMapper employeeMapper, DrugOperateLogMapper drugOperateLogMapper) {
         this.mapper = mapper;
         this.gridMapper = gridMapper;
         this.drugMapper = drugMapper;
+        this.employeeMapper = employeeMapper;
+        this.drugOperateLogMapper = drugOperateLogMapper;
     }
 
     @Override
@@ -161,6 +163,11 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
+    public Block findByPosit(Long cartId, Integer layer, Integer row, Integer column, Integer serial) {
+        return mapper.findByPosit2(cartId, layer, row, column, serial);
+    }
+
+    @Override
     public Long getCount() {
         return getCountByLimit(null, null, null, null, null);
     }
@@ -270,9 +277,9 @@ public class BlockServiceImpl implements BlockService {
 
         // 存入之前查询容量，如果存入之后已满就修改 grid 表值
         Long stock = getStockInGrid(block.getGridId());
-        Long capacity = Long.valueOf(gridMapper.findById(block.getGridId()).getCapacity());
+        Grid g = gridMapper.findById(block.getGridId());
+        Long capacity = Long.valueOf(g.getCapacity());
         if(capacity == stock + 1) {
-            Grid g = gridMapper.findById(block.getGridId());
             g.setIsFull(true);
             gridMapper.modifyGrid(g);
         }
@@ -284,6 +291,9 @@ public class BlockServiceImpl implements BlockService {
         }
         drug.setStock(drug.getStock() - 1);
         drugMapper.modifyDrug(drug);
+
+        // 写 log
+        writeLog(drug, block.getId(), g.getCartId(), "in");
         return true;
     }
 
@@ -292,6 +302,15 @@ public class BlockServiceImpl implements BlockService {
         // 检查 id 并通过 id 获取 block 对象
         idCheck(blockId, "blockId");
         Block block = mapper.findById(blockId);
+        return removeDrug(block);
+    }
+
+    public Boolean removeDrug(Block block) {
+        // 写 log 用的，没啥实质性意义
+        Drug toRemove = new Drug();
+        toRemove.setId(block.getDrugId());
+
+        // 避免重复取出药品
         if(EMPTY.equals(block.getDrugId())) {
             throw new DrugOperateException("Block 为空，没有可被取出的药品");
         }
@@ -310,6 +329,9 @@ public class BlockServiceImpl implements BlockService {
             grid.setDrugInfId(EMPTY);
             gridMapper.modifyGrid(grid);
         }
+
+        // 写 log
+        writeLog(toRemove, block.getId(), grid.getCartId(), "out");
         return res;
     }
 
@@ -346,6 +368,23 @@ public class BlockServiceImpl implements BlockService {
         limit.setStart(start);
         limit.setPageSize(pageSize);
         return mapper.findAllByLimit(limit);
+    }
+
+    private void writeLog(Drug drug, Long blockId, Long cartId, String operateType) {
+        DrugOperateLog log = new DrugOperateLog();
+        log.setDrug(drug);
+        log.setBlockId(blockId);
+        log.setCartId(cartId);
+        log.setOperateType(operateType);
+        Subject subject = SecurityUtils.getSubject();
+        String principal = (String)subject.getPrincipal();
+        Employee employee = employeeMapper.findByPhone(principal);
+        if(employee != null && employee.getId() != null) {
+            log.setEmployeeId(employee.getId());
+        } else {
+            log.setEmployeeId(2L);
+        }
+        drugOperateLogMapper.add(log);
     }
 
     private void idCheck(Long id, String name) {

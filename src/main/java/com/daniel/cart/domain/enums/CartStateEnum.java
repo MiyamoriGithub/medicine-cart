@@ -2,20 +2,24 @@ package com.daniel.cart.domain.enums;
 
 
 import com.daniel.cart.util.AttributeCheck;
+import lombok.Getter;
 import lombok.ToString;
 import org.apache.commons.lang3.EnumUtils;
 
+@Getter
 @ToString
 public enum CartStateEnum {
-    free("空闲"),
-    inventory("维护中"),
-    emergency("急救中"),
-    unknown("未知");
+    free("空闲", "free"),
+    inventory("维护中", "inventory"),
+    emergency("急救中", "emergency"),
+    unknown("未知", "unknown");
 
-    private String name;
+    private final String name;
+    private final String valueName;
 
-    private CartStateEnum(String name) {
+    CartStateEnum(String name, String valueName) {
         this.name = name;
+        this.valueName = valueName;
     }
 
     public String getName() {
@@ -24,8 +28,7 @@ public enum CartStateEnum {
 
     public static Boolean roleCheck(String state) {
         if(AttributeCheck.isStringOk(state)) {
-            boolean res = EnumUtils.isValidEnum(CartStateEnum.class, state);
-            return res;
+            return EnumUtils.isValidEnum(CartStateEnum.class, state);
         }
         return false;
     }

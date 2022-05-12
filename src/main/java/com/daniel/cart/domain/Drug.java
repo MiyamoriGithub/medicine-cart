@@ -34,7 +34,7 @@ public class Drug {
                 "id=" + id +
                 ", productDate=" + productDate +
                 ", stock=" + stock +
-                ", drugInf=" + drugInf.toString() +
+                (drugInf == null ? "" : ", drugInf=" + drugInf) +
                 '}';
     }
 }

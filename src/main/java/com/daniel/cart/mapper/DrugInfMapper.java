@@ -1,6 +1,7 @@
 package com.daniel.cart.mapper;
 
 import com.daniel.cart.domain.DrugInf;
+import com.daniel.cart.domain.res.DrugInfRes;
 import com.daniel.cart.domain.vo.DrugInfVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -33,4 +34,6 @@ public interface DrugInfMapper {
     Long modifyDrugInf(DrugInf drugInf);
 
     Long removeDrugInf(Long id);
+
+    List<DrugInfRes> findWithDrugList();
 }
