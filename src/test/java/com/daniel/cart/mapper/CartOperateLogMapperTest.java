@@ -2,6 +2,7 @@ package com.daniel.cart.mapper;
 
 import com.daniel.cart.domain.Cart;
 import com.daniel.cart.domain.CartOperateLog;
+import com.daniel.cart.domain.enums.CartStateEnum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class CartOperateLogMapperTest {
         Cart cart = cartMapper.getById(5L);
         CartOperateLog cartOperateLog = new CartOperateLog();
         cartOperateLog.setCart(cart);
-        cartOperateLog.setOperateType("inventory");
+        cartOperateLog.setOperateType(CartStateEnum.inventory);
         cartOperateLog.setEmployeeId(4L);
         mapper.add(cartOperateLog);
 

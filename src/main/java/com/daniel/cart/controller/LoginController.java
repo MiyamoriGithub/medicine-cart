@@ -1,7 +1,9 @@
 package com.daniel.cart.controller;
 
+import com.daniel.cart.domain.Employee;
 import com.daniel.cart.domain.result.Result;
 import com.daniel.cart.domain.result.ResultCodeEnum;
+import com.daniel.cart.mapper.EmployeeMapper;
 import io.swagger.annotations.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -15,7 +17,13 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "登录Controller", tags = {"登录访问接口"})
 public class LoginController {
 
+    private final EmployeeMapper employeeMapper;
+
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
+    public LoginController(EmployeeMapper employeeMapper) {
+        this.employeeMapper = employeeMapper;
+    }
 
 //    private final LoginService service;
 
@@ -42,6 +50,15 @@ public class LoginController {
             return Result.ok().data("res", "true");
         }
         return Result.error(ResultCodeEnum.LOGIN_PASSWORD_ERROR);
+    }
+
+    @ApiOperation("获取当前登录的用户信息")
+    @GetMapping("userInf")
+    public Result userInf() {
+        Subject subject = SecurityUtils.getSubject();
+        String principal = (String)subject.getPrincipal();
+        Employee employee = employeeMapper.findByPhone(principal);
+        return Result.ok().data("item", employee);
     }
 
     @ApiOperation("退出")

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 import java.sql.Date;
+import java.util.Objects;
 
 @Component
 @Getter
@@ -51,5 +52,18 @@ public class Cart {
     @JSONField(name = "cartState")
     public String getCartState() {
         return this.state.getName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cart cart = (Cart) o;
+        return id.equals(cart.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

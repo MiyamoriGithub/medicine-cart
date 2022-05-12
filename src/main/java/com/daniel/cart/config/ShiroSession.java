@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 /** shiro 的 session 管理
  *      自定义session规则，实现前后端分离，在跨域等情况下使用 token 方式进行登录验证才需要，否则没必须使用本类。
- *      shiro默认使用 ServletContainerSessionManager 来做 session 管理，它是依赖于浏览器的 cookie 来维护 session 的,调用 storeSessionId  方法保存sesionId 到 cookie中
+ *      shiro默认使用 ServletContainerSessionManager 来做 session 管理，它是依赖于浏览器的 cookie 来维护 session 的,调用 storeSessionId  方法保存sessionId 到 cookie中
  *      为了支持无状态会话，我们就需要继承 DefaultWebSessionManager
  *      自定义生成sessionId 则要实现 SessionIdGenerator
  */
