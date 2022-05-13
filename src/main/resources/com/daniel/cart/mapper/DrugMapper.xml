@@ -29,19 +29,24 @@
         from drug_cart_db.drug_date_inf ddi
         inner join drug_cart_db.drug_inf di
         on di.drug_inf_id = ddi.drug_inf_id
-        inner join drug_cart_db.grid_inf gi
-        on gi.drug_inf_id = di.drug_inf_id
-        inner join drug_cart_db.block_inf bi
-        on bi.drug_id = ddi.drug_id
+        <if test="cartId!=null">
+            inner join drug_cart_db.grid_inf gi
+            on gi.drug_inf_id = di.drug_inf_id
+            inner join drug_cart_db.block_inf bi
+            on bi.drug_id = ddi.drug_id
+        </if>
         where 1 = 1
+        <if test="drugInfId!=null">
+            and di.drug_inf_id = #{drugInfId}
+        </if>
         <if test="nameCondition!=null">
             and di.drug_name like #{nameCondition}
         </if>
-<!--        <if test="barcode!=null">-->
-<!--            and di.drug_barcode = #{barcode}-->
-<!--        </if>-->
         <if test="cartId!=null">
             and gi.cart_id = #{cartId}
+        </if>
+        <if test="cartId==null">
+            order by ddi.drug_id
         </if>
         <if test="start!=null and pageSize!=null">
             limit #{start},#{pageSize}

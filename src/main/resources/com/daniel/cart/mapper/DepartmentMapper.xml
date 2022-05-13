@@ -22,7 +22,7 @@
             and department_name like #{nameCondition}
         </if>
         <if test="start!=null and pageSize!=null">
-            limit #{start - 1},#{pageSize}
+            limit #{start},#{pageSize}
         </if>
     </select>
     
@@ -63,7 +63,7 @@
         <set>
             is_enable = false
         </set>
-        where drug_inf_id = #{id}
+        where department_id = #{id}
     </update>
     
     <update id="modify" parameterType="department">

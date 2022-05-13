@@ -13,6 +13,7 @@
         <result column="department_name" property="departmentName"/>
         <result column="block_id" property="blockId"/>
         <result column="cart_id" property="cartId"/>
+        <result column="serial" property="serial"/>
         <association property="drug" resultMap="drugMap"/>
         <association property="grid" resultMap="gridMap"/>
     </resultMap>
@@ -44,7 +45,7 @@
 
 
     <select id="findAll" resultMap="drugOperateLogMap">
-        select dol.*,gi.*,di.*, ddi.*, ei.employee_name, de.department_id, department_name
+        select dol.*,gi.*,di.*, ddi.*, ei.employee_name, de.department_id, department_name, bl.serial
         from drug_cart_db.drug_operate_log dol
         left join drug_cart_db.drug_date_inf ddi
         on dol.drug_id = ddi.drug_id
@@ -62,7 +63,7 @@
     </select>
 
     <select id="findByLimit" resultMap="drugOperateLogMap" parameterType="pageVo">
-        select dol.*,gi.*,di.*, ddi.*, ei.employee_name, de.department_id, department_name
+        select dol.*,gi.*,di.*, ddi.*, ei.employee_name, de.department_id, department_name, bl.serial
         from drug_cart_db.drug_operate_log dol
                  left join drug_cart_db.drug_date_inf ddi
                            on dol.drug_id = ddi.drug_id

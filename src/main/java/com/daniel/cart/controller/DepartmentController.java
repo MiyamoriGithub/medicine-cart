@@ -4,6 +4,7 @@ import com.daniel.cart.domain.Department;
 import com.daniel.cart.domain.Employee;
 import com.daniel.cart.domain.result.Result;
 import com.daniel.cart.service.DepartmentService;
+import com.daniel.cart.util.AttributeCheck;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -37,7 +38,7 @@ public class DepartmentController {
     public Result find(
             @RequestParam(required = false) @ApiParam(value = "部门 id")Long id,
             @RequestParam(required = false) @ApiParam(value = "名称查询条件") String nameCondition,
-            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
+            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）") Integer start,
             @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
     ) {
         if(id != null) {
@@ -45,15 +46,20 @@ public class DepartmentController {
             return Result.ok().data("item", department);
         }
 
-        if(start != null && pageSize != null) {
-            List<Department> departments = service.findAll(start, pageSize);
-            Long count = service.getCount();
-            return Result.ok().data("items", departments).data("count", count);
+        List<Department> departments;
+        Long count = service.getCount();
+        if(AttributeCheck.isStringOk(nameCondition)) {
+            if(start != null && pageSize != null) {
+                departments = service.findByName(nameCondition, start, pageSize);
+            } else {
+                departments = service.findByName(nameCondition);
+            }
+        } else if(start != null && pageSize != null) {
+            departments = service.findAll(start, pageSize);
         } else {
-            List<Department> departments = service.findAll();
-            Long count = service.getCount();
-            return Result.ok().data("items", departments).data("count", count);
+            departments = service.findAll();
         }
+        return Result.ok().data("items", departments).data("count", count);
     }
 
     @ApiOperation("添加部门信息")

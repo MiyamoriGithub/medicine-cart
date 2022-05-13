@@ -19,6 +19,7 @@ public class DrugOperateLog {
     private Timestamp operateTime;
     private Drug drug;
     private Long blockId;
+    private Long serial;
     private Grid grid;
     private Long cartId;
     private String operateType;

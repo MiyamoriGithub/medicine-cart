@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.daniel</groupId>
     <artifactId>medicine-cart</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.5-SNAPSHOT</version>
     <name>medicine-cart</name>
     <description>medicine-cart</description>
     <properties>

@@ -1,6 +1,8 @@
 package com.daniel.cart.domain;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Component;
  **/
 
 @Data
+@Getter
+@Setter
 @Component
 public class DrugInf {
     private Long drugInfId;
@@ -19,4 +23,21 @@ public class DrugInf {
     private Integer drugPackage;
 
     public DrugInf() {}
+
+    public DrugInf(String barcode, String name, Integer shelfLife) {
+        this.barcode = barcode;
+        this.name = name;
+        this.shelfLife = shelfLife;
+    }
+
+    @Override
+    public String toString() {
+        return "DrugInf{" +
+                "drugInfId=" + drugInfId +
+                ", barcode='" + barcode + '\'' +
+                ", name='" + name + '\'' +
+                ", shelfLife=" + shelfLife +
+                ", drugPackage=" + drugPackage +
+                '}';
+    }
 }

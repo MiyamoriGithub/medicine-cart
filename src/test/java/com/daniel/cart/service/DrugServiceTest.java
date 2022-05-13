@@ -1,6 +1,7 @@
 package com.daniel.cart.service;
 
 import com.daniel.cart.domain.Drug;
+import com.daniel.cart.domain.vo.DrugVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,10 @@ public class DrugServiceTest {
 
     @Test
     public void findByLimit() {
+
+        for (Drug drug : service.findAll(1, 20)) {
+            System.out.println(drug);
+        }
     }
 
     @Test

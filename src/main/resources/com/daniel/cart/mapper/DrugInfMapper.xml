@@ -35,10 +35,10 @@
         from drug_cart_db.drug_inf
         where 1 = 1
         <if test="nameCondition!=null">
-            and drug_name=#{nameCondition}
+            and drug_name like #{nameCondition}
         </if>
         <if test="start!=null and pageSize!=null">
-            limit #{start - 1},#{pageSize}
+            limit #{start},#{pageSize}
         </if>
     </select>
 
@@ -83,12 +83,12 @@
                                         drug_barcode,
                                         drug_name,
                                         drug_shelf_life
-                                        <if test="drugPackage!=null">drug_package</if>
+                                        <if test="drugPackage!=null">, drug_package</if>
         ) values (
                   #{barcode},
                   #{name},
                   #{shelfLife}
-                  <if test="drugPackage!=null">#{drugPackage}</if>
+                  <if test="drugPackage!=null">, #{drugPackage}</if>
         )
     </insert>
     

@@ -88,7 +88,7 @@ public class CartController implements AbstractController {
         } else {
             logs = cartOperateLogMapper.findAll();
         }
-        return Result.ok().data("items", logs).data("count", count);
+        return Result.ok().data("count", count).data("items", logs);
     }
 
     @ApiOperation("查询急救车的全部状态枚举值")
@@ -215,7 +215,7 @@ public class CartController implements AbstractController {
     @ApiOperation("修改急救车")
     @GetMapping("modify")
     public Result modify(
-            @RequestParam @ApiParam(value = "急救车属性", required = true) Long id,
+            @RequestParam @ApiParam(value = "急救车 id", required = true) Long id,
             @RequestParam @ApiParam(value = "急救车部门id", required = true) Long departmentId,
             @RequestParam(required = false) @ApiParam(value = "急救车状态") String state
             ) {

@@ -5,6 +5,7 @@ import com.daniel.cart.domain.DrugInf;
 import com.daniel.cart.domain.result.Result;
 import com.daniel.cart.service.DrugInfService;
 import com.daniel.cart.service.DrugService;
+import com.daniel.cart.util.AttributeCheck;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -20,7 +21,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping("drug")
-public class DrugController implements AbstractController {
+public class DrugController {
 
     private final DrugService service;
     private final DrugInfService drugInfService;
@@ -32,24 +33,43 @@ public class DrugController implements AbstractController {
         this.drugInfService = drugInfService;
     }
 
-    @ApiOperation("查询全部药品信息")
+    @ApiOperation("查询药品信息")
     @GetMapping("find")
-    @Override
     public Result find(
-            @RequestParam(required = false) @ApiParam(value = "药品id信息") Long id,
+            @RequestParam(required = false) @ApiParam(value = "药品id") Long id,
+            @RequestParam(required = false) @ApiParam(value = "条码") String barcode,
+            @RequestParam(required = false) @ApiParam(value = "名称信息") String nameCondition,
             @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）") Integer start,
             @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
     ) {
-        List<Drug> drugs;
         if (id != null) {
             Drug drug = service.findById(id);
             return Result.ok().data("item", drug);
-        } else if (start != null && pageSize != null) {
-            drugs = service.findAll(start, pageSize);
-        } else {
-            drugs = service.findAll();
         }
-        Long count = service.getCount();
+        List<Drug> drugs;
+        Long count;
+        if(barcode != null) {
+            if(start != null && pageSize != null) {
+                drugs = service.findByBarcode(barcode, start, pageSize);
+            } else {
+                drugs = service.findByBarcode(barcode);
+            }
+            count = (long) drugs.size();
+        } else if(AttributeCheck.isStringOk(nameCondition)) {
+            if(start != null && pageSize != null) {
+                drugs = service.findByName(nameCondition, start, pageSize);
+            } else {
+                drugs = service.findByName(nameCondition);
+            }
+            count = (long) drugs.size();
+        } else{
+            if (start != null && pageSize != null) {
+                drugs = service.findAll(start, pageSize);
+            } else {
+                drugs = service.findAll();
+            }
+            count = service.getCount();
+        }
         return Result.ok().data("items", drugs).data("count", count);
     }
 
@@ -67,23 +87,6 @@ public class DrugController implements AbstractController {
             drugs = service.findByBarcode(barcode);
         }
         Long count = service.getCountByBarcode(barcode);
-        return Result.ok().data("items", drugs).data("count", count);
-    }
-
-    @ApiOperation("根据名称查询药品信息")
-    @GetMapping("name")
-    public Result name(
-            @RequestParam @ApiParam(value = "药品名称查询条件", required = true) String name,
-            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）") Integer start,
-            @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
-    ) {
-        List<Drug> drugs;
-        if (start != null && pageSize != null) {
-            drugs = service.findByName(name, start, pageSize);
-        } else {
-            drugs = service.findByName(name);
-        }
-        Long count = service.getCountByName(name);
         return Result.ok().data("items", drugs).data("count", count);
     }
 
