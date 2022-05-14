@@ -23,7 +23,6 @@ import java.util.List;
  * @author Daniel Zheng
  **/
 
-// Todo 测试接口中的全部方法
 
 @Api(value = "Block Controller", tags = {"Block 管理接口"})
 @RestController

@@ -58,6 +58,7 @@ public class GridController implements AbstractController{
         }
     }
 
+    // Todo 修改方法返回值，返回的grid应该包含其中存入的药品信息
     @ApiOperation("通过抢救车 id 获取 grid 信息以及条目数量")
     @GetMapping("cart")
     public Result cart(

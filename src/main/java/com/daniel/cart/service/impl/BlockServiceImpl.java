@@ -1,6 +1,7 @@
 package com.daniel.cart.service.impl;
 
 import com.daniel.cart.domain.*;
+import com.daniel.cart.domain.enums.CartStateEnum;
 import com.daniel.cart.domain.result.ResultCodeEnum;
 import com.daniel.cart.domain.vo.BlockVo;
 import com.daniel.cart.exception.BlockOperateException;
@@ -264,6 +265,10 @@ public class BlockServiceImpl implements BlockService {
         }
 
         Grid grid = gridMapper.findById(block.getGridId());
+        Cart cart = cartMapper.getById(grid.getCartId());
+        if(cart.getState() == CartStateEnum.free) {
+            throw new DrugOperateException("急救车为空闲状态，无法存入药品");
+        }
         Long drugInfIdOfGrid = grid.getDrugInfId();
         if(drugInfIdOfGrid == null || drugInfIdOfGrid <= 0) {
             // 如果 grid 无药品信息，则说明 grid 为空，则为其绑定新的药品
@@ -316,12 +321,17 @@ public class BlockServiceImpl implements BlockService {
         if(EMPTY.equals(block.getDrugId())) {
             throw new DrugOperateException("Block 为空，没有可被取出的药品");
         }
+        Grid grid = gridMapper.findById(block.getGridId());
+        Cart cart = cartMapper.getById(grid.getCartId());
+        if(cart.getState() == CartStateEnum.free) {
+            throw new DrugOperateException("急救车为空闲状态，无法取出药品");
+        }
+
         // 移除 block 中的药品信息
         block.setDrugId(EMPTY);
         Boolean res = mapper.modifyBlock(block) > 0;
 
         // 如果 grid 之前为满，则移除当前 block 药品后不为满
-        Grid grid = gridMapper.findById(block.getGridId());
         if(grid.getIsFull()) {
             grid.setIsFull(false);
             gridMapper.modifyGrid(grid);

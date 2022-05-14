@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-// Todo 建立 DrugInf 实体类，通过 Drug 包含 DrugInf 的方式完善相关信息的表示，并完善多表查询的 Sql 语句
-
 @Component
 @Getter
 @Setter

@@ -2,6 +2,7 @@ package com.daniel.cart.mapper;
 
 import com.daniel.cart.domain.Cart;
 import com.daniel.cart.domain.res.CartBlockRes;
+import com.daniel.cart.domain.vo.CartVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,14 @@ public class CartMapperTest {
 
     @Test
     public void findAllByLimit() {
+        CartVo cartVo = new CartVo();
+        cartVo.setDepartmentName("心");
+        cartVo.setStart(1);
+        cartVo.setPageSize(5);
+        System.out.println(cartVo.toString());
+        for (Cart cart : mapper.findAllByLimit(cartVo)) {
+            System.out.println(cart.toString());
+        }
     }
 
     @Test

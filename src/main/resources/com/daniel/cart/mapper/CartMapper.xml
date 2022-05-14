@@ -38,12 +38,12 @@
         select ci.`cart_id`, ci.`department_id`, ci.`add_time`, ci.`status_type`, di.`department_name`
         from drug_cart_db.carts_inf ci
         left join drug_cart_db.department_inf di on ci.`department_id` = di.`department_id`
-        where ci.`is_enable` = 1
+        where ci.`is_enable` = true
         <if test="departmentName!=null">
             and di.`department_name` like #{departmentName}
         </if>
         <if test="departmentId!=null">
-            and ci.`department_id` = #{departmentId}
+            and di.`department_id` = #{departmentId}
         </if>
         <if test="state!=null">
             and ci.`status_type` = #{state}
@@ -85,15 +85,15 @@
         select count(ci.cart_id)
         from drug_cart_db.carts_inf ci
         left join drug_cart_db.department_inf di on ci.department_id = di.department_id
-        where ci.is_enable = 1
+        where ci.is_enable = true
+        <if test="departmentName!=null">
+            and di.department_name like #{departmentName}
+        </if>
         <if test="state!=null">
             and ci.status_type = #{state}
         </if>
         <if test="departmentId!=null">
             and ci.department_id = #{departmentId}
-        </if>
-        <if test="departmentName!=null">
-            and di.department_name = #{departmentName}
         </if>
     </select>
 

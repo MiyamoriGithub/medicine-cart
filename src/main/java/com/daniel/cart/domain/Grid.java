@@ -5,8 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-// Todo Grid和Block的关系还需要再考虑，以及数据库的设计
-
 @Data
 @Component
 @Getter

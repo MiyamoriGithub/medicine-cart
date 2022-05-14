@@ -12,6 +12,7 @@ import com.daniel.cart.domain.vo.PageVo;
 import com.daniel.cart.mapper.CartOperateLogMapper;
 import com.daniel.cart.service.CartService;
 import com.daniel.cart.service.DrugService;
+import com.daniel.cart.util.AttributeCheck;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -38,7 +39,7 @@ import java.util.Map;
 @RestController
 @CrossOrigin
 @RequestMapping("cart")
-public class CartController implements AbstractController {
+public class CartController {
 
     private final CartService service;
     private final DrugService drugService;
@@ -54,24 +55,37 @@ public class CartController implements AbstractController {
 
     @ApiOperation("查询急救车信息")
     @GetMapping("find")
-    @Override
     public Result find(
             @RequestParam(required = false) @ApiParam(value = "抢救车id信息") Long id,
+            @RequestParam(required = false) @ApiParam(value = "部门名称信息") String nameCondition,
+            @RequestParam(required = false) @ApiParam(value = "状态信息") String state,
             @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）") Integer start,
             @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
     ) {
         if(id != null) {
             Cart cart = service.findById(id);
             return Result.ok().data("item", cart);
-        } else if(start != null && pageSize != null) {
-            List<Cart> carts = service.findAll(start, pageSize);
-            Long count = service.getCount();
-            return Result.ok().data("items", carts).data("count", count);
-        }else {
-            List<Cart> carts = service.findAll();
-            Long count = service.getCount();
-            return Result.ok().data("items", carts).data("count", count);
         }
+
+        List<Cart> carts;
+        Long count;
+        if(AttributeCheck.isStringOk(nameCondition) && state != null) {
+            count = service.getCountByLimit(nameCondition, state);
+            carts = service.findByLimit(nameCondition, state, start, pageSize);
+        } else if(AttributeCheck.isStringOk(nameCondition)) {
+            carts = service.findByDepartment(nameCondition, start, pageSize);
+            count = service.getCountByDepartment(nameCondition);
+        } else if(state != null) {
+            carts = service.findByState(state, start, pageSize);
+            count = service.getCountByState(state);
+        } else if(start != null && pageSize != null) {
+            carts = service.findAll(start, pageSize);
+            count = service.getCount();
+        }else {
+            carts = service.findAll();
+            count = service.getCount();
+        }
+        return Result.ok().data("items", carts).data("count", count);
     }
 
     @ApiOperation("获取急救车操作日志")
@@ -113,8 +127,7 @@ public class CartController implements AbstractController {
             carts = service.findByLimit(departmentId, state, start, pageSize);
         }
         Long count = service.getCountByDepartment(departmentId);
-        Result res = Result.ok().data("items", carts);
-        return res.data("count", count);
+        return Result.ok().data("items", carts).data("count", count);
     }
 
     @ApiOperation("根据部门查询急救车信息以及信息条目数量")
