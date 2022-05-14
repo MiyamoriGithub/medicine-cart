@@ -14,6 +14,7 @@
         <result column="block_id" property="blockId"/>
         <result column="cart_id" property="cartId"/>
         <result column="serial" property="serial"/>
+        <result column="cart_status" property="state"/>
         <association property="drug" resultMap="drugMap"/>
         <association property="grid" resultMap="gridMap"/>
     </resultMap>

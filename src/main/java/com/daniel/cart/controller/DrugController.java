@@ -132,7 +132,7 @@ public class DrugController {
     @GetMapping("add")
     public Result add(
             @RequestParam(required = false) @ApiParam(value = "药品信息 id，如果是新药品则需要添加其他药品信息") Long drugInfId,
-            @RequestParam @ApiParam(value = "生产日期",required = true) Timestamp productDate,
+            @RequestParam @ApiParam(value = "生产日期",required = true) Long productDate,
             @RequestParam(required = false) @ApiParam(value = "库存") Integer stock,
             @RequestParam(required = false) @ApiParam(value = "条码") String barcode,
             @RequestParam(required = false) @ApiParam(value = "名称") String name,
@@ -161,7 +161,7 @@ public class DrugController {
         // 注意这里不能直接存传参传入的 id，因为存入数据库可能会产生新 id 信息
         drug.setDrugInfId(drugInf.getDrugInfId());
         drug.setStock(stock);
-        drug.setProductDate(productDate);
+        drug.setProductDate(new Timestamp(productDate));
         Boolean res = service.add(drug);
         return returnMessage(res);
     }
@@ -179,7 +179,7 @@ public class DrugController {
             @RequestParam @ApiParam(value = "药品 id", required = true) Long id,
             @RequestParam(required = false) @ApiParam(value = "新的药品信息 id") Long drugInfId,
             @RequestParam(required = false) @ApiParam(value = "新的药品库存") Integer stock,
-            @RequestParam(required = false) @ApiParam(value = "新的药品生产日期") Timestamp productDate,
+            @RequestParam(required = false) @ApiParam(value = "新的药品生产日期") Long productDate,
             @RequestParam(required = false) @ApiParam(value = "条形码") String barcode,
             @RequestParam(required = false) @ApiParam(value = "药品名称") String name,
             @RequestParam(required = false) @ApiParam(value = "药品保质期") Integer shelfLife,
@@ -223,7 +223,7 @@ public class DrugController {
             drug.setStock(stock);
         }
         if(productDate != null) {
-            drug.setProductDate(productDate);
+            drug.setProductDate(new Timestamp(productDate));
         }
         Boolean res = service.modify(drug);
         return returnMessage(res);

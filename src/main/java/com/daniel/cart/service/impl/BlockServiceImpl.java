@@ -33,16 +33,18 @@ public class BlockServiceImpl implements BlockService {
     private final BlockMapper mapper;
     private final GridMapper gridMapper;
     private final DrugMapper drugMapper;
+    private final CartMapper cartMapper;
     private final EmployeeMapper employeeMapper;
     private final DrugOperateLogMapper drugOperateLogMapper;
 
     // 规定 block 为空即药品信息为 -1
     private static final Long EMPTY = -1L;
 
-    public BlockServiceImpl(BlockMapper mapper, GridMapper gridMapper, DrugMapper drugMapper, EmployeeMapper employeeMapper, DrugOperateLogMapper drugOperateLogMapper) {
+    public BlockServiceImpl(BlockMapper mapper, GridMapper gridMapper, DrugMapper drugMapper, CartMapper cartMapper, EmployeeMapper employeeMapper, DrugOperateLogMapper drugOperateLogMapper) {
         this.mapper = mapper;
         this.gridMapper = gridMapper;
         this.drugMapper = drugMapper;
+        this.cartMapper = cartMapper;
         this.employeeMapper = employeeMapper;
         this.drugOperateLogMapper = drugOperateLogMapper;
     }
@@ -372,10 +374,12 @@ public class BlockServiceImpl implements BlockService {
 
     private void writeLog(Drug drug, Long blockId, Long cartId, String operateType) {
         DrugOperateLog log = new DrugOperateLog();
+        Cart cart = cartMapper.getById(cartId);
         log.setDrug(drug);
         log.setBlockId(blockId);
         log.setCartId(cartId);
         log.setOperateType(operateType);
+        log.setState(cart.getState());
         Subject subject = SecurityUtils.getSubject();
         String principal = (String)subject.getPrincipal();
         Employee employee = employeeMapper.findByPhone(principal);

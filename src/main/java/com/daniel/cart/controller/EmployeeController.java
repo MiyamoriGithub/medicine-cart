@@ -31,8 +31,9 @@ public class EmployeeController {
     @GetMapping("find")
     public Result find(
             @RequestParam(required = false) @ApiParam(value = "用户 id")Long id,
-            @RequestParam(required = false) @ApiParam(value = "姓名限定条件") String nameCondition,
             @RequestParam(required = false) @ApiParam(value = "手机号码") String phone,
+            @RequestParam(required = false) @ApiParam(value = "姓名限定条件") String nameCondition,
+            @RequestParam(required = false) @ApiParam(value = "部门id") Long departmentId,
             @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
             @RequestParam(required = false) @ApiParam(value = "每页信息数量") Integer pageSize
     ) {
@@ -51,6 +52,13 @@ public class EmployeeController {
                 employees = service.findByName(nameCondition, start, pageSize);
             } else {
                 employees = service.findByName(nameCondition);
+            }
+        } else if(departmentId != null) {
+            count = service.getCountByDepartment(departmentId);
+            if(start != null && pageSize != null) {
+                employees = service.findByDepartment(departmentId, start, pageSize);
+            } else {
+                employees = service.findByDepartment(departmentId);
             }
         }else if(start != null && pageSize != null) {
             employees = service.findAll(start, pageSize);
