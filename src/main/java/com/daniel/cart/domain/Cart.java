@@ -16,7 +16,7 @@ public class Cart {
     private Long departmentId;   // department_id int
     private String departmentName;
     private Date addTime;           // add_time timestamp not null
-    @JSONField(serialize = false)
+//    @JSONField(serialize = false)
     private CartStateEnum state;           // status_type enum('free','inventory','emergency','unknown')
 //    private Boolean isEnable;       // is_enable boolean default 1
 
