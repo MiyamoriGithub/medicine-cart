@@ -1,7 +1,6 @@
 package com.daniel.cart.domain.res;
 
 import com.daniel.cart.domain.Cart;
-import com.daniel.cart.domain.enums.CartExceptionEnum;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

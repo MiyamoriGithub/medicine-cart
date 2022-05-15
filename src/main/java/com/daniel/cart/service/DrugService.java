@@ -1,7 +1,7 @@
 package com.daniel.cart.service;
 
 import com.daniel.cart.domain.Drug;
-import com.daniel.cart.domain.enums.CartExceptionEnum;
+import com.daniel.cart.domain.enums.DrugExceptionEnum;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -15,7 +15,7 @@ public interface DrugService extends AbstractService<Drug> {
 
     List<Drug> findTemporary(List<Drug> list);
 
-    Map<CartExceptionEnum, HashSet<Long>> findException(List<Drug> list);
+    Map<DrugExceptionEnum, HashSet<Long>> findException(List<Drug> list);
 
     List<Drug> findExpire();
 

@@ -10,10 +10,12 @@
         <result column="drug_inf_id" property="drugInfId"/>
         <result column="drug_name" property="drugName"/>
         <result column="serial" property="serial"/>
+        <result column="drug_shelf_life" property="shelfLife"/>
+        <result column="drug_product_date" property="productDate"/>
     </resultMap>
     
     <select id="findAll" resultMap="blockMap">
-        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name, bi.serial
+        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name, bi.serial, ddi.drug_product_date, di.drug_shelf_life
         from drug_cart_db.block_inf bi
         left join drug_cart_db.drug_date_inf ddi
             on bi.drug_id = ddi.drug_id
@@ -22,7 +24,7 @@
     </select>
     
     <select id="findAllByLimit" resultMap="blockMap" parameterType="blockVo">
-        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name, bi.serial
+        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name, bi.serial, ddi.drug_product_date, di.drug_shelf_life
         from drug_cart_db.block_inf bi
         left join drug_cart_db.drug_date_inf ddi
             on bi.`drug_id` = ddi.`drug_id`
@@ -54,11 +56,13 @@
     </select>
     
     <select id="findByCart" resultMap="blockMap" parameterType="long">
-        select bi.block_id, bi.grid_id, bi.drug_id, gi.drug_inf_id, bi.serial
+        select bi.block_id, bi.grid_id, bi.drug_id, ddi.drug_inf_id, di.drug_name, bi.serial, ddi.drug_product_date, di.drug_shelf_life
         from drug_cart_db.block_inf bi
         inner join drug_cart_db.grid_inf gi
             on gi.grid_id = bi.grid_id
         inner join drug_cart_db.carts_inf ci on gi.cart_id = ci.cart_id
+        left join drug_cart_db.drug_inf di on di.drug_inf_id = gi.drug_inf_id
+        left join drug_cart_db.drug_date_inf ddi on di.drug_inf_id = ddi.drug_inf_id
         where ci.cart_id = #{cartId}
     </select>
     

@@ -4,7 +4,7 @@ import com.daniel.cart.domain.Block;
 import com.daniel.cart.domain.Cart;
 import com.daniel.cart.domain.CartOperateLog;
 import com.daniel.cart.domain.Employee;
-import com.daniel.cart.domain.enums.CartExceptionEnum;
+import com.daniel.cart.domain.enums.DrugExceptionEnum;
 import com.daniel.cart.domain.enums.CartStateEnum;
 import com.daniel.cart.domain.res.CartBlockRes;
 import com.daniel.cart.domain.res.CartRes;
@@ -157,14 +157,14 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<CartRes> getException(Map<CartExceptionEnum, HashSet<Long>> exceptionDrugMap){
+    public List<CartRes> getException(Map<DrugExceptionEnum, HashSet<Long>> exceptionDrugMap){
         // 查找带有 block 列表的急救车信息
         List<CartBlockRes> cartWithBlocks = mapper.findCartWithBlock();
         return getException(cartWithBlocks, exceptionDrugMap);
     }
 
     @Override
-    public List<CartRes> getException(List<CartBlockRes> cartWithBlocks, Map<CartExceptionEnum, HashSet<Long>> exceptionDrugMap){
+    public List<CartRes> getException(List<CartBlockRes> cartWithBlocks, Map<DrugExceptionEnum, HashSet<Long>> exceptionDrugMap){
         // 存放结果的列表
         List<CartRes> res = new ArrayList<>();
 
@@ -179,14 +179,14 @@ public class CartServiceImpl implements CartService {
             // 获取其中的 cart 信息，如果 cart 在 vacant 列表中，则当前 cart 有待补货的异常
             Cart cart = cartWithBlock.getCart();
             if(vacant.contains(cart)) {
-                exceptionList.add(CartExceptionEnum.vacant.getName());
+                exceptionList.add(DrugExceptionEnum.vacant.getName());
             }
 
             // 获取当前急救车的 block 列表
             List<Block> blockList = cartWithBlock.getBlockList();
 
             // 遍历参数中的异常列表
-            for (CartExceptionEnum exceptionEnum : exceptionDrugMap.keySet()) {
+            for (DrugExceptionEnum exceptionEnum : exceptionDrugMap.keySet()) {
                 // 如果 cart 有任意一个 block 处在异常状态，就将异常状态存入 list 中
                 HashSet<Long> exceptionDrugs = exceptionDrugMap.get(exceptionEnum);
                 for (Block block : blockList) {

@@ -1,6 +1,7 @@
 package com.daniel.cart.mapper;
 
 import com.daniel.cart.domain.Grid;
+import com.daniel.cart.domain.res.GridDrugRes;
 import com.daniel.cart.domain.vo.GridVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,8 @@ public interface GridMapper {
     List<Grid> findAll();
 
     List<Grid> findAllByLimit(GridVo limit);
+
+    List<GridDrugRes> findByCart(Long cartId);
 
     Grid findById(Long id);
 

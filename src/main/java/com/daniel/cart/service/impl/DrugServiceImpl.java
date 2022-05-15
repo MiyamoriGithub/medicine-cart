@@ -1,9 +1,8 @@
 package com.daniel.cart.service.impl;
 
-import com.daniel.cart.domain.Cart;
 import com.daniel.cart.domain.Drug;
 import com.daniel.cart.domain.DrugInf;
-import com.daniel.cart.domain.enums.CartExceptionEnum;
+import com.daniel.cart.domain.enums.DrugExceptionEnum;
 import com.daniel.cart.domain.result.ResultCodeEnum;
 import com.daniel.cart.domain.vo.DrugVo;
 import com.daniel.cart.exception.DrugOperateException;
@@ -67,10 +66,10 @@ public class DrugServiceImpl implements DrugService {
     }
 
     @Override
-    public Map<CartExceptionEnum, HashSet<Long>> findException(List<Drug> list) {
+    public Map<DrugExceptionEnum, HashSet<Long>> findException(List<Drug> list) {
         HashSet<Long> expire = new HashSet<>();
         HashSet<Long> temporary = new HashSet<>();
-        Map<CartExceptionEnum, HashSet<Long>> res = new HashMap<>();
+        Map<DrugExceptionEnum, HashSet<Long>> res = new HashMap<>();
         long currentTimeMillis = System.currentTimeMillis();
         for (Drug drug : list) {
             int days = this.getToExpire(drug, currentTimeMillis);
@@ -80,8 +79,8 @@ public class DrugServiceImpl implements DrugService {
                 temporary.add(drug.getId());
             }
         }
-        res.put(CartExceptionEnum.expire, expire);
-        res.put(CartExceptionEnum.temporary, temporary);
+        res.put(DrugExceptionEnum.expire, expire);
+        res.put(DrugExceptionEnum.temporary, temporary);
         return res;
     }
 

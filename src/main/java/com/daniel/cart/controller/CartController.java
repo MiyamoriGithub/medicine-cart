@@ -4,7 +4,7 @@ package com.daniel.cart.controller;
 import com.daniel.cart.domain.Cart;
 import com.daniel.cart.domain.CartOperateLog;
 import com.daniel.cart.domain.Drug;
-import com.daniel.cart.domain.enums.CartExceptionEnum;
+import com.daniel.cart.domain.enums.DrugExceptionEnum;
 import com.daniel.cart.domain.enums.CartStateEnum;
 import com.daniel.cart.domain.res.CartRes;
 import com.daniel.cart.domain.result.Result;
@@ -184,7 +184,7 @@ public class CartController {
     public Result notification(
     ) {
         List<Drug> drugs = drugService.findAll();
-        Map<CartExceptionEnum, HashSet<Long>> map = drugService.findException(drugs);
+        Map<DrugExceptionEnum, HashSet<Long>> map = drugService.findException(drugs);
         List<CartRes> exception = service.getException(map);
         return Result.ok().data("items", exception);
     }

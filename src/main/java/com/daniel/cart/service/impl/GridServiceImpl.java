@@ -1,6 +1,9 @@
 package com.daniel.cart.service.impl;
 
+import com.daniel.cart.domain.Drug;
 import com.daniel.cart.domain.Grid;
+import com.daniel.cart.domain.enums.DrugExceptionEnum;
+import com.daniel.cart.domain.res.GridDrugRes;
 import com.daniel.cart.domain.result.ResultCodeEnum;
 import com.daniel.cart.domain.vo.BlockVo;
 import com.daniel.cart.domain.vo.GridVo;
@@ -8,12 +11,15 @@ import com.daniel.cart.exception.GridOperateException;
 import com.daniel.cart.mapper.BlockMapper;
 import com.daniel.cart.mapper.GridMapper;
 import com.daniel.cart.service.GridService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import static com.daniel.cart.util.AttributeCheck.isIdOk;
 import static com.daniel.cart.util.AttributeCheck.isStringOk;
@@ -51,6 +57,12 @@ public class GridServiceImpl implements GridService {
     }
 
     @Override
+    public List<GridDrugRes> findByCart2(Long cartId) {
+        idCheck(cartId, "cartID");
+        return mapper.findByCart(cartId);
+    }
+
+    @Override
     public List<Grid> findByCart(Long cartId) {
         return findByCart(cartId, null, null);
     }
@@ -71,6 +83,26 @@ public class GridServiceImpl implements GridService {
         idCheck(cartId, "cartId");
         idCheck(layer, "layer");
         return findByLimit(cartId, layer, start, pageSize);
+    }
+
+    @Override
+    public List<GridDrugRes> findException(List<GridDrugRes> grids, Map<DrugExceptionEnum, HashSet<Long>> map) {
+        for(GridDrugRes grid : grids) {
+            List<String> exceptions = new ArrayList<String>();
+            for (Drug drug : grid.getDrugs()) {
+                for (DrugExceptionEnum drugExceptionEnum : map.keySet()) {
+                    HashSet<Long> drugIds = map.get(drugExceptionEnum);
+                    if(drugIds.contains(drug.getId())) {
+                        exceptions.add(drugExceptionEnum.getName());
+                    }
+                }
+            }
+            if(!grid.getIsFull()) {
+                exceptions.add(DrugExceptionEnum.vacant.getName());
+            }
+            grid.setExceptions(exceptions);
+        }
+        return grids;
     }
 
     @Override

@@ -14,6 +14,19 @@
         <result column="is_full" property="isFull"/>
     </resultMap>
     
+    <resultMap id="gridDrugResMap" type="gridDrugRes">
+        <id column="grid_id" property="id"/>
+        <result column="cart_id" property="cartId"/>
+        <result column="cart_layer" property="layer"/>
+        <result column="cart_row" property="row"/>
+        <result column="cart_column" property="column"/>
+        <result column="drug_inf_id" property="drugInfId"/>
+        <result column="drug_name" property="drugName"/>
+        <result column="capacity" property="capacity"/>
+        <result column="is_full" property="isFull"/>
+        <collection resultMap="com.daniel.cart.mapper.DrugMapper.drugMap" property="drugs"/>
+    </resultMap>
+    
     <select id="findAll" resultMap="gridMap">
         select grid_id, cart_id, cart_layer, cart_row, cart_column, drug_inf_id, capacity, is_full
         from drug_cart_db.grid_inf
@@ -35,6 +48,16 @@
         <if test="start!=null and pageSize!=null">
             limit #{start},#{pageSize}
         </if>
+    </select>
+    
+    <select id="findByCart" resultMap="gridDrugResMap" parameterType="long">
+        select gi.*, di.*, ddi.*
+        from drug_cart_db.grid_inf gi
+        left join drug_cart_db.drug_inf di
+        on gi.drug_inf_id = di.drug_inf_id
+        left join drug_cart_db.drug_date_inf ddi
+        on di.drug_inf_id = ddi.drug_inf_id
+        where gi.cart_id = #{cartId}
     </select>
     
     <select id="findById" resultMap="gridMap" parameterType="java.lang.Long">

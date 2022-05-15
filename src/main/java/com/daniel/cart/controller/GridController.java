@@ -1,8 +1,12 @@
 package com.daniel.cart.controller;
 
+import com.daniel.cart.domain.Drug;
 import com.daniel.cart.domain.Grid;
+import com.daniel.cart.domain.enums.DrugExceptionEnum;
+import com.daniel.cart.domain.res.GridDrugRes;
 import com.daniel.cart.domain.result.Result;
 import com.daniel.cart.service.DrugInfService;
+import com.daniel.cart.service.DrugService;
 import com.daniel.cart.service.GridService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,7 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Grid 管理接口
@@ -28,12 +34,14 @@ public class GridController implements AbstractController{
 
     private final GridService service;
     private final DrugInfService drugInfService;
+    private final DrugService drugService;
     private final Logger logger = LoggerFactory.getLogger(GridController.class);
 
     @Autowired
-    public GridController(GridService service, DrugInfService drugInfService) {
+    public GridController(GridService service, DrugInfService drugInfService, DrugService drugService) {
         this.service = service;
         this.drugInfService = drugInfService;
+        this.drugService = drugService;
     }
 
     @ApiOperation("查询 Grid 信息")
@@ -62,16 +70,12 @@ public class GridController implements AbstractController{
     @ApiOperation("通过抢救车 id 获取 grid 信息以及条目数量")
     @GetMapping("cart")
     public Result cart(
-            @RequestParam @ApiParam(value = "急救车的 Id 信息", required = true) Long cartId,
-            @RequestParam(required = false) @ApiParam(value = "起始条目（从 1 开始）", required = false) Integer start,
-            @RequestParam(required = false) @ApiParam(value = "每页信息数量" , required = false) Integer pageSize
+            @RequestParam @ApiParam(value = "急救车的 Id 信息", required = true) Long cartId
     ) {
-        List<Grid> grids;
-        if(start != null && pageSize != null) {
-            grids = service.findByCart(cartId, start, pageSize);
-        } else {
-            grids = service.findByCart(cartId);
-        }
+        List<GridDrugRes> grids = service.findByCart2(cartId);
+        List<Drug> drugs = drugService.findAll();
+        Map<DrugExceptionEnum, HashSet<Long>> exception = drugService.findException(drugs);
+        service.findException(grids, exception);
         Long count = service.getCountByCart(cartId);
         return Result.ok().data("grids", grids).data("count", count);
     }
@@ -168,13 +172,13 @@ public class GridController implements AbstractController{
             @RequestParam(required = false) @ApiParam(value = "急救车 id", required = false) Long cartId,
             @RequestParam(required = false) @ApiParam(value = "急救车层数", required = false) Integer layer
     ) {
-        List<Grid> res;
+        List<Grid> res = null;
         if(cartId != null && layer != null) {
             List<Grid> list = service.findByLayer(cartId, layer);
             res = service.findNeedInventory(list);
         }else if(cartId != null) {
-            List<Grid> grids = service.findByCart(cartId);
-            res = service.findNeedInventory(grids);
+             List<Grid> grids = service.findByCart(cartId);
+             res = service.findNeedInventory(grids);
         } else {
             res = service.findNeedInventory();
         }
