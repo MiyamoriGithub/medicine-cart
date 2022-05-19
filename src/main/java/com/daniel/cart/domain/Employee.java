@@ -20,7 +20,7 @@ import java.sql.Date;
 public class Employee {
     private Long id;                    // 员工id employee_id
     private String name;                // 员工姓名 employee_name
-    private String phone;               // 员工手机号，employee_phone 作为联系方式，和登录名无关
+    private String phone;               // 员工手机号
     private Date addTime;               // 员工信息添加时间 employee_add_time
     private Long departmentId;          // 员工部门id department_id
     private String departmentName;

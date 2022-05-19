@@ -7,6 +7,7 @@ import com.daniel.cart.service.EmployeeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public class EmployeeController {
     }
 
     @ApiOperation("查询员工信息")
-//    @RequiresRoles("manager")
+    @RequiresRoles("manager")
     @GetMapping("find")
     public Result find(
             @RequestParam(required = false) @ApiParam(value = "用户 id")Long id,

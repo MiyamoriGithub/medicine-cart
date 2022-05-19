@@ -10,7 +10,6 @@
         <result column="employee_add_time" property="addTime"/>
         <result column="department_id" property="departmentId"/>
         <result column="department_name" property="departmentName"/>
-<!--        <result column="enable_flag" property="isEnable"/>-->
         <result column="password_md5" property="password"/>
         <result column="role" property="role"/>
     </resultMap>
